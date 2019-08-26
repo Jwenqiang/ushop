@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+<meta name="format-detection" content="telephone=no" /> 
+<!--uc强制全屏-->
+<meta name="full-screen" content="yes">
+<!--QQ强制全屏-->
+<meta name="x5-fullscreen" content="true">	
+<title>选择城市</title>
+<link rel="stylesheet" href="css/font-awesome.min.css" />
+<link rel="stylesheet" href="css/weui.min.css">
+<link rel="stylesheet" href="css/jquery-weui.min.css">		
+<link rel="stylesheet" href="css/style.css" />
+<!--这里以iphone6尺寸开发，自动适配-->
+</head>
+<body id="body">
+<div id="loadingDiv"><div id="loadImg"></div></div>			
+	<div class="whole">
+<!--内容START-->	
+		<div class="sel-city">
+			<div class="sel-search">
+				<i class="weui-icon-search"></i>
+				<input type="text" placeholder="城市名/拼音" class="f-sear"/>
+			</div>
+			<a href="javascript:history.back();" class="s-close">
+				<i class="fa fa-angle-left"></i> 
+			</a>	
+			<div class="s-tab">
+				<ul class="tab-sel">
+					<li class="on">国内</li>
+					<li>国际/港澳台</li>
+				</ul>
+			</div>
+			<div class="s-content" id="mark-map">
+				<div class="mark-city">
+					<p>定位/最近访问</p>
+					<span><i class="fa fa-map-marker"></i>深圳</span>						
+				</div>
+				<div class="all-city">
+					<p>热门城市</p>
+					<span>深圳</span>						
+					<span>东莞</span>						
+					<span>惠州</span>						
+					<span>中山</span>						
+				</div>
+			</div>
+		</div>	
+		<a id="scrollUp" href="javascript:void(0);"><i class="fa fa-angle-up"></i></a>
+	<!--内容END-->	
+	</div>
+</div>	
+<script type="text/javascript" src="js/hide.js" ></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-weui.min.js"></script>	
+<script src="js/swiper.min.js"></script>
+<script src="js/city-picker.min.js"></script>
+<script type="text/javascript" src="js/main.js" ></script>
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>
+</body>
+</html>

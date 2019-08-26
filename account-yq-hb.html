@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>面对面邀请</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">			
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>	
+		<script src="js/jquery.min.js"></script>
+		<style>
+			*{padding: 0;margin: 0;box-sizing: border-box;}
+			.whole{height: 100%;padding-bottom: 0;}
+			#canvas{width: 7.5rem;height: 100%;overflow-y: auto;}
+			#canvas img{width: 100%;border: 0;margin: 0;}
+			.foot_tip{position: absolute;bottom: 0;left: 0;width: 100%;text-align: center;color: #999;height: 1.2rem;padding-top: 0.6rem;}
+		</style>
+	</head>
+	<body>			
+		<div class="whole">
+			<div id="canvas" class="qrcodeCanvas">
+				<img class="imgBox" :src="yqData.SystemConfigInvitationJoinImg" style="display: none;width: 100%;height: 100%;"/>
+				<img class="imgCode" :src="yqData.QRcodeUrl" style="display: none;width: 80px;height: 80px;"/>
+				<img class="imgTx" src="img/tx.png" style="display: none;width: 50px;height: 50px;" v-if="yqData.HeadImg==''||yqData.HeadImg==null"/>	
+				<img class="imgTx" :src="yqData.HeadImg" style="display: none;width: 50px;height: 50px;" v-else/>	
+				<input :value="userName" style="display: none;" id="name"/>
+				<div id="qrcodeCanvas"></div>
+			</div>
+		
+			
+			
+			<div class="foot_tip" v-if="show">--长按图片保存到相册--</div>
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script type="text/javascript" src="js/main.js" ></script>	
+	<script>
+		var storage=window.localStorage;
+		if(storage.getItem("userInfo")){
+			var token=JSON.parse(storage.getItem("userInfo")).Token; 
+			// var userId=JSON.parse(storage.getItem("userInfo")).UserId; 
+			// 验证令牌
+			axios.defaults.headers.common['token'] = token;	
+		}		
+		var app=new Vue({
+			el:".whole",
+			data:{
+				yqData:"",
+				userId:"",	
+				tx:"",
+				userName:"",
+				show:false
+			},
+			created: function(e) { //创建实例el后
+				if(storage.getItem("userInfo")){
+					this.userId=JSON.parse(storage.getItem("userInfo")).UserId;
+				}			
+				this.getData()
+			},
+			mounted: function() { //下面表示已执行方法  编译好html后在这操作
+
+			},		
+			methods:{
+				// getBj:function(a){
+				// 	$.showLoading("生成中");
+				// 	var _this=this;
+				// 	axios.get("System/GetSystemConfigByKey")
+				// 	 .then(function(r){
+				// 		 console.log(r);
+				// 		 if(r.data.code=='1001'){
+				// 			_this.yqData=r.data.data;
+				// 			storage.setItem("yqBj",r.data.data.FaceInvitationImg);
+				// 		 }else{
+				// 			 $.toast("服务器繁忙", "text");
+				// 		 }
+				// 	 })
+				// 	 .catch(function(error){
+				// 			$.alert({
+				// 				title: '服务器错误',
+				// 				text: '"很抱歉，服务器出现错误，请稍后再试2~"',
+				// 				onOK: function () {
+				// 				//点击确认
+				// 				window.location.href="login.html";
+				// 				}
+				// 			 })					 
+				// 	 })
+				// },	
+				getData:function(a){	
+					var _this=this;		
+					$.showLoading("生成中");
+					if(storage.getItem("userInfo")){
+						_this.userRole=JSON.parse(storage.getItem("userInfo")).RoleType;
+						axios.get("/Users/GetUser",{
+							params:{
+								UserId: _this.userId
+							}
+						})
+						 .then(function(r){
+							 console.log(r);
+							 if(r.data.code=='1001'){
+								 _this.yqData=r.data.data;
+								if(r.data.data.NickName!=null&&r.data.data.NickName!=''){
+									_this.userName=r.data.data.NickName;
+								}else{
+									_this.userName=r.data.data.Mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2");
+								}
+								setTimeout(function(){
+									_this.show=true;
+								},1000)
+							 }else{
+								 $.toast(r.data.message, "text");
+								 setTimeout(function(){
+									 window.location.href="login.html";
+								 },500)
+							 }
+						 })
+						 
+					}
+				},				
+				
+				
+				/**
+				 * 根据window.devicePixelRatio获取像素比
+				 */
+				setHB(){
+					var _this=this;
+					
+				},
+				DPR() {
+					console.log(window.devicePixelRatio);
+				    if (window.devicePixelRatio && window.devicePixelRatio > 1) {
+				        return window.devicePixelRatio;
+				    }
+				    return 1;
+				},
+				// 截取浏览器地址id
+				getUrlParam:function(name){
+					let reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)');
+					let r = window.location.search.substr(1).match(reg);
+					if (r != null) return unescape(r[2]);
+					return null;			
+				},				
+			}
+		})		
+		
+	</script>
+	<script type="text/javascript">
+		$(function() {
+		var bodyHeight=$("body").height();
+		var codeW = $(".imgCode").width(), codeH = $(".imgCode").height();
+		var txW = $(".imgTx").width(), txH = $(".imgTx").height();
+			console.log(bodyHeight);
+			
+		/**
+		 * 根据window.devicePixelRatio获取像素比
+		 */
+		function DPR() {
+			console.log(window.devicePixelRatio);
+			if (window.devicePixelRatio && window.devicePixelRatio > 1) {
+				return window.devicePixelRatio;
+			}
+			return 1;
+		}
+		DPR()		
+			//生成画布
+			setTimeout(function(){
+				hecheng();
+			},1000)
+			function hecheng(){
+				draw(function(){
+					document.getElementById('qrcodeCanvas').innerHTML='<img src="'+base64[0]+'">';	
+					$.hideLoading();
+				})
+			}
+			var base64=[];
+			function draw(fn) {   
+				var imgArr = [$(".imgBox").attr("src"),$(".imgCode").attr("src"),$(".imgTx").attr("src")];
+				// var imgArr = ['img/fx-bj.jpg','img/mycode.jpg','img/tx.png'];
+				// var imgArr = ["https://hfugfile.centaline.com.cn/filedata/1/image/20190718/20190718174126_1459.jpg","http://hfugfile.centaline.com.cn//filedata/QRCode/18581357426946947663.jpg","http://hfugfile.centaline.com.cn/filedata/0/image/20190605/20190605142312_0885.jpg"];
+				var c = document.createElement('canvas'),
+				len = imgArr.length;
+				console.log(imgArr);
+				// const width = $(".qrcodeCanvas").width();
+				// const height = $(".qrcodeCanvas").height();
+				// const scaleBy = DPR();	
+				// c.width = width*scaleBy;
+				// c.height = height*scaleBy;
+				// c.style.width = `${width}px`;
+				// c.style.height = `${height}px`;
+				var width= document.body.clientWidth;
+
+				var height= document.body.clientHeight;
+
+				scaleBy = DPR();
+
+				c.width=width*scaleBy;
+
+				c.height=height*scaleBy;
+
+				c.style.width = width+'px';
+
+				c.style.height = height+'px';
+
+				console.log(c.width);
+				console.log(c.style.width);
+				var ctx = c.getContext('2d');
+				ctx.scale(scaleBy, scaleBy);
+				// ctx.rect(0,0,c.width,c.height);
+				// ctx.fillStyle='#ccc';
+				// ctx.fill();
+				function drawing(n) {
+					if (n<len) {
+						var img = new Image;
+						img.setAttribute('crossOrigin','anonymous') // 设置属性 crossOrigin  跨域必须要加
+						img.src = imgArr[n];
+						img.onload = function() {
+							if (n==1) {
+								ctx.rect((width-codeW)-40-5,(height-140)-5,codeW+10,codeH+10);
+								ctx.fillStyle='#fff';
+								ctx.fill();		
+								ctx.drawImage(img,(width-codeW)-40,(height-140),codeW,codeH);
+								drawing(n+1);
+							} else if (n==2) {
+								ctx.drawImage(img,40,height-120,txW,txH);
+								drawing(n+1);
+							} else {
+								ctx.drawImage(img,0,0,width,height);
+								drawing(n+1);
+							}
+						}
+						//绘制文字 
+						ctx.font=20 +"px Georgia";
+						ctx.fillStyle="#FF3B30";
+						var name=document.getElementById('name').value;
+						ctx.fillText(name,40+txH+10,height-100);
+						ctx.font=14 +"px Georgia";
+						ctx.fillStyle="#FF3B30";
+						ctx.fillText("邀请您加入好房U购",40+txH+10,height-70);
+					} else {
+						base64.push(c.toDataURL("image/jpeg",1));
+						fn();
+					}
+				}
+		        drawing(0);
+			}
+		})
+	</script>
+	</body>
+</html>

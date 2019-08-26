@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>榜单列表</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>		
+	</head>
+	<body>
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+			<div class="bd-all">
+				<div class="bh-tab fixed">
+					<ul>
+						<li :class="show=='projectscore'?'active':''" @click="getHot('projectscore')">评分板<span></span></li>
+						<li :class="show=='hot'?'active':''" @click="getHot('hot')">人气板<span></span></li>
+						<div class="clear"></div>
+					</ul>
+				</div>
+				<div class="hr60"></div>
+				<ol class="rank-all">
+					<li v-for="(item,index) in hotList">
+						<label>{{index+1}}</label>
+						<div class="rank-l">
+							<p class="l-name"><a :href="'house_info.html?id='+item.Id">{{item.ProjectName}}</a><span v-if="item.PropertyUsage!=null">{{item.PropertyUsage}}</span></p>
+							<p class="l-info"><span>{{item.RegionName}}</span>|<span>均价{{item.Aprice}}/平</span>|<span>{{item.ProjectScore}}分</span></p>
+						</div>
+						<div class="clear"></div>
+					</li>					
+				</ol>			
+			</div>
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/bd-all.js" ></script>	
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>	
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},500)					
+			</script>		
+	</body>
+</html>

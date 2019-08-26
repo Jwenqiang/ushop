@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>认证公司</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>		
+	</head>
+	<body style="background: #f5f5f7;">
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+            <div class="account-rzgs">
+                <div class="acr-tip">
+                    注：认证码和公司名称 必须关联正确
+                </div>
+                <div class="acr-msg">
+                    <label>公司名称：</label>
+                    <input type="text" placeholder="请输入公司名称" v-model="CompanyName" />
+                </div>
+                <div class="acr-msg">
+                    <label>认&nbsp;&nbsp;证&nbsp;&nbsp;码：</label>
+                    <input type="text" placeholder="请输入认证码" v-model="CompanyKey" />
+                </div>
+                <div class="acr-sm">
+                    <p>什么是认证码？</p>
+                    <p>认证码是指公司与好房U购平台达成合作后，好房U购平台给与的认证码，一个认证码只可使用一次。</p>
+                    <p>如您所在公司未与好房U购平台合作，请点击<a href="account-sqhz.html">申请合作&nbsp;&gt;&gt;</a></p>
+                </div>
+                <button class="acr-btn" @click="approve">立即认证</button>
+            </div>	
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/account-rzgs.js" ></script>		
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>	
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},500)					
+			</script>		
+	</body>
+</html>

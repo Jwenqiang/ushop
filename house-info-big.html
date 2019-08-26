@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>户型图详情</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>		
+			<style>
+				.showAll{display: block !important;}
+				.swiper-container1 .swiper-slide-active {
+					margin: 0 !important;
+				}	
+				.swiper-container1 .swiper-slide-active img{
+					transform: scale(1);
+				}	
+				.swiper-container1{position: static;}
+				.hib-m{position: relative;overflow: visible;}
+				.hib-m .swiper-pagination{bottom: -0.7rem;}
+				.viewerimg {
+					width: 100%;
+					height: auto;
+				}
+				.hib-m .swiper-container1{min-height: 5rem;}
+.hib-m{height: auto;min-height: 5rem;}				
+.hib-m img{height: auto;}				
+			</style>		
+	</head>
+	<body style="background: #484848;">
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+				<div class="hib-box">
+					<div class="hib-m">
+						<div class="swiper-container1">
+							<div class="swiper-wrapper">
+								<div class="swiper-slide" v-for="item in picType.EstatePhotosList">
+									<a href="javascript:;" class="bimg" @click.stop="bigBan(item.FilePath)"><img :src="item.FilePath" width="100%"/></a>
+								</div>
+							</div>
+							<div class="swiper-pagination" style="color: #ccc;"></div>
+						</div>						
+					</div>
+					<div class="hib-b hibig">
+						<h4>{{picType.CountF}}室<label v-if="picType.CountT>0">{{picType.CountT}}厅</label><label v-if="picType.CountW>0">{{picType.CountW}}卫</label>
+							<span v-if="picType.AvilStatus===1">在售</span>
+							<span v-else style="background: #ccc;">售完</span>
+						</h4>
+						<p>建筑面积：<span v-if="picType.Square!=null">{{Math.round(picType.Square)}}㎡</span><span v-if="picType.Square==null">未知</span></p>
+						<!-- <p>实用面积：<span v-if="picType.SquareUsed!=null">{{picType.SquareUsed}}㎡</span><span v-if="picType.SquareUsed==null">未知</span></p> -->
+						<p>户型朝向： <span v-if="picType.Facedesc!=null">{{picType.Facedesc}}</span><span v-if="picType.Facedesc==null">未知</span></p>
+						<p>
+							户型信息：
+							<span v-if="picType.Description!=null">{{picType.Description}}</span>
+							<span v-if="picType.Description==null">暂无</span>
+						</p>
+					</div>						
+				</div>
+				<div style="position: fixed;left: 0;top: 0;z-index: 997;width: 100%;height: 100%;display: none;" :class="showBig?'showAll':''">
+					<div style="background: #000;opacity: 0.5;width: 100%;height: 100%;" @click.stop="showBig=false"></div>
+					<img id="imgView" class="viewerimg" draggable="true" :src="bigImg" style="position: absolute;top: 0;bottom: 0;margin: auto;transition: all 0.5s linear;"/>
+				</div>
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/house-info-big.js" ></script>	
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>	
+	<script src="js/touch.js"></script>
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},500)					
+			</script>	
+		<script>
+var target = document.getElementById("imgView");
+    target.style.webkitTransition = 'all ease 0.05s';
+
+    touch.on('#imgView', 'touchstart', function (ev) {
+        ev.preventDefault();
+    });
+
+    var initialScale = -10;
+    var currentScale;
+    var dx, dy;
+    touch.on('#imgView', 'pinchend', function (ev) {
+        if ($("#imgView").hasClass('viewerimg')) {
+            $("#imgView").removeClass("viewerimg");
+        };
+        currentScale = ev.scale - 1;
+        currentScale = initialScale + currentScale;
+        currentScale = currentScale > 2 ? 2 : currentScale;
+        currentScale = currentScale < 1 ? 1 : currentScale;
+        if (currentScale == 1) {
+            $("#imgView").addClass("viewerimg");
+        };
+        this.style.webkitTransform = 'scale(' + currentScale + ')';
+        //console.log("当前缩放比例为:" + currentScale + ".");
+        
+    });
+
+    touch.on('#imgView', 'pinchend', function (ev) {
+        initialScale = currentScale;
+       
+    });
+
+    touch.on('#imgView', 'drag', function (ev) {
+        dx = dx || 0;
+        dy = dy || 0;
+        this.style.webkitTransform = 'scale(' + currentScale + ')';
+        //console.log("当前x值为:" + dx + ", 当前y值为:" + dy + ".");
+        var offx = dx + ev.x + "px";
+        var offy = dy + ev.y + "px";
+        this.style.webkitTransform = "translate3d(" + offx + "," + offy + ",0)";
+    });
+
+    touch.on('#imgView', 'dragend', function (ev) {
+        dx += ev.x;
+        dy += ev.y;
+    });			
+		</script>		
+	</body>
+</html>

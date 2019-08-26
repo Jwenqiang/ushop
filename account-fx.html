@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>好房U购邀请您加入</title>
+		<!--分享出来的页面-->
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>	
+			<style>
+				.bh-list p{text-align: left;}
+				.content-list section:last-child {
+					border-bottom: 1px solid #f5f5f7;
+				}
+				.weui-cell_access .weui-cell__ft:after{border-color: #FFf;right: 7px;}
+			</style>
+	</head>
+	<body>
+<div id="loadingDiv1">
+	<div id="loadImg"></div>
+</div>				
+		<div class="whole" style="padding-bottom: 0;">
+	<!--内容START-->	
+			<div class="afy" v-if="fxType==2">
+				<div class="afy-t" :style="'background: url('+bjImgy+') center/cover no-repeat;height:11rem;'" >
+					<!-- <h2>您已是注册用户啦~</h2> -->
+					<!-- <div style="text-align: center;line-height: 0.6rem;"><a href="index.html" style="color: #fff;">前往首页&gt;&gt;</a> </div> -->
+<!-- 					<div class="afy-gz">
+						<h5>活动规则</h5>
+						<p>1、每邀请一位好友成功注册，您即可获得500元奖励，好友成功购房激活奖励并发放奖励。</p>
+						<p>2、您邀请的好友注册成为平台用户并且成功购房后，您的奖励即被激活，平台工作人员会及时联系您线下发放现金奖励。</p>
+					</div>	 -->				
+				</div>
+					<div class="acyq-info acyq-hy" style="padding: 0;">
+						<div class="afy-info">
+							<ul class="outer fx-li">
+								<li :class="AllType==1?'on':''" @click="yq(1)">
+									<h3>{{invCount}}</h3>
+									<p>已邀请(人)</p>
+									<span></span>
+								</li>
+								<li @click="yq(2)" :class="AllType==2?'on':''">
+									<h3>{{ymoney}}</h3>
+									<p>已获得奖励(元)</p>
+									<span></span>
+								</li>
+								<li @click="yq(3)" :class="AllType==3?'on':''">
+									<h3>{{dmoney}}</h3>
+									<p>待激活奖励(元)</p>
+									<span></span>
+								</li>						
+							</ul>
+							<!--第一项-->
+							<div class="afy-info-msg afy-msg-ry" v-if="AllType==1">
+								<section class="outer" v-for="item in dataList">
+									<div class="aim-l">
+										<label><img :src="item.HeadImg" /></label>
+									</div>
+									<div class="aim-r">
+										<p class="outer"><label class="aim-name">{{item.NickName}}</label><span class="aim-time">{{item.AddTime}}</span></p>
+										<p class="outer"><label class="aim-phone">{{item.Mobile}}</label><span class="aim-zt" v-if="item.Count==0">注册成功</span><span class="aim-zt" v-if="item.Count>0">已成交</span></p>
+									</div>
+								</section>
+								<div class="yq-no" v-if="dataList==null||dataList==''"></div>
+								<a style="display: block;text-align: center;" v-if="9<dataList.length&&dataList.length!=dataTotal" @click="readMore">查看更多</a>
+							</div>
+							<!--第二项-->
+							<div class="afy-info-msg afy-msg-jl" v-if="AllType==2">
+								<section class="outer" v-for="item in dataList">
+									<div class="aim-l">
+										<label><img :src="item.HeadImg" /></label>
+									</div>
+									<div class="aim-m">
+										<p><label class="aim-name">{{item.NickName}}<small>{{item.Mobile}}</small></label></p>
+										<p><label class="aim-cj">{{item.Description}}</label></p>
+									</div>
+									<div class="aim-mr">
+										<strong>+{{item.RewardMoney}}元</strong>
+									</div>
+								</section>
+								<div class="yq-no1" v-if="dataList==null||dataList==''"></div>
+								<a style="display: block;text-align: center;" v-if="9<dataList.length&&dataList.length!=dataTotal" @click="readMore">查看更多</a>
+							</div>
+							<!--第三项-->
+							<div class="afy-info-msg afy-msg-djl" v-if="AllType==3">
+								<section class="outer" v-for="item in dataList">
+									<div class="aim-l">
+										<label><img :src="item.HeadImg" /></label>
+									</div>
+									<div class="aim-m">
+										<p><label class="aim-name">{{item.NickName}}<small>{{item.Mobile}}</small></label></p>
+										<p><label class="aim-cj">当前状态：待激活</label></p>
+									</div>
+									<div class="aim-mr">
+										<strong>+{{item.RewardMoney}}元</strong>
+									</div>
+								</section>
+								<div class="yq-no2" v-if="dataList==null||dataList==''"></div>
+								<a style="display: block;text-align: center;" v-if="9<dataList.length&&dataList.length!=dataTotal" @click="readMore">查看更多</a>
+							</div>					
+						</div>						
+					</div>	
+					<a class="gohome" href="index.html?x=1&from=singlemessage">首页</a>		
+			</div>
+			
+			<div class="af" style="padding: 0;height: 11rem;" v-else>
+				<div :style="'background: url('+bjImg+') center/cover no-repeat;height:100%;padding:0.4rem'"   >
+					<div class="af-t">
+						<p v-if="fimg==''"><img src="img/tx.png" style="border-radius: 50%;"/></p>
+						<p v-else><img :src="fimg" style="border-radius: 50%;"/></p>
+						<p>你的好友<span>{{fname}}</span>邀请您加入好房U购</p>
+						<h4>享高额购房优惠和万元购房补贴</h4>
+					</div>
+					<div class="fx-form">
+						<p><input type="number" placeholder="请输入您的手机号" id="phone-num" v-model="userInfo.username"/><button onclick="getCode();" @click="sendCode" id="r-code">获取验证码</button></p>
+						<p><input type="number" placeholder="请输入您的验证码" v-model="userInfo.uCode"/></p>
+						<p><input type="number" placeholder="请输入您的密码（6-18位，数字、字母均可）" id="password" v-model="userInfo.password"/></p>
+						<button class="fx-resiter" @click="goReg"></button>
+					</div>
+				</div>
+				<div class="hr10"></div>
+		<div class="bh-list" v-if="productList.length>0">
+			<div class="weui-cells rank-title" style="margin-bottom: 0.2rem;">
+			  <a class="weui-cell weui-cell_access" href="house-list.html" style="padding-right: 0.4rem;">
+			    <div class="weui-cell__bd">
+			      <p class="i-title" style="font-size: 0.36rem;color: #000;font-weight: bold;">优惠好盘</p>
+			    </div>
+			    <div class="weui-cell__ft" style="color: #FFf;background: #007AFF;padding: 0.1rem 0.3rem 0.1rem 0.2rem;border-radius: 20px;font-size: 0.24rem;">
+			    	更多好房
+			    </div>
+			  </a>
+			</div>		
+			
+			<div class="content-msg" style="margin-right: -0.4rem;">
+				<div class="content-list" id="list">
+					<section v-for="item in productList">
+						<a :href="'house_info.html?id='+item.Id">
+							<dl>
+								<dt>
+									<label v-if="item.Coupon.Id>0"><span v-if="item.Coupon.Type==2">优惠</span>{{item.Coupon.Discount}}<span v-if="item.Coupon.Type==1">折</span><span v-if="item.Coupon.Type==2">元</span></label>
+									<img :src="item.MainImg" width="100%"/>
+									<div class="s-bg"></div>
+									<p>{{item.RegionName}}</p>
+								</dt>
+								<dd class="section-msg">
+									<p><strong>{{item.ProjectName}}</strong></p>
+									<p class="list-info-m"><span>{{apply(item.PropertyUsage)}}</span><small>|</small><span>{{item.MinMeasure}}-{{item.MaxMeasure}}㎡</span></p>
+									<p class="list-info-p" v-if="item.Aprice==0">均价<strong>待定</strong><label>{{item.ProjectScore}}</label>评分</p>
+									<p class="list-info-p" v-else>均价<strong>{{item.Aprice}}</strong>元/平<label>{{item.ProjectScore}}</label>评分</p>
+								</dd>
+								<div class="clear"></div>
+							</dl>
+						</a>
+					</section>				
+				</div>		
+			</div>	
+		</div>				
+				
+				<div class="fx-ewm" style="margin: 0.4rem 0;"><img src="img/fx-ewm.png" /><p>扫一扫关注好房U购</p><span style="display: block;margin-top: 0.2rem;font-weight: bold;color: #999;font-size: 0.36rem;">好房U购  不优不购</span> </div>
+				<div class="show-af" v-show="showF"  style="position: fixed;top: 0;left: 0;width: 100%;height: 100%;z-index: 8;">
+					<div class="bj"></div>
+					<div class="af-suc">
+						<img src="img/fx-tip.png"/>
+						<label class="fx-close" @click="goIndex"></label>
+					</div>
+				</div>	
+								
+			</div>	
+						
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>	
+	<script type="text/javascript" src="js/ajax/account-fx.js" ></script>	
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<!-- <script type="text/javascript" src="js/wx.js"></script>	 -->
+			<script>
+	var u=window.location.href,
+		tp="https://hfugweb.centaline.com.cn/img/share/wx_share_logo.jpg",
+		ms="好友送你一张好房U购专属邀请卡，加入即可享受购房优惠折上折~",
+		bt="我正在使用好房U购，低价买到了心仪好房~";				
+		// setTimeout(function(){
+		// 	wxShared();
+		// },500)	
+		shareAll();
+		function shareAll(){
+			axios({
+				method:"post",
+				url:"/Wx/GetJsSdkUiPackage",
+				data:JSON.stringify({Url:u})
+			})
+			.then(function(e){
+				console.log(e);
+				if(e.data.code==1001){
+				  wx.config({
+					  debug: false,
+					  appId: e.data.data.AppId,
+					  timestamp: e.data.data.Timestamp,
+					  nonceStr: e.data.data.NonceStr,
+					  signature: e.data.data.Signature,
+					  jsApiList: ["onMenuShareTimeline", "onMenuShareAppMessage", "onMenuShareQQ", "onMenuShareWeibo","onMenuShareQZone",
+							"chooseImage", "getNetworkType", "hideOptionMenu", "showOptionMenu", "hideMenuItems",
+							"showMenuItems", "hideAllNonBaseMenuItem", "showAllNonBaseMenuItem", "closeWindow"
+						]
+				  });			
+				}
+			})	
+		}	
+		wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
+			// document.querySelector('#myShare').onclick = function () {	
+				console.log(bt);
+				console.log(u);
+			// 旧版
+				wx.onMenuShareAppMessage({
+					title: bt, // 分享标题
+					desc: ms, // 分享描述
+					link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+					imgUrl: tp, // 分享图标
+					type: '', // 分享类型,music、video或link，不填默认为link
+					dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空			
+					success: function (res) {
+					}
+				})
+				wx.onMenuShareTimeline({ 
+					title: bt, // 分享标题
+					desc: ms, // 分享描述
+					link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+					imgUrl: tp, // 分享图标
+					success: function () {
+					  // 设置成功
+					  // console.log(33);
+					}
+				})			
+			// }
+		})							
+			</script>			
+	<script>
+	$(function(){
+			$(".odiv").click(function(){
+				$(".odiv").fadeOut();
+			})		
+		//手机号为11位数时颜色改变	
+		$('#phone-num').bind('input propertychange',function () {
+			if($(this).val().length==11){
+				$(this).siblings('button').css("color",'#5ba6ff');
+			}else{
+				$(this).siblings('button').css("color",'#c0c4c9');
+			}
+		})	
+		$(".fx-li li").click(function(){
+			$(this).addClass("on").siblings().removeClass('on');
+			var index=$(this).index();
+			$(".afy-info-msg").eq(index).show().siblings(".afy-info-msg").hide();
+		})
+	})
+	</script>
+<script>
+    var i;  
+    function getCode(){ 
+			if(!(/^1[345678]\d{9}$/.test($("#phone-num").val()))){
+				return;
+			}else{
+				if(document.getElementById('phone-num').value!=""&&document.getElementById('phone-num').value.length==11){
+						$("#r-code").attr({"disabled":"disabled"});  
+						i = self.setInterval("countdown()", 1000);  
+				 }else{
+						$.toast("号码格式错误", "forbidden", function() {
+					//do something
+					document.getElementById('phone-num').focus();
+						});
+				 }
+			 }
+    }    
+    var int = 60  
+    function countdown() {  
+    	 document.getElementById("phone-num").setAttribute("disabled","disabled");
+        document.getElementById("r-code").innerHTML = int + "秒后重新发送";  
+        int--;  
+        if(int<0){  
+            i=window.clearInterval(i)//结束  
+            int = 60; //重新赋值  
+            $("#r-code").removeAttr("disabled").html("重新获取校验码");//将按钮可用  
+        }  
+    } 	
+</script>	
+	</body>
+</html>

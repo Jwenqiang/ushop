@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+<meta name="format-detection" content="telephone=no" /> 
+<!--uc强制全屏-->
+<meta name="full-screen" content="yes">
+<!--QQ强制全屏-->
+<meta name="x5-fullscreen" content="true">	
+<title>楼房详情</title>
+<link rel="stylesheet" href="css/video-js.css" />
+<script src="js/video.min.js"></script>
+<link rel="stylesheet" href="layui/css/layui.css" />
+<link rel="stylesheet" href="css/font-awesome.min.css" />
+<link rel="stylesheet" href="css/weui.min.css">
+<link rel="stylesheet" href="css/jquery-weui.min.css">		
+<link rel="stylesheet" href="css/style.css" />
+<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=eTmIqPdOws4kscIGLiyhSG650wwtbrUw"></script>
+<!--这里以iphone6尺寸开发，自动适配-->
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+<style>
+.swiper-pagination{text-align: right;padding-right: 0.2rem;color: #fff;font-size: 0.20rem;background: url(img/msg.png) 86% center no-repeat;background-size: 14px;padding-top: 0.06rem;}	
+/*//视频暂停播放*/
+.vjs-paused .vjs-big-play-button {
+	display: block !important;
+}
+.wid{width: 100% !important;border-left: 0;}
+.showAll{display: block !important;}
+.hi-roll{display: none;}
+.hi-art label{color: #333;}
+.hi-art span{float: right;font-size: 0.28rem;font-weight: 400;}
+.hi-art span i{margin-left: 0.2rem;font-size: 0.32rem;}
+.hasT{overflow: hidden;}
+</style>
+
+</head>
+<body>
+<div id="loadingDiv1"><div id="loadImg"></div></div>			
+<div class="whole" style="padding-bottom: 1.4rem;" :class="callPhone?'hasT':''">
+<!--内容START-->	
+		<div class="b-header info-header">
+			<div class="img-bj">
+				<div class="swiper-container0" style="height: 4.6rem;">
+				  <div class="swiper-wrapper">
+					<div class="swiper-slide" v-for="item in imgBan"><a :href="'house-info-ban.html?id='+item.EstateID+'&hid='+product.Id"><img :src="item.FilePath" width="100%" v-if="item.FilePath"/></a></div>
+				  </div>
+				  <div class="swiper-pagination"></div>
+				</div>					
+			</div>
+
+		</div>
+		<div class="h-info">
+			<div class="info-l">
+				<h4>{{product.ProjectName}}</h4>
+				<p class="hi-price" v-if="product.Aprice==0"><label>均价<span>待定</span></label><label><span>{{product.ProjectScore}}</span>评分</label></p>
+				<p class="hi-price" v-else><label>均价<span>{{product.Aprice}}</span>元/㎡</label><label><span>{{product.ProjectScore}}</span>评分</label></p>
+			</div>
+			<div class="info-r">
+				<p class="outer hi-tag">
+					<!-- <span class="on-sale">{{mainInfo.Status}}</span> -->
+					<span class="on-house">{{apply(product.PropertyUsage)}}</span>
+				</p>
+				<p class="hi-kc">总户数{{product.SurplusNumber}}套</p>
+			</div>
+			<div class="clear"></div>
+			<div class="info-b">
+				<p class="info-kp"><label>开盘：</label><span v-if="mainInfo.DateOpen!=null">{{mainInfo.DateOpenS}}</span><span v-if="mainInfo.DateOpen==null"> 待定 </span> </p>
+				<p class="info-wz"><label>位置：</label><span>{{mainInfo.Address}}</span> </p>
+				<a :href="'zx-info.html?id='+houseJd.Id" class="info-jd" v-if="houseJd!=null&&houseJd.Id>0">{{houseJd.Title}}</a>
+			</div>
+		</div>
+		<div class="hr10"></div>
+		<div class="hi-roll" v-if="roll.Id!=0" v-show="roll.Id!=0">
+			<div class="hi-roll-l">
+				<a :href="'house-info-roll.html?CouponId='+roll.Id+'&ProjectId='+infoId+'&hid='+product.Id">
+					<h4><label>高额购房折扣</label><span>{{roll.Discount}}<span v-if="roll.Type==1">折</span>购房补贴</span></h4>
+					<p><label>会员专属优惠</label><label>高额购房折扣</label></p>
+				</a>
+			</div>
+		</div>		
+		<div class="hr10"></div>
+		<div class="hi-house">
+			<h3><p class="hi-house-l">楼盘户型<span>（{{houseType.length}}）</span></p><a :href="'house-info-hxlist.html?id='+product.Id" class="hi-house-r" v-if="houseType.length!=0">更多<i class="fa fa-angle-right"></i></a><div class="clear"></div> </h3>
+			<div class="swiper-container hi-all">  
+			    <div class="swiper-wrapper"> 
+                    <div class="swiper-slide" v-for="item in houseType">
+                        <p>
+                            <a :href="'house-info-big.html?id='+item.RoomTypeID+'&hid='+product.Id">
+                                <img :src="item.EstatePhotosList[0].FilePath" width="100%" height="100%" style="border: 1px solid #f5f5f7;" v-if="item.EstatePhotosList.length>0"/>
+                                <span class="hi-name" v-if="item.AvilStatus===1">在售</span>
+								<span class="hi-name" v-else style="background: #ccc;">售完</span>
+                            </a>
+                        </p>
+                        <p class="hi-info"><strong class="hi-size">{{item.CountF}}室<span v-if="item.CountT>0">{{item.CountT}}厅</span></strong><strong class="hi-num">{{item.Square}}㎡</strong></p>
+                        <p class="hi-pay" v-if="item.Total==0"><label>参考总价：</label><span>待定</span></p>
+                        <p class="hi-pay" v-else><label>参考总价：</label><span>{{Math.round(item.Total/10000)}}万</span></p>
+                    </div>		    	
+				</div>    	
+			</div>    	
+		</div>		
+		<div class="hr10" v-if="Xpoint!=''"></div>
+		<div class="hi-expert" v-if="Xpoint!=''">
+			<h3><p class="hi-expert-l">周边配套</p><a :href="'maps.html?x='+Xpoint+'&y='+Ypoint+'&hid='+product.Id" class="hi-expert-r">更多<i class="fa fa-angle-right"></i></a><div class="clear"></div></h3>
+			<p class="map-addr">{{product.RegionName}}{{mainInfo.Address}}</p>
+			<div class="expert-talk info-map" id="container">
+			</div>
+			<p class="map-tip">说明：数据来自百度地图，统计范围为周围2km数据</p>
+		</div>
+		<div class="hr10"></div>
+		<div class="hi-addr">
+			<p class="hi-addr-top hi-art"><a :href="'house_info_hmsg.html?id='+infoId"><label>楼盘资料</label><span>详情<i class="fa fa-angle-right"></i></span></a></p>
+			<p class="hi-addr-msg">开发商：<strong v-if="mainInfo.CompanyDe!=''">{{mainInfo.CompanyDev}}</strong><span v-if="mainInfo.CompanyDe==''">未知</span> </p>
+			<p class="hi-addr-msg">开盘时间：<span v-if="mainInfo.DateOpen==null">待定</span><span v-else><strong>{{mainInfo.DateOpenS}}</strong></span></p>
+			<p class="hi-addr-msg">交房时间：<span v-if="mainInfo.DateCanLive==null">待定</span><span v-else><strong>{{mainInfo.DateCanLiveS}}</strong></span></p>			
+			<p class="hi-addr-msg">产权年限：<strong>{{mainInfo.UseYears}}</strong>年</p>
+		</div>
+		<div class="hr10"></div>
+		<div class="hi-thouse" v-if="productList!=''&&productList!=null">
+			<h3>同价位的新盘</h3>
+			<div class="content-list" id="list">
+				<section v-for="item in productList">
+					<a :href="'house_info.html?id='+item.Id">
+						<dl>
+							<dt>
+								<label v-if="item.Coupon.Id>0"><span v-if="item.Coupon.Type==2">优惠</span>{{item.Coupon.Discount}}<span v-if="item.Coupon.Type==1">折</span><span v-if="item.Coupon.Type==2">元</span></label>
+								<img :src="item.MainImg" width="100%"/>
+								<div class="s-bg"></div>
+								<p>{{item.RegionName}}</p>
+							</dt>
+							<dd class="section-msg">
+								<p><strong>{{item.ProjectName}}</strong></p>
+								<p class="list-info-m"><span>{{apply(item.PropertyUsage)}}</span><small>|</small><span>{{item.MinMeasure}}-{{item.MaxMeasure}}㎡</span></p>
+								<p class="list-info-p" v-if="item.Aprice==0">均价<strong>待定</strong><label>{{item.ProjectScore}}</label>评分</p>
+								<p class="list-info-p" v-else>均价<strong>{{item.Aprice}}</strong>元/平<label>{{item.ProjectScore}}</label>评分</p>
+							</dd>
+							<div class="clear"></div>
+						</dl>
+					</a>
+				</section>	
+				<a href="house-list.html" style="line-height: 1.4rem;display: block;width: 100%;text-align: center;color: #c0c4c9;">查看更多楼盘</a>
+			</div>			
+		</div>
+		<!--底部固定栏-->
+		<div class="hi-fixdown" v-if="services!=null&&services!=''">
+<!-- 			<ul>
+				<li v-if="roll.Id!=0">
+					<a :href="'house-info-roll.html?CouponId='+roll.Id+'&ProjectId='+infoId" class="hf-roll">领取优惠</a>
+				</li>
+				<li :class="{'wid':roll.Id==0}" @click.stop="showZx=true">
+					<a href="javascript:;" id="zx">咨询顾问</a>
+				</li>							
+			</ul> -->
+			<img src="img/tx.png" v-if="services[0].HeadImg==''||services[0].HeadImg==null" />
+			  <image :src='services[0].HeadImg' wx:else></image>
+			  <div class='fbName'>
+				<p>{{services[0].FullName}}</p>
+				<p>咨询顾问</p>
+			  </div>
+			  <div class='fbtn'>
+				<button v-if="services[0].TelePhone==''||services[0].TelePhone==null"><a :href="'tel:'+services[0].Mobile">免费致电</a></button>
+				<button v-else @click.stop="callP(services[0].TelePhone)">免费致电</button> 
+				<button><a :href="'house-yy.html?id='+infoId+'&SourceUserId='+SourceUserId">预约看房</a></button>
+			  </div>
+		</div>
+	<!--内容END-->	
+<!-- 		<div class="show-div" :class="showZx?'showAll':''">
+			<div class="bg" @click.stop="showZx=false"></div>
+			<div class="hi-service">
+				<h3>楼盘顾问<span class="his-close" @click.stop="showZx=false"></span></h3>
+				<p><small>选择顾问全面了解楼盘详情</small></p>
+                <div class="service-info" v-for="item in services" v-if="services!=null">
+                    <img src="img/tx.png" v-if="item.HeadImg==''" />
+                    <img :src="item.HeadImg" v-else />
+                    <div class="service-name">
+                        <p>{{item.FullName}}（高级咨询顾问）</p>
+                    </div>
+                    <div class="service-phone" v-if="item.TelePhone==''">
+                        <a :href="'tel:'+item.Mobile"></a>
+                    </div>
+                    <div class="service-phone" v-else @click.stop="callP(item.TelePhone)">
+                        <a></a>
+                    </div>
+                    <div class="clear"></div>
+                </div>		
+			</div>				
+		</div>	 -->
+<!-- 弹窗 -->			
+		<div class="show-af" v-if="callPhone" style="position: fixed;top: 0;left: 0;width: 100%;height: 100%;z-index: 9990;">
+			<div class="bj" style="z-index: 9991;position: fixed;"></div>
+			<div class="af-suc" style="z-index: 9992;background: #fff;width: 84%;left: 8%;height: 5rem;top: 2.8rem;border-radius: 4px;box-shadow: 0 0 2px #ccc;padding: 0.8rem 0.6rem;color: #000;">
+				<div class="phone-msg" style="text-align: left;">
+					<p style="margin: 0.2rem 0;font-size: 0.4rem;">{{phoneF}}-<span style="color: #549fdd;">{{phoneL}}</span></p>
+					<p style="font-size: 0.30rem;">电话接通后，请按照语音提示输入{{phoneL.length}}位数分机号,以便转接专属顾问。</p>
+					<a :href="'tel:'+phoneMsg" style="font-size: 0.32rem; display: block;margin: 0.6rem 0 0;text-align: center;width: 100%;height: 0.9rem;line-height: 0.9rem;background: #549fdd;color: #fff;border-radius: 6px;">拨打电话</a>
+				</div>
+				<label @click="callPhone=false" style="display:block;width: 0.8rem;height: 0.8rem; position: absolute;right: 0.1rem;top: 0.1rem;background: url(img/close.png) center no-repeat;background-size: 0.52rem;"></label>
+			</div>
+		</div>		
+		<a class="gohome" href="index.html?x=1&from=singlemessage" v-if="isShare">首页</a>
+</div>
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-weui.min.js"></script>	
+<script src="js/swiper.min.js"></script>
+<script src="js/city-picker.min.js"></script>
+<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+<script type="text/javascript" src="js/main.js" ></script>
+<script type="text/javascript" src="js/ajax/house_info.js" ></script>
+<!-- <script type="text/javascript" src="js/wx.js"></script> -->
+<script>
+// 		setTimeout(function(){
+// 			wxShared();
+// 		},100)	
+// function wxShared(){
+// 	if(Sstorage.getItem("urlf")==String(window.location.href)){
+// 		tp=Sstorage.getItem("tp");
+// 		ms=Sstorage.getItem("ms");
+// 		bt=Sstorage.getItem("bt");
+// 		u=window.location.href;
+// 	}
+// 	
+// 	shareAll();
+// 	function shareAll(){	
+// 		axios({
+// 			method:"post",
+// 			url:"/Wx/GetJsSdkUiPackage",
+// 			data:JSON.stringify({Url:u})
+// 		})
+// 		.then(function(e){
+// 			console.log(e);
+// 			if(e.data.code==1001){
+// 			  wx.config({
+// 				  debug: false,
+// 				  appId: e.data.data.AppId,
+// 				  timestamp: e.data.data.Timestamp,
+// 				  nonceStr: e.data.data.NonceStr,
+// 				  signature: e.data.data.Signature,
+// 				  jsApiList: ["updateAppMessageShareData","updateTimelineShareData","onMenuShareTimeline", "onMenuShareAppMessage", "onMenuShareQQ", "onMenuShareWeibo","onMenuShareQZone",
+// 						"chooseImage", "getNetworkType", "hideOptionMenu", "showOptionMenu", "hideMenuItems",
+// 						"showMenuItems", "hideAllNonBaseMenuItem", "showAllNonBaseMenuItem", "closeWindow"
+// 					]
+// 			  });			
+// 			}
+// 		})	
+// 		.catch(function(n){
+// 			
+// 		})
+// 	}	
+// 	
+// 	wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
+// 	// 旧版
+// 		wx.onMenuShareTimeline({ 
+// 			title: bt, // 分享标题
+// 			desc: ms, // 分享描述
+// 			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+// 			imgUrl: tp, // 分享图标
+// 			success: function () {
+// 			  // 设置成功
+// 			  console.log(33);
+// 			}
+// 		})
+// 		wx.onMenuShareAppMessage({ 
+// 			title: bt, // 分享标题
+// 			desc: ms, // 分享描述
+// 			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+// 			imgUrl: tp, // 分享图标
+// 			success: function () {
+// 			  // 设置成功
+// 			}
+// 		})		
+// 		wx.onMenuShareQQ({ 
+// 			title: bt, // 分享标题
+// 			desc: ms, // 分享描述
+// 			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+// 			imgUrl: tp, // 分享图标
+// 			success: function () {
+// 			  // 设置成功
+// 			}
+// 		})	
+// 		wx.onMenuShareWeibo({ 
+// 			title: bt, // 分享标题
+// 			desc: ms, // 分享描述
+// 			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+// 			imgUrl: tp, // 分享图标
+// 			success: function () {
+// 			  // 设置成功
+// 			}
+// 		})
+// 		wx.onMenuShareQZone({ 
+// 			title: bt, // 分享标题
+// 			desc: ms, // 分享描述
+// 			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+// 			imgUrl: tp, // 分享图标
+// 			success: function () {
+// 			  // 设置成功
+// 			}
+// 		})
+// 	});			
+// }		
+</script>
+</body>
+</html>

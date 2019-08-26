@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0,viewport-fit:contain" />
+		<meta name="format-detection" content="telephone=no" />
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<title>好房U购</title>
+		<link rel="shortcut icon" href="https://hfugweb.centaline.com.cn/img/share/wx_share_logo.jpg" /> 
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/swiper-4.3.3.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>
+		<!--这里以iphone6尺寸开发，自动适配-->
+		<style>
+			.showAll{display: block !important;}
+			.hasT{overflow: hidden;}
+			.show-af .af-suc{top: -16rem;transition: all 1s ease;}
+			/* .yShow{top: 1.2rem !important;transition: all 0.5s ease;} */
+		</style>
+	</head>
+
+	<body>
+		<div id="loadingDiv1">
+			<div id="loadImg"></div>
+		</div>
+		<div class="whole" :class="isShare?'hasT':''">
+<!-- 分享弹窗 -->			
+			<div class="show-af" v-if="isShare" style="position: fixed;top: 0;left: 0;width: 100%;height: 100%;z-index: 9990;display: none;">
+				<div class="bj" style="z-index: 9991;position: fixed;"></div>
+				<div class="af-suc" style="z-index: 9992;">
+					<img src="img/share-img.png"/>
+					<label class="fx-close" @click="isShare=false"></label>
+				</div>
+			</div>				
+			<!-- 搜索 -->
+			<div class="search-box" :class="showSearch?'left0':'left75'">
+				<div class="search-header">
+					<a class="search-s" href="###">
+						<label class="search"><i class="fa fa-search"></i></label>
+						<input type="text" placeholder="请输入您想要搜索的楼盘" id="s-search" v-model="searchMsg" @change="goList"/>	
+					</a> 
+					<a class="h-user c-back" href="javascript:;" @click.stop="noSearch">取消</a>	
+					<div class="clear"></div>
+				</div>	
+			</div>				
+			<!--内容START-->
+			<div class="whole-box" style="padding-bottom: 1rem;">
+				<div class="content-t">
+					<div class="index-top">
+						<!--<a href="city-all.html" class="index-city">
+					深圳<i class="fa fa-sort-down"></i>
+				</a>-->
+						<a class="index-search" @click.stop="goSearch">
+							<span></span>
+							<img src="img/i-search.png" />
+						</a>
+					</div>
+					<div class="swiper-container">
+						<div class="swiper-wrapper">
+							<div class="swiper-slide"  v-if="imgArr.length>0" v-for="item in imgArr">
+								<a :href="item.LinkUrl"><img :src="item.ImageUrl"></a>
+							</div>
+						</div>
+						<div class="swiper-pagination"></div>
+					</div>
+				</div>
+				<div class="content-msg">
+					<div class="index-t">
+						<p class="index-tp"><span>深圳市场行情</span></p>
+						<div class="i-city-info" v-if="szhq!=null">
+							<p class="inde-price"><label class="fl"><strong>{{szhq.Price}}</strong>元/平</label>
+								<label class="fr index-num" v-if="szhq.RangeType==1"><strong>{{szhq.Range}}</strong></label>
+								<label class="fr index-num" v-if="szhq.RangeType==2"><i class="fa fa-long-arrow-up"></i><strong>{{szhq.Range}}</strong>%</label>
+								<label class="fr index-num" v-if="szhq.RangeType==3"><i class="fa fa-long-arrow-down"></i><strong>{{szhq.Range}}</strong>%</label>
+							</p>
+							<p class="index-pn"><label class="fl">{{szhq.Month}}月参考均价</label><label class="fr">环比上月</label></p>
+						</div>
+					</div>
+
+					<section id="Activity">
+						<div class="weui-cells">
+							<a class="weui-cell weui-cell_access">
+								<div class="weui-cell__bd">
+									<p class="i-title">最新活动</p>
+								</div>
+							</a>
+						</div>
+						<div class="index-activity">
+							<div class="swiper-container1">
+								<div class="swiper-wrapper">
+									<div class="swiper-slide" v-if="activeArr.length>0" v-for="item in activeArr">
+										<div class="title">
+											<a :href="'activity.html?id='+item.Id+'&SourceUserId='+SourceUserId+'&r='+Math.random()"><img :src="item.MainImg" width="100%" /></a>
+											<div class="index-status">
+												<label>{{item.CategoryName}}</label>
+												<label v-if="item.SignActivityState==2">报名中</label>
+												<label v-if="item.SignActivityState==3">报名结束</label>
+												<label v-if="item.SignActivityState==1">未开始</label>	
+											</div>
+										</div>
+										<!-- 看房团内容 -->
+										<div class="container1-msg ia-tip">
+											<article>{{item.ActivityTitle}}</article>
+											<p>{{item.ActivityTitleSecond}}</p>
+										</div>										
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</section>
+					<section id="NewProject">
+						<div class="weui-cells">
+							<a class="weui-cell weui-cell_access" href="house-list.html">
+								<div class="weui-cell__bd">
+									<p class="i-title">新盘入市</p>
+								</div>
+								<div class="weui-cell__ft">
+									更多
+								</div>
+							</a>
+						</div>
+						<div class="index-activity">
+							<div class="swiper-container2">
+								<div class="swiper-wrapper">
+									<div class="swiper-slide" v-for="item in house_new">
+										<div class="title">
+											<a :href="'house_info.html?id='+item.ProjectId+'&SourceUserId='+SourceUserId"><img :src="item.MainImg" /><span class="ihot-score">{{item.ProjectScore}}分</span></a>
+											<div class="inew-msg">
+												<h3>{{item.RecommendName}}</h3>
+												<p v-if="item.Aprice==0">均价<span>待定</span></p>
+												<p v-else>均价<span>{{item.Aprice}}</span>元/㎡</p>
+												<p v-if="item.PreSaleDate!=null&&item.PreSaleDate!=''">{{item.PreSaleDate}}</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</section>					
+					<section id="HotProject">
+						<div class="weui-cells">
+							<a class="weui-cell weui-cell_access" href="house-list.html">
+								<div class="weui-cell__bd">
+									<p class="i-title">热销好盘</p>
+								</div>
+								<div class="weui-cell__ft">
+									更多
+								</div>
+							</a>
+						</div>
+						<div class="index-activity">
+							<div class="swiper-container2">
+								<div class="swiper-wrapper">
+									<div class="swiper-slide" v-for="item in house_hot">
+										<div class="title">
+											<a :href="'house_info.html?id='+item.ProjectId+'&SourceUserId='+SourceUserId"><img :src="item.MainImg" /><span class="bj"></span><span class="ihot-score">{{item.ProjectScore}}分</span>
+												<div class="ihot-msg">
+													<p>{{item.RecommendName}}</p>
+													<p>{{item.RecommendSecondName}}</p>
+												</div>
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</section>
+					<!--<section>
+				<div class="weui-cells">
+				  <a class="weui-cell weui-cell_access" href="house_all.html">
+				    <div class="weui-cell__bd">
+				      <p class="i-title">楼盘画册</p>
+				    </div>
+				    <div class="weui-cell__ft">
+				    	更多
+				    </div>
+				  </a>
+				</div>
+				<div class="index-activity">
+				  <div class="swiper-container2">  
+				    <div class="swiper-wrapper">  
+				      <div class="swiper-slide">  
+				        <div class="title"><a href="buy_house.html"><img src="img/hot3.jpg"/><span class="bj"></span><div class="ihot-msg"><p>龙岗远洋新天地二期</p><p>送一年装修|享一年VIP专属服务</p></div></a></div> 
+				      </div>  
+				      <div class="swiper-slide">  
+				        <div class="title"><a href="buy_house.html"><img src="img/hot2.jpg"/><span class="bj"></span><div class="ihot-msg"><p>龙岗远洋新天地二期</p><p>送一年装修|享一年VIP专属服务</p></div></a></div>  
+				      </div>  
+				      <div class="swiper-slide">  
+				        <div class="title"><a href="buy_house.html"><img src="img/hot1.jpg"/><span class="bj"></span><div class="ihot-msg"><p>龙岗远洋新天地二期</p><p>送一年装修|享一年VIP专属服务</p></div></a></div>  
+				      </div>  
+				    </div>  
+				  </div> 				
+				 </div> 				
+			</section>	-->
+					<section id="New">
+						<div class="index-activity index-news">
+							<div class="news-tab">
+								<ul>
+									<li class="active" style="text-align: left;" @click="zx(1)">
+										<p>楼市热点</p><span style="margin-left: 0.26rem;"></span>
+									</li>
+									<li @click="zx(2)">
+										<p>楼盘解读</p><span></span>
+									</li>
+									<li @click="zx(3)" style="text-align: right;">
+										<p>百科问答</p><span style="margin-right: 0.24rem;"></span>
+									</li>
+									<div class="clear"></div>
+								</ul>
+							</div>
+							<div class="news-msg" v-if="house_zx==null||house_zx==''">
+								<div class="no-zx">
+									<p>敬请期待~</p>
+								</div>
+							</div>							
+							<div class="news-msg" v-else>
+								<a class="news-all"  v-for="item in house_zx" :href="'zx-info.html?id='+item.Id+'&SourceUserId='+SourceUserId">
+									<div class="news-all-l">
+										<h5>{{item.Title}}</h5>
+										<p>{{item.UpdateTime}}</p>
+									</div>
+									<div class="news-all-r">
+										<img :src="item.CoverUrl" width="100%" />
+									</div>
+									<div class="clear"></div>
+								</a>
+								<a class="news-more" href="zx-all.html">查看更多</a>
+							</div>
+<!-- 							<div class="weui-loadmore" v-if="house_zx.length>0">
+								<i class="weui-loading"></i>
+								<span class="weui-loadmore__tips">正在加载</span>
+							</div> -->
+						</div>
+					</section>
+				</div>
+			</div>
+			<!-- <a id="scrollUp" href="javascript:void(0);"><i class="fa fa-angle-up"></i></a> -->
+			<!--内容END-->
+			<!--公共底部-->
+			<footer>
+				<div class="weui-tabbar" id="footer">
+					<a href="index.html" class="weui-tabbar__item weui-bar__item--on">
+						<div class="weui-tabbar__icon">
+							<img src="img/fx1.png" alt="">
+						</div>
+						<p class="weui-tabbar__label">发现</p>
+					</a>
+					<a href="buy_house.html" class="weui-tabbar__item">
+						<div class="weui-tabbar__icon">
+							<img src="img/fy.png" alt="">
+						</div>
+						<p class="weui-tabbar__label">房源</p>
+					</a>
+					<a href="my-client.html" class="weui-tabbar__item" v-if="userRole=='2'||userRole=='3'||userRole=='4'">
+						<div class="weui-tabbar__icon">
+							<img src="img/kh.png" alt="">
+						</div>
+						<p class="weui-tabbar__label">客户</p>
+					</a>
+					<a href="massage.html" class="weui-tabbar__item">
+						<div class="weui-tabbar__icon">
+							<img src="img/xx.png" alt="">
+						</div>
+						<p class="weui-tabbar__label">消息</p>
+					</a>
+					<a href="account.html" class="weui-tabbar__item">
+						<div class="weui-tabbar__icon">
+							<img src="img/wd.png" alt="">
+						</div>
+						<p class="weui-tabbar__label">我的</p>
+					</a>
+				</div>
+			</footer>
+		</div>
+		<script src="js/jquery.min.js"></script>
+		<script src="js/jquery-weui.js"></script>
+		<script src="js/swiper.min.js"></script>
+		<!-- <script src="js/city-picker.min.js"></script> -->
+		<script type="text/javascript" src="js/main.js"></script>
+		<script type="text/javascript" src="js/ajax/index.js"></script>		
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>
+		<script>
+			$(function() {
+				$(".news-tab li").click(function() {
+					$(this).addClass("active").siblings().removeClass("active");
+				})
+				if($(".show-af")){
+					setTimeout(function(){
+						$(".show-af").css("display","block");
+						setTimeout(function(){
+							$(".af-suc").css("top","1.2rem");
+						},10)
+					},1000)
+				}
+
+			})
+			setTimeout(function(){
+				wxShared();
+			},500)			
+		</script>
+
+	</body>
+
+</html>

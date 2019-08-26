@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+<meta name="format-detection" content="telephone=no" /> 
+<!--uc强制全屏-->
+<meta name="full-screen" content="yes">
+<!--QQ强制全屏-->
+<meta name="x5-fullscreen" content="true">	
+<title>盘源列表</title>
+<link rel="stylesheet" href="css/font-awesome.min.css" />
+<link rel="stylesheet" href="css/weui.min.css">
+<link rel="stylesheet" href="css/jquery-weui.min.css">		
+<link rel="stylesheet" href="css/style.css" />
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+<!--这里以iphone6尺寸开发，自动适配-->
+<style>
+	.showNo{display: none !important;}
+	.showAll{display: block !important;}
+	.hasT{overflow: hidden !important;}
+	.pt100{padding-top: 2rem !important;}
+	.h100{height: 2rem; width: 100%;position: relative;display: none;}
+</style>
+</head>
+<body id="body">
+<div id="loadingDiv1"><div id="loadImg"></div></div>			
+	<div class="whole" @click.stop="tab=''" :class="tab==''?'':'hasT'" style="padding-bottom: 0;">
+<!--内容START-->	
+		<div class="hl-header">
+			<div class="b-top hl-top" style="padding-left: 0.4rem;margin-bottom: 0;">
+<!-- 				<a href="javascript:history.back();" class="return">
+					<i class="fa fa-angle-left"></i>
+				</a> -->
+				<div class="b-search" style="width: 6.8rem;">
+					<i class="weui-icon-search"></i>
+					<input type="text" placeholder="请输入您想要搜索的楼盘" v-model="searchList" @change="search" id="sear">
+				</div>
+			</div>
+		</div>
+		<div class="list-bg" style="position: fixed;top: 1.2rem;width: 100%;height: 100%;background: #fff;z-index: 9;display: none;" :class="showList?'showNo':''"></div>
+		<div class="h100"></div>
+		<div class="b-type" @click="show" style="margin-top: 0;">
+			<a href="javascript:void(0)">
+				<span @click.stop="show('区域')"><label>区域</label><i :class="tab=='区域'?'fa-caret-up':'fa-caret-down'" class="fa"></i></span>
+				<div class="type-select pd0" :class="{showAll:tab=='区域'}">
+					<div class="s-left">
+						<ul>
+							<li v-for="(item,index) in city" @click.stop="changeCity(item.RegionId,index,item.Name)" :class="{'sl-on':index==current}">{{item.Name}}</li>
+						</ul>
+					</div>
+					<div class="s-right s-right-l">
+						<ul style="display: block;" class="s-right-l-q">
+							<li v-for="(item,index) in area" @click.stop="selectA(item.Name,index,'cs',item.RegionId)" :class="{'my':index==currentSub,'on':index==csSub}">{{item.Name}}</li>
+						</ul>				
+					</div>
+				</div>
+			</a>
+			<a href="javascript:void(0)">
+				<span @click.stop="show('价格')">均价<i :class="tab=='价格'?'fa-caret-up':'fa-caret-down'" class="fa"></i></span>
+				<div class="outer type-select pd0" :class="{showAll:tab=='价格'}">
+					<div class="price-area num-area room-area">
+						<ul id="jg">
+							<li @click.stop="selectA(item.AttributeValueName,index,'jg')" v-for="(item,index) in showPrice" :class="{'on':jgSub==index}">{{item.AttributeValueName}}</li>
+						</ul>
+					</div>						
+				</div>				
+			</a>
+			<a href="javascript:void(0)">
+				<span @click.stop="show('户型')">户型<i :class="tab=='户型'?'fa-caret-up':'fa-caret-down'" class="fa"></i></span>
+				<div class="type-select" :class="{showAll:tab=='户型'}">
+					<div class="price-area num-area room-area">
+						<ul id="hx">
+							<li @click.stop="selectA(item.AttributeValueName,index,'hx')" v-for="(item,index) in Apartment" :class="{'on':hxSub==index}">{{item.AttributeValueName}}</li>
+						</ul>
+					</div>
+				</div>
+			</a>	
+			<a href="javascript:void(0)">
+				<span @click.stop="show('筛选')">筛选<i :class="tab=='筛选'?'fa-caret-up':'fa-caret-down'" class="fa"></i></span>
+				<div class="type-select" :class="{showAll:tab=='筛选'}" style="height: 12rem;overflow-y: auto;">
+					<div class="price-area room-area b-more">
+						<p>面积（m²）</p>
+						<ul>
+							<li @click.stop="selectA(item.AttributeValueName,index,'mj')" v-for="(item,index) in Measure" :class="{'hover':item.Active}">{{item.AttributeValueName}}</li>
+						</ul>
+					</div>
+					<div class="price-area room-area b-more">
+						<p>朝向</p>
+						<ul>
+							<li @click.stop="selectA(item.AttributeValueName,index,'cx')" v-for="(item,index) in Orientation" :class="{'hover':item.Active}">{{item.AttributeValueName}}</li>
+						</ul>
+					</div>
+					<div class="price-area room-area b-more">
+						<p>物业类型</p>
+						<ul>
+							<li @click.stop="selectA(item.AttributeValueName,index,'lx')" v-for="(item,index) in Property" :class="{'hover':item.Active}">{{item.AttributeValueName}}</li>
+						</ul>
+					</div>								
+					<div class="price-area room-area b-more">
+						<p>装修</p>
+						<ul>
+							<li @click.stop="selectA(item.AttributeValueName,index,'zx')" v-for="(item,index) in Decoration" :class="{'hover':item.Active}">{{item.AttributeValueName}}</li>
+						</ul>
+					</div>		
+					<div class="price-area room-area b-more">
+						<p>开盘时间</p>
+						<ul>
+							<li @click.stop="selectA(item.AttributeValueName,index,'sj')" v-for="(item,index) in OpenDate" :class="{'hover':item.Active}">{{item.AttributeValueName}}</li>
+						</ul>
+					</div>						
+					<div style="text-align: center;padding: 0.6rem 0 2rem;">
+						<button class="more-concel" @click.stop="reset">清空筛选条件</button>			
+						<button class="more-confirm" @click.stop="filtrate">确定</button>		
+					</div>
+				</div>
+			</a>
+			<a href="javascript:void(0)">
+				<span @click.stop="show('排序')"></span>
+				<div class="type-select" :class="{showAll:tab=='排序'}">
+					<div class="price-area room-area">
+						<ul id="b-sort">
+							<li @click.stop="selectA(item.value,index,'px',item.OrderBy)" v-for="(item,index) in sort" :class="{'on':index==pxSub}">{{item.name}}</li>
+						</ul>
+					</div>
+				</div>
+			</a>
+		</div>	
+		<p v-if="jg==''&&hx==''&&sx.length==0&&cityListName==''&&totalNum==-1" style="line-height: 0.6rem;background: #f5f5f7;text-align: center;font-size: 0.2rem;color: #ccc;">为您找到{{alldata}}个楼盘</p>
+		<div class="bh-list hl-list">
+			<!--筛选条件-->
+			<div class="bh-condition" v-if="jg!=''||hx!=''||sx.length>0||cityListName!=''">
+				<p><label @click.stop="refresh"><i class="fa fa-trash-o"></i>清空所有条件</label></p>
+				<!--条件列表-->
+				<div class="bhc-msg">
+					<a v-if="cityListName!=''">{{cityListName}}</a>
+					<a v-if="jg!=''">{{jg}}</a>
+					<a v-if="hx!=''">{{hx}}</a>
+					<a v-for="item in sx">{{item}}</a>
+				</div>
+			</div>
+			<!--搜索结果-->
+			<div class="content-msg">
+				<h3 v-if="totalNum>0">共{{totalNum}}个筛选结果</h3>
+			<div class="content-list info-list" v-if="productList.length>0">
+				<section v-for="item in productList">
+					<a :href="'house_info.html?id='+item.Id+'&SourceUserId='+SourceUserId">
+						<dl>
+							<dt>
+								<label v-if="item.Coupon.Id>0"><span v-if="item.Coupon.Type==2">优惠</span>{{item.Coupon.Discount}}<span v-if="item.Coupon.Type==1">折</span><span v-if="item.Coupon.Type==2">元</span></label>
+								<img :src="item.MainImg" width="100%"/>
+								<div class="s-bg"></div>
+								<p>{{item.RegionName}}</p>
+							</dt>
+							<dd class="section-msg">
+								<p><strong>{{item.ProjectName}}</strong></p>
+								<p class="list-info-m"><span>{{apply(item.PropertyUsage)}}</span><small>|</small><span>{{item.MinMeasure}}-{{item.MaxMeasure}}㎡</span></p>
+								<p class="list-info-p" v-if="item.Aprice==0">均价<strong>待定</strong><label>{{item.ProjectScore}}</label>评分</p>
+								<p class="list-info-p" v-else>均价<strong>{{item.Aprice}}</strong>元/平<label>{{item.ProjectScore}}</label>评分</p>
+							</dd>
+							<div class="clear"></div>
+						</dl>
+					</a>
+				</section>			
+			</div>
+			<a style="display: block;text-align: center;line-height: 1rem;margin-left: -0.4rem;" v-if="dataTotal>10" @click="readMore">查看更多</a>
+<!-- 			<div class="weui-loadmore" v-if="productList.length>3">
+			  <i class="weui-loading"></i>
+			  <span class="weui-loadmore__tips">正在加载</span>
+			</div>	 -->			
+		</div>	
+		<!--无搜索结果显示部分-->
+		<div class="content-like" v-if="productList.length<1||productList==''||productList==null">
+			<div class="no-list">
+				<label class="hl-no"></label>
+				<p>抱歉，当前没有符合条件的盘源~</p>
+				<a href="buy-house-help.html">我要找房</a>
+			</div>
+			<div class="content-list like-list" v-if="ProjectLikeList!=null&&ProjectLikeList.length>0">
+				<h3>猜你喜欢</h3>
+				<section v-for="item in ProjectLikeList">
+					<a :href="'house_info.html?id='+item.Id">
+						<dl>
+							<dt>
+								<label v-if="item.Coupon.Id>0"><span v-if="item.Coupon.Type==2">优惠</span>{{item.Coupon.Discount}}<span v-if="item.Coupon.Type==1">折</span><span v-if="item.Coupon.Type==2">元</span></label>
+								<img :src="item.MainImg" width="100%"/>
+								<div class="s-bg"></div>
+								<p>{{item.RegionName}}</p>
+							</dt>
+							<dd class="section-msg">
+								<p><strong>{{item.ProjectName}}</strong></p>
+								<p class="list-info-m"><span>{{apply(item.PropertyUsage)}}</span><small>|</small><span>{{item.MinMeasure}}-{{item.MaxMeasure}}㎡</span></p>
+								<p class="list-info-p" v-if="item.Aprice>0">均价<strong>{{item.Aprice}}</strong>元/平<label>{{item.ProjectScore}}</label>评分</p>
+								<p class="list-info-p" v-else>均价<strong>待定</strong><label>{{item.ProjectScore}}</label>评分</p>
+							</dd>
+							<div class="clear"></div>
+						</dl>
+					</a>
+				</section>			
+			</div>			
+		</div>
+		<div class="tab-bg" :class="{showAll:tab!=''}" style="position: fixed;top: 1.8rem;left: 0; width: 100%;height: 100%;background: #000;opacity: 0.5;z-index: 998;display: none;"></div>
+		</div>
+		<a class="gohome" href="index.html?x=1&from=singlemessage" v-if="isShare" @click.stop="showF=true">首页</a>
+		<!-- <a id="scrollUp" href="javascript:void(0);"><i class="fa fa-angle-up"></i></a> -->
+	<!--内容END-->
+	<!--公共底部-->
+	<!--<footer>
+	  <div class="weui-tabbar">
+	    <a href="index.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/fx.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">发现</p>
+	    </a>
+	    <a href="buy_house.html" class="weui-tabbar__item weui-bar__item--on">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/fy1.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">房源</p>
+	    </a>
+	    <a href="my-client.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/kh.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">客户</p>
+	    </a>
+	    <a href="massage.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/xx.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">消息</p>
+	    </a>	    
+	    <a href="account.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/wd.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">我的</p>
+	    </a>
+	  </div>	
+	</footer>		-->
+	</div>
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-weui.min.js"></script>	
+<script src="js/swiper.min.js"></script>
+<!-- <script src="js/city-picker.min.js"></script> -->
+<script type="text/javascript" src="js/main.js" ></script>
+<script type="text/javascript" src="js/ajax/house-list.js" ></script>
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},100)	
+function wxShared(){
+	if(Sstorage.getItem("urlf")==String(window.location.href)){
+		tp=Sstorage.getItem("tp");
+		ms=Sstorage.getItem("ms");
+		bt=Sstorage.getItem("bt");
+		u=window.location.href;
+	}
+	
+	shareAll();
+	function shareAll(){	
+		axios({
+			method:"post",
+			url:"/Wx/GetJsSdkUiPackage",
+			data:JSON.stringify({Url:u})
+		})
+		.then(function(e){
+			// console.log(e);
+			if(e.data.code==1001){
+			  wx.config({
+				  debug: false,
+				  appId: e.data.data.AppId,
+				  timestamp: e.data.data.Timestamp,
+				  nonceStr: e.data.data.NonceStr,
+				  signature: e.data.data.Signature,
+				  jsApiList: ["updateAppMessageShareData","updateTimelineShareData","onMenuShareTimeline", "onMenuShareAppMessage", "onMenuShareQQ", "onMenuShareWeibo","onMenuShareQZone",
+						"chooseImage", "getNetworkType", "hideOptionMenu", "showOptionMenu", "hideMenuItems",
+						"showMenuItems", "hideAllNonBaseMenuItem", "showAllNonBaseMenuItem", "closeWindow"
+					]
+			  });			
+			}
+		})	
+		.catch(function(n){
+			
+		})
+	}	
+	
+	wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
+	// 旧版
+		wx.onMenuShareTimeline({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			  console.log(33);
+			}
+		})
+		wx.onMenuShareAppMessage({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})		
+		wx.onMenuShareQQ({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})	
+		wx.onMenuShareWeibo({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})
+		wx.onMenuShareQZone({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})																							
+	});			
+}						
+			</script>		
+<script>
+	$(function(){
+		$("#sear").focus(function(){
+			$(".list-bg").css("display","block");
+		})
+		$("#sear").blur(function(){
+			$(".list-bg").css("display","none");
+		})	
+				
+	setInterval(function() {
+		var s = $(".whole").scrollTop();
+		if(s>50){
+			$(".hl-header").hide();
+			$(".b-type").addClass("fixed");
+			$(".h100").css("display","block");
+		}else{
+			$(".hl-header").fadeIn(300);
+			$(".b-type").removeClass("fixed");	
+			$(".h100").css("display","none");
+		}
+// 		setTimeout(function() {
+// 			var h = $(".whole").scrollTop();
+// 			if (s - h == h) {
+// 				$(".hl-header").fadeIn(300);
+// 				$(".b-type").removeClass("fixed");
+// 			} 
+// 			else if (h - s == 0) {
+// 				if ($("footer").is(":hidden")) {
+// 					$("footer").hide();
+// 				} else {
+// 					$("footer").show();
+// 				}
+// 			}
+// 		}, 200);
+	}, 200);				
+				
+	})
+</script>
+
+</body>
+</html>

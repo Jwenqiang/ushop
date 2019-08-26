@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>意见反馈</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>		
+	</head>
+	<body style="background: #F5F5F7;">
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+			<div class="account-idea">
+				<div class="aci-top">
+					<p><span>*</span>您的反馈（<label id="ac-num">{{helpContent.length}}</label>/200）</p>
+					<textarea placeholder="请输入您要反馈的问题" v-model="helpContent" maxlength="200"></textarea>
+				</div>
+				<div class="aci-msg">
+				    <div class="page__bd">
+				        <div class="weui-gallery" id="gallery">
+				            <span class="weui-gallery__img" id="galleryImg"></span>
+				            <div class="weui-gallery__opr">
+				                <a href="javascript:" class="weui-gallery__del">
+				                    <i class="weui-icon-delete weui-icon_gallery-delete"></i>
+				                </a>
+				            </div>
+				        </div>
+				
+				        <div class="weui-cells weui-cells_form">
+				            <div class="weui-cell">
+				                <div class="weui-cell__bd">
+				                    <div class="weui-uploader">
+										<div class="weui-uploader__hd">
+										  <p class="weui-uploader__title">图片上传（<span id="w-num">{{PicImgList.length}}</span>/3）</p>
+										</div>										
+				                        <div class="weui-uploader__bd">
+				                            <div class="weui-uploader__input-box">
+				                                <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple @change="uploadImg($event)"/>
+				                            </div>
+				                            <ul class="weui-uploader__files" id="uploaderFiles">
+																			<li class="weui-uploader__file" v-for="(item,index) in PicImgList" v-bind:style="{backgroundImage:'url(' + item + ')'}"><span id="i-close" @click="removeImg(index)"><i class="fa fa-minus-square"></i></span></li>
+				                            </ul>                            
+				                        </div>
+				                    </div>
+				                </div>
+				            </div>
+				        </div>
+				    </div>					
+				</div>
+				<div class="aci-bottom">
+					<a href="javascript:;" @click="getData">提交</a>
+				</div>
+			</div>	
+		</div>	
+		
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>	
+	<script type="text/javascript" src="js/ajax/account-idea.js" ></script>	
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},500)					
+			</script>			
+<script type="text/javascript">
+	//上传预览
+    $(function(){
+// 		var n=0;
+//         var tmpl = '<li class="weui-uploader__file" style="background-image:url(#url#)"><span id="i-close"><i class="fa fa-minus-square"></i></span></li>',
+//             $gallery = $("#gallery"), $galleryImg = $("#galleryImg"),
+//             $uploaderInput = $("#uploaderInput"),
+//             $uploaderFiles = $("#uploaderFiles")
+//             ;
+// 
+//         $uploaderInput.on("change", function(e){
+// 			if(n<3){
+// 				var src, url = window.URL || window.webkitURL || window.mozURL, files = e.target.files;
+// 				for (var i = 0, len = files.length; i < len; ++i) {
+// 					var file = files[i];
+// 					if (url) {
+// 						src = url.createObjectURL(file);
+// 					} else {
+// 						src = e.target.result;
+// 					}
+// 					//console.log(src);
+// 					$uploaderFiles.append($(tmpl.replace('#url#', src)));
+// 					n++;
+// 				}
+// 				$("#w-num").text(n);
+// 			}else{
+// 				$.toast("最多传3张图片","text");
+// 			}
+//         });
+//         $uploaderFiles.on("click", "li", function(){
+// 			// 右上角删除
+// 			$(this).children('span').click(function(){
+// 				$(this).parent('li').remove();
+// 				return false;
+// 			})
+//             $galleryImg.attr("style", this.getAttribute("style"));
+//             $gallery.fadeIn(100);
+//         });
+//         $gallery.on("click", function(){
+//             $gallery.fadeOut(100);
+//         });
+// 		
+//         //删除图片地址
+//         $(".weui-gallery__del").on("click", function(){
+//             var $url1 = $(this).parent().parent().children("#galleryImg").css("background-image");
+// 					for(var $i = 0;$i<$("#uploaderFiles li").length;$i++){
+// 						if($("#uploaderFiles li").eq($i).css("background-image")==$url1){
+// 							$("#uploaderFiles li").eq($i).remove();
+// 						}
+// 					}
+//         });
+        
+							
+				
+    });
+</script>	
+	</body>
+</html>

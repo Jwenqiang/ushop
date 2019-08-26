@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>户型列表</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>		
+	</head>
+	<body>
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+				<div class="hib-box hih-box">
+<!-- 					<div class="hib-top hih-top">
+						<div class="swiper-container">
+							<div class="swiper-wrapper">
+								<div class="swiper-slide"><a href="javascript:;">全部(60)</a></div>
+								<div class="swiper-slide"><a href="javascript:;">二室(60)</a></div>
+								<div class="swiper-slide"><a href="javascript:;">三室(60)</a></div>
+								<div class="swiper-slide"><a href="javascript:;">四室(60)</a></div>
+								<div class="swiper-slide"><a href="javascript:;">五室(60)</a></div>
+							</div>
+						</div>	
+					</div>
+					<div class="hr10"></div> -->
+					<div class="hih-info">
+						<section v-for="item in houseType">
+							<a :href="'house-info-big.html?id='+item.RoomTypeID+'&hid='+hid">
+								<div class="hih-info-l" style="position: relative;">
+									<p>
+										<img :src="item.EstatePhotosList[0].FilePath" width="100%" height="100%" v-if="item.EstatePhotosList.length>0"/>
+										<span class="hi-name" v-if="item.AvilStatus===1">在售</span>
+										<span class="hi-name" v-else style="background: #ccc;">售完</span>										
+									</p>
+								</div>
+								<div class="hih-info-r">
+									<p class="hi-info hihir"><strong class="hi-size">{{item.CountF}}室<span v-if="item.CountT>0">{{item.CountT}}厅</span> {{item.Facedesc}} </strong><strong class="hi-num">{{item.Square}}平</strong></p>
+									<p class="hi-pay" v-if="item.Total>0"><label>参考总价：</label><span style="color: #FF0000;">{{Math.round(item.Total/10000)}}万</span></p>									
+									<p class="hi-pay" v-else><label>参考总价：</label><span style="color: #FF0000;">待定</span></p>									
+								</div>
+								<div class="clear"></div>
+							</a>
+						</section>						
+					</div>
+				</div>
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/house-info-hxlist.js" ></script>		
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>	
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},500)					
+			</script>		
+<script>
+var mySwiper = new Swiper('.swiper-container',{  
+	loop:true,
+	//一屏4.5个
+	slidesPerView : 4.5,
+	//每个的距离
+	// spaceBetween : 10,  	
+	//滑动是整个
+    freeMode: false, 
+}) 
+</script>	
+<script>
+	$(function(){
+		$(".hib-top .swiper-slide").click(function(){
+			$(this).addClass("swiper-slide-active").siblings().removeClass('swiper-slide-active');
+		})
+	})
+</script>
+	</body>
+</html>

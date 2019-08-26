@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>委托客源</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>	
+			<style>
+				.bb-tip{line-height: 1rem;padding: 0 0.4rem;font-size: 0.24rem;font-weight: bold;}
+			</style>			
+	</head>
+	<body style="background: #F5F5F7;">
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+			<div class="bb-tip">
+				<p>说明：如果客户购房意向不明确，请在下方委托客户</p>
+			</div>
+	<!--内容START-->	
+			<div class="bbc-top">
+				<p class="bbc-t"><span class="red">*</span>委托客源</p>
+				<ul class="bbc-l kh-l">
+					<li class="list-li kh-list" v-for="(item,index) in userInfoList">
+						<ul class="bbc-kh">
+							<i class="fa fa-minus-circle minus minus-kh" @click="minusList(index)"></i>
+							<li><label>客户姓名</label><input type="text" placeholder="请输入客户姓名" v-model="item.FullName"/></li>
+							<li><label>电话号码</label><input type="number" placeholder="请输入联系电话" v-model="item.Mobile"/></li>
+							<li class="bbc-kh-sex"><label>客户性别</label>
+								<span @click="item.Gender='1'"><i class="fa" :class="item.Gender=='1'?'fa-dot-circle-o':'fa-circle-o'"></i>先生</span>
+								<span @click="item.Gender='2'"><i class="fa" :class="item.Gender=='2'?'fa-dot-circle-o':'fa-circle-o'"></i>女士</span>
+								<span @click="item.Gender='0'"><i class="fa" :class="item.Gender=='0'?'fa-dot-circle-o':'fa-circle-o'"></i>未知</span>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<label class="add-kh kh-add" @click="addList"><i class="fa fa-plus-circle"></i>添加客户</label>
+			</div>
+			<div class="bbc-foot">
+				<button @click="goReport">立即委托</button>
+			</div>
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>	
+		<script type="text/javascript" src="js/ajax/bb-client-dr.js" ></script>	
+	</body>
+</html>

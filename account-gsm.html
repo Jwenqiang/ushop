@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>公司二维码</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>	
+			<style>
+				.showC{display: block !important;}
+			</style>
+	</head>
+	<body>
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+			<div class="acg">
+				<div class="acg-t">
+					<label>已认证公司</label>
+					<p><strong>{{CompanyName}}</strong></p>
+					<button class="acg-go" @click.stop="show=!show">生成公司二维码</button>
+				</div>
+				<div class="hr10"></div>
+				<div class="acg-list">
+					<h4>二维码生成记录</h4>
+					<section class="outer" v-for="item in ewmList" v-if="ewmList.length>0">
+						<div class="acg-l"><img :src="item.QRcodeUrl"/></div>
+						<div class="acg-r">
+							<p><label>应用渠道：</label><strong>{{item.ChannelName}}</strong></p>
+							<p><label>添加时间：</label><strong>{{item.AddTime}}</strong></p>
+							<!-- <p><label>或客数量：</label><strong></strong></p> -->
+							<a :href="'account-ewm.html?id='+item.Id">查看详情</a>
+						</div>
+					</section>		
+					<a style="display: block;text-align: center;" v-if="9<ewmList.length&&ewmList.length!=dataTotal" @click="readMore">查看更多</a>
+					<!-- 无记录时 -->
+					<div class="no-acg" v-if="ewmList.length==0">
+						<p>暂无生成记录~</p>
+					</div>					
+				</div>
+			</div>	
+			<div class="show-ewm" :class="show?'showC':''">
+				<div class="bg"></div>
+				<div class="acg-ewm acg-ewm-pre">
+					<span class="acg-close" @click.stop="show=!show"></span>
+					<p>二维码应用渠道（可鉴别客户来源）:</p>
+					<p><input type="text" placeholder="请输入内容，10字以内" v-model="ChannelName"/> </p>
+					<div class="acg-btn">
+						<button class="acg-n"  @click="goChannel">下一步</button>
+					 </div>
+				</div>
+				<!-- 下一步状态 -->
+				<div class="acg-ewm acg-ewm-next" :class="showE?'showC':''">
+					<span class="acg-close" @click="getData"></span>
+					<p>应用渠道（{{ChannelName}}）</p>
+					<p><img :src="QRcodeUrl"/></p>
+					<button class="acg-pre">长按图片保存到相册</button>
+				</div>			
+			</div>			
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/account-gsm.js" ></script>	
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>		
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},500)					
+			</script>		
+	</body>
+</html>

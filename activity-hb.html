@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>生成海报</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>	
+		<script src="js/jquery.min.js"></script>
+		<style>
+			*{padding: 0;margin: 0;}
+			.whole{height: 100%;padding-bottom: 1.2rem;}
+			#canvas{width: 7.5rem;height: 100%;overflow-y: auto;}
+			#canvas img{width: 100%;}
+			.foot_tip{position: absolute;bottom: 0;left: 0;width: 100%;text-align: center;color: #ccc;height: 1.2rem;padding-top: 0.3rem;}
+		</style>
+	</head>
+	<body>
+		<div class="whole">
+			<div class="msg">
+				<img class="imgBox" :src="bj" style="display: none;width: 100%;height: 100%;"/>
+				<img class="imgCode" :src="ewm" style="display: none;"/>
+			</div>
+			<div id="canvas">
+				<img :src="hb"/>
+			</div>
+			<!-- <canvas id="canvas"></canvas> -->
+			<div class="foot_tip">--长按图片保存到相册--</div>
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>	
+	<script>
+		var storage=window.localStorage;
+		var app=new Vue({
+			el:".whole",
+			data:{
+				id:"",
+				utoken:"",
+				bj:"",
+				ewm:"",
+				hb:""
+			},
+			created: function(e) { //创建实例el后
+				this.getData()
+			},
+			mounted: function() { //下面表示已执行方法  编译好html后在这操作
+
+			},		
+			methods:{
+				getData(){
+				var _this=this;
+				if(storage.getItem("userInfo")){
+					_this.utoken=JSON.parse(storage.getItem("userInfo")).Token;
+					// 验证令牌
+					axios.defaults.headers.common['token'] = _this.utoken;	
+				}
+				axios({
+					method:"post",
+					url:"/Activity/ActivityEnrollQrCode",
+					data:JSON.stringify({
+						ActivityId:this.getUrlParam('ActivityId'),
+						QRcodeData:window.location.href
+					})
+				})
+				.then(function(res){
+					console.log(res);
+					if(res.data.code==1001){
+						_this.bj=res.data.data.PosterImg;
+						_this.ewm=res.data.data.QRcodeUrl;
+						_this.hb=res.data.data.QRcodePosterImg
+					}
+				})					
+				},
+				/**
+				 * 根据window.devicePixelRatio获取像素比
+				 */
+				setHB(){
+					var _this=this;
+					
+				},
+				DPR() {
+					console.log(window.devicePixelRatio);
+				    if (window.devicePixelRatio && window.devicePixelRatio > 1) {
+				        return window.devicePixelRatio;
+				    }
+				    return 1;
+				},
+				// 截取浏览器地址id
+				getUrlParam:function(name){
+					let reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)');
+					let r = window.location.search.substr(1).match(reg);
+					if (r != null) return unescape(r[2]);
+					return null;			
+				},				
+			}
+		})		
+		
+	</script>
+
+	</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>楼盘资料</title>
+		<!--<script type="text/javascript" src="js/phone.js" ></script>-->
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>		
+		<style>
+			.content-c{padding: 0.4rem;}
+			.content-c p{line-height: 1.8;}
+		</style>
+	</head>
+	<body>
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+			<div class="hih-content">
+				<ul class="content-t">
+					<li>
+						<label class="content-l">所在片区:</label>
+						<strong class="content-r" v-if="product.RegionName==null||product.RegionName==''">--</strong>
+						<strong class="content-r" v-else>{{product.RegionName}}</strong>
+					</li>
+					<li>
+						<label class="content-l">楼盘地址:</label>
+						<strong class="content-r">{{mainInfo.Address}}</strong>
+					</li>
+					<li>
+						<label class="content-l">开发商:</label>
+						<strong class="content-r">{{mainInfo.CompanyDev}}</strong>
+					</li>
+					<li>
+						<label class="content-l">楼盘状态:</label>
+						<strong class="content-r">{{mainInfo.Status}}</strong>
+					</li>
+					<li>
+						<label class="content-l">参考均价:</label>
+                        <strong class="content-r" v-if="product.Aprice!=null&&product.Aprice>0">{{product.Aprice}}元/㎡</strong>
+						<strong class="content-r" v-if="product.Aprice==null||product.Aprice==0">待定</strong>
+					</li>
+					<li>
+						<label class="content-l">最新开盘:</label>
+						<strong class="content-r" v-if="mainInfo.DateOpenS!=null">{{mainInfo.DateOpenS}}</strong>
+						<strong class="content-r" v-if="mainInfo.DateOpenS==null">暂无</strong>
+					</li>	
+					<li>
+						<label class="content-l">物业类型:</label>
+						<strong class="content-r">{{mainInfo.PropertyUsage}}</strong>
+					</li>	
+					<li>
+						<label class="content-l">建筑类别:</label>
+						<strong class="content-r">{{mainInfo.BuildingType}}</strong>
+					</li>		
+					<li>
+						<label class="content-l">装修状态:</label>
+						<strong class="content-r">{{mainInfo.Decoration}}</strong>
+					</li>	
+					<li>
+						<label class="content-l">车位数量:</label>
+						<strong class="content-r" v-if="mainInfo.ParkingNum>0">{{mainInfo.ParkingNum}}个</strong>
+						<strong class="content-r" v-else>待定</strong>
+					</li>	
+					<li>
+						<label class="content-l">容积率:</label>
+						<strong class="content-r" v-if="mainInfo.DensityRate>0">{{mainInfo.DensityRate}}</strong>
+						<strong class="content-r" v-else>待定</strong>
+					</li>	
+					<li>
+						<label class="content-l">绿化率:</label>
+						<strong class="content-r" v-if="mainInfo.GreenRate>0">{{mainInfo.GreenRate}}%</strong>
+						<strong class="content-r" v-else>待定</strong>
+					</li>		
+					<li>
+						<label class="content-l">产权年限:</label>
+						<strong class="content-r">{{mainInfo.UseYears}}年</strong>
+					</li>
+					<li>
+						<label class="content-l">占地面积:</label>
+						<strong class="content-r">{{mainInfo.LandSquare}}㎡</strong>
+					</li>	
+					<li>
+						<label class="content-l">建筑面积:</label>
+						<strong class="content-r">{{mainInfo.Square}}㎡</strong>
+					</li>	
+					<li>
+						<label class="content-l">物业公司:</label>
+						<strong class="content-r">{{mainInfo.CompanyMgr}}</strong>
+					</li>
+					<li>
+						<label class="content-l">管理费:</label>
+						<strong class="content-r" v-if="mainInfo.MgrPrice>0">{{mainInfo.MgrPrice}}元/㎡/月</strong>
+						<strong class="content-r" v-else>待定</strong>
+					</li>
+					<li>
+						<label class="content-l">预售许可证:</label>
+						<strong class="content-r" v-if="mainInfo.SaleLicense!=null&&mainInfo.SaleLicense!=''">{{mainInfo.SaleLicense}}</strong>
+						<strong class="content-r" v-else>暂无</strong>
+					</li>																				
+				</ul>
+				<section class="content-c">
+					<h4>项目介绍</h4>
+					<div v-html="mainInfo.EstateIntro"></div>
+				</section>
+				<section class="content-c">
+					<h4>项目配套</h4>
+					<div v-html="mainInfo.PeripheralFacilities"></div>
+				</section>	
+				<section class="content-c">
+					<h4>交通状况</h4>
+					<div v-html="mainInfo.PeripheralTraffic"></div>
+				</section>	
+<!-- 				<ul class="content-b">
+					<li>
+						<p>交通状况</p>
+						 <strong>暂无</strong>
+					</li>
+					<li>
+						<p>发证时间</p>
+						 <strong>暂无</strong>
+					</li>	
+					<li>
+						<p>备注说明</p>
+						 <strong>暂无</strong>
+					</li>
+					<div class="clear"></div>
+				</ul> -->
+			</div>
+		</div>	
+	<script type="text/javascript" src="js/hide.js" ></script>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>	
+	<script type="text/javascript" src="js/ajax/house_info_hmsg.js" ></script>		
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},500)					
+			</script>			
+	</body>
+</html>

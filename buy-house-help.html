@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>帮我找房</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>		
+		<style>
+			.bhh-select p{margin-bottom: 0.2rem;}
+			.room-area p {
+				padding-left: 0;
+			}
+			.price-area li:nth-of-type(4n+1){
+				margin-left: 0;
+			}
+			.bhh-name{padding: 0;}
+			.bhh-name label{margin-right: 0.28rem;}
+		</style>
+	</head>
+	<body>
+<div id="loadingDiv1"><div id="loadImg"></div></div>				
+		<div class="whole" style="padding-bottom: 0;">
+	<!--内容START-->	
+				<div class="type-select bhh-select" style="padding: 0 0.2rem 0.6rem;min-height: 18rem;">
+					<div class="price-area room-area b-more">
+						<p>意向城市</p>
+						<ul>
+							<li v-for="(item,index) in city" @click.stop="changeCity(item.RegionId,index,item.Name)" :class="{'hover':index==current}">{{item.Name}}</li>
+						</ul>
+					</div>
+					<div class="price-area room-area b-more" v-if="area.length>0">
+						<p>意向区域</p>
+						<ul>
+							<li v-for="(item,index) in area" @click.stop="selectA(item.Name,index,'qy')" :class="{'hover':index==currentSub}">{{item.Name}}</li>
+						</ul>
+					</div>					
+					<div class="price-area room-area b-more">
+						<p>物业类型</p>
+						<ul>
+							<li @click.stop="selectA(item.AttributeValueName,index,'lx')" v-for="(item,index) in Property" :class="{'hover':index==lxSub}">{{item.AttributeValueName}}</li>
+						</ul>
+					</div>		
+					<div class="price-area room-area b-more">
+						<p>面积</p>
+						<ul>
+							<li @click.stop="selectA(item.AttributeValueName,index,'mj')" v-for="(item,index) in Measure" :class="{'hover':index==mjSub}">{{item.AttributeValueName}}</li>
+						</ul>
+					</div>		
+					<div class="price-area room-area b-more">
+						<p>总价</p>
+						<ul>
+							<li @click.stop="selectA(item.AttributeValueName,index,'zj')" v-for="(item,index) in showPrice" :class="{'hover':index==zjSub}">{{item.AttributeValueName}}</li>
+						</ul>
+					</div>	
+					<div class="price-area bhh-name">
+						<p><label><span>*</span>姓名</label><input type="text" placeholder="请输入姓名" v-model="userName"/> </p>
+						<p><label><span>*</span>电话</label><input type="text" placeholder="请输入联系电话" v-model="userPhone"/> </p>
+					</div>
+					<div class="bhh-btn" style="padding-bottom: 1rem;">
+						<button @click="goSub">有合适的房源通知我</button>	
+					</div>
+				</div>				
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/buy-house-help.js" ></script>		
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>	
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},500)					
+			</script>
+	</body>
+</html>

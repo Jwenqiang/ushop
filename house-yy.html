@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<!-- 不缓存 -->
+		<meta http-equiv="Expires" content="0">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Cache" content="no-cache">		
+		<title>预约看房</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>
+		<style>
+			.hyy-top{padding: 0.6rem 0.4rem;box-sizing: border-box;}
+			.hyy-top img{width: 2rem;height: 1.4rem;float: left;margin-right: 0.4rem;border-radius: 3px}
+			.hifMsg{width: 4.3rem;float: right;height: 100%;}
+			.hifMsg p{
+				-webkit-line-clamp: 2;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				overflow: hidden; 
+				font-weight: bold 
+			}
+			.hmsg{margin-top: 0.2rem;}
+			.hmsg label:first-child{margin-right: 0.2rem;}
+			.hmsg label span{font-weight: bold;color: #F43530;}
+			.activity-m{padding: 0;}
+			#go-bm{margin-top: 1rem;}
+		</style>
+	</head>
+	<body>
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole" style="padding: 0;">
+			<div class="hr10"></div>
+	<!--内容START-->	
+		<div class="hyy-top outer">
+			<image :src='product.MainImg'></image>
+			<div class='hifMsg'>
+			  <p class='title'>{{product.ProjectName}}</p>
+			  <div class="hmsg"><label>均价<span>{{product.Aprice}}</span>元/㎡</label><label><span>{{product.ProjectScore}}</span>评分</label></div>
+			</div>			
+		</div>	
+		<div class="hr10"></div>
+		<div class="activity-m" id="abm" style="padding-bottom: 0;">
+			<div class="am-form">
+				<h4>报名参加</h4>
+				<p><label>姓名：</label><input type="text" placeholder="请输入姓名" v-model="msg.name"/></p>
+				<p><label>电话：</label><input type="number" placeholder="请输入您的手机号" v-model="msg.phone"/></p>
+				<p><label>人数：</label><input type="number" placeholder="请输入参加人数" v-model="msg.num"/></p>
+				<button id="go-bm" @click="goActive">立即预约</button>
+			</div>
+		</div>
+
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/house-yy.js" ></script>		
+<!-- 	<script>
+		setTimeout(function(){
+			wxShared();
+		},100)
+function wxShared(){
+	// if(Sstorage.getItem("urlf")==String(window.location.href)){
+		tp=Sstorage.getItem("tp");
+		ms=Sstorage.getItem("ms");
+		bt=Sstorage.getItem("bt");
+		u=window.location.href;
+	// }
+	
+	shareAll();
+	function shareAll(){	
+		axios({
+			method:"post",
+			url:"/Wx/GetJsSdkUiPackage",
+			data:JSON.stringify({Url:u})
+		})
+		.then(function(e){
+			console.log(e);
+			if(e.data.code==1001){
+			  wx.config({
+				  debug: false,
+				  appId: e.data.data.AppId,
+				  timestamp: e.data.data.Timestamp,
+				  nonceStr: e.data.data.NonceStr,
+				  signature: e.data.data.Signature,
+				  jsApiList: ["updateAppMessageShareData","updateTimelineShareData","onMenuShareTimeline", "onMenuShareAppMessage", "onMenuShareQQ", "onMenuShareWeibo","onMenuShareQZone",
+						"chooseImage", "getNetworkType", "hideOptionMenu", "showOptionMenu", "hideMenuItems",
+						"showMenuItems", "hideAllNonBaseMenuItem", "showAllNonBaseMenuItem", "closeWindow"
+					]
+			  });			
+			}
+		})	
+		.catch(function(n){
+			
+		})
+	}	
+	
+	wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
+	// 旧版
+		wx.onMenuShareTimeline({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			  console.log(33);
+			}
+		})
+		wx.onMenuShareAppMessage({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})		
+		wx.onMenuShareQQ({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})	
+		wx.onMenuShareWeibo({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})
+		wx.onMenuShareQZone({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})																						
+	});			
+}		
+	</script> -->
+	<script>
+		$(function(){
+			$("input").focus(function(){
+				$(".activity-b").css("position","absolute");
+			})
+			$("input").blur(function(){
+			  $(".activity-b").css("position","fixed");
+			  window.scroll(0,document.body.scrollHeight);
+			});
+// $('input,textarea').on('blur', function () {
+// 	console.log(document.body.scrollHeight);
+// 	window.scroll(0,document.body.scrollHeight);
+// });			
+		})
+	</script>
+	</body>
+</html>

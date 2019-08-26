@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>报备来客</title>
+		<!--运营人员-->
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>	
+			<style>
+				.selectDiv{
+					width: 100%;
+					height: 100%;
+					line-height: 1rem;
+					color: #203140;
+				}
+			.bbl-top a select{position: absolute;left: 0;top: 0;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}	
+			.bblk-a{position: relative;}
+			.bblk-a select{opacity: 0;z-index: 9;}
+			</style>
+	</head>
+	<body>
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole" style="padding: 0;">
+	<!--内容START-->	
+			<div class="bb-lk">
+				<div class="outer bbl-top">
+					<a href="javascript:;" class="bblk-a">
+						<select @change="selectP" v-model="bblkProject" style="opacity: 1;color: #203140;padding: 0 0.7rem 0 1.1rem;">
+							<option value="" selected="selected">全部盘源</option>
+							<option :value="item.ProjectId" v-for="item in projectList">{{item.ProjectName}}</option>
+						</select>	
+					</a>
+					<span></span>
+					<a href="javascript:;" class="bblk-a">
+						<div class="selectDiv">{{bblkName}}</div>
+						<select v-model="bblkName" @change="selectL" id="status">
+							<option value="待确客">待确客<span v-show="bblkType!='1'">({{dqk}})</span></option>
+							<option value='有效报备'>有效报备<span v-show="bblkType!='10'">({{yxbb}})</span></option>
+							<option value='有效到访'>有效到访<span v-show="bblkType!='25'">({{yxdf}})</span></option>
+							<option value="已认购">已认购<span v-show="bblkType!='40'">({{yrg}})</span></option>
+							<option value="已签约">已签约<span v-show="bblkType!='50'">({{yqy}})</span></option>
+							<option value="已结佣">已结佣<span v-show="bblkType!='60'">({{yjy}})</span></option>
+							<option value="已失效">已失效<span v-show="bblkType!='4,15,30,45,55'">({{ysx}})</span></option>
+						</select>
+					</a>
+				</div>
+			</div>
+			<div class="outer bbl-list" style="margin-bottom: -1rem;padding-top: 1.2rem;border: 0;height: 100%;padding-right: 0;">
+				<div class="bbl-all">
+					<!--待确客-->
+					<div class="outer bbl-section" v-if="bblkType=='1'" v-for="item in bblk" style="padding-right: 0.4rem;">
+						<a class="bbl-l" :href="'bb-info-yy.html?id='+item.Id">
+							<p><label><strong>{{item.FullName}}</strong></label><span>{{changeNum(item.Mobile)}}</span></p>
+							<p><label>报备时间：</label><span>{{item.AddTime}}</span></p>
+							<p><label>报备盘源：</label><span>{{item.ProjectName}}</span></p>
+							<p><label>报备人：</label><span>{{item.CompanyUserFullName}}  {{item.CompanyUserMobile}}</span></p>
+							<p><label>所属公司：</label><span>{{item.CompanyName}}</span></p>
+						</a>
+						<!--按钮-->
+						<div class="bbl-r">
+							<!--待确客-->
+							<div class="dqk" v-if="bblkType=='1'">
+								<button class="yx" @click="changeStatus(item.Id,item.Status,10,'确定有效报备？')">有效报备</button>
+								<button class="wx" @click="changeStatus(item.Id,item.Status,15,'确定无效报备？')">无效报备</button>						
+							</div>
+						</div>						
+					</div>
+					<!--有效报备-->
+					<div class="outer bbl-section" v-if="bblkType=='10'" v-for="item in bblk">
+						<a class="bbl-l" :href="'bb-info-yy.html?id='+item.Id">
+						<p><label><strong>{{item.FullName}}</strong></label><span>{{changeNum(item.Mobile)}}</span></p>
+						<p><label>报备通过：</label><span>{{item.AddTime}}</span></p>
+						<p><label>报备盘源：</label><span>{{item.ProjectName}}</span></p>
+						<p><label>报备人：</label><span>{{item.CompanyUserFullName}}  {{item.CompanyUserMobile}}</span></p>
+						<p><label>所属公司：</label><span>{{item.CompanyName}}</span></p>
+						</a>
+						<!--按钮-->
+						<div class="bbl-r">
+							<!--有效报备-->
+							<div class="yxbb" v-if="bblkType=='10'">
+								<button class="yx-df" @click="changeStatus(item.Id,item.Status,25,'确定有效到访？')">有效到访</button>
+								<button class="wx-df" @click="changeStatus(item.Id,item.Status,30,'确定无效到访？')">无效到访</button>
+							</div>
+						</div>						
+						
+					</div>
+					<!--有效到访-->
+					<div class="outer bbl-section" v-if="bblkType=='25'" v-for="item in bblk">
+						<a class="bbl-l" :href="'bb-info-yy.html?id='+item.Id">
+						<p><label><strong>{{item.FullName}}</strong></label><span>{{changeNum(item.Mobile)}}</span></p>
+						<p><label>到访时间：</label><span>{{item.AddTime}}</span></p>
+						<p><label>到访盘源：</label><span>{{item.ProjectName}}</span></p>
+						<p><label>报备人：</label><span>{{item.CompanyUserFullName}}  {{item.CompanyUserMobile}}</span></p>
+						<p><label>所属公司：</label><span>{{item.CompanyName}}</span></p>
+						</a>
+						<!--按钮-->
+						<div class="bbl-r">
+							<!--有效到访-->
+							<div class="yxdf" v-if="bblkType=='25'">
+								<label v-if="item.StatusCheckType==1" style="background: #ccc;">平台审核中...</label>
+								<button class="zc-df" @click="changeStatus(item.Id,item.Status,40,'确定已认购？')"  v-else>已认购</button>
+								<button class="zc-df" @click="changeStatus(item.Id,item.Status,25,'确定再次到访？')">再次到访</button>
+								<button class="wx-df" @click="changeStatus(item.Id,item.Status,30,'确定无效到访？')">无效到访</button>						
+							</div>
+						</div>						
+					</div>					
+					<!--已认购-->
+					<div class="outer bbl-section" v-if="bblkType=='40'" v-for="item in bblk">
+						<a class="bbl-l" :href="'bb-info-yy.html?id='+item.Id">
+						<p><label><strong>{{item.FullName}}</strong></label><span>{{changeNum(item.Mobile)}}</span></p>
+						<p><label>认购时间：</label><span>{{item.AddTime}}</span></p>
+						<p><label>认购盘源：</label><span>{{item.ProjectName}}</span></p>
+						<p><label>认购单位：</label><span>深圳万科地产</span></p>
+						<p><label>报备人：</label><span>{{item.CompanyUserFullName}}  {{item.CompanyUserMobile}}</span></p>
+						<p><label>所属公司：</label><span>{{item.CompanyName}}</span></p>
+						</a>
+						<!--按钮-->
+						<div class="bbl-r">
+							<!--已认购-->
+							<div class="yrg" v-if="bblkType=='40'">
+								<label v-if="item.StatusCheckType==1" style="background: #ccc;">平台审核中...</label>
+								<div v-else>
+									<button class="yqy" @click="changeStatus(item.Id,item.Status,50,'确定已签约？')" v-if="item.StatusCheckType!=1">已签约</button>
+									<button class="yqg" @click="changeStatus(item.Id,item.Status,55,'确定已弃购？')">已弃购</button>	
+								</div>
+							</div>
+						</div>						
+						
+					</div>
+					<!--已签约-->
+					<div class="outer bbl-section" v-if="bblkType=='50'" v-for="item in bblk">
+						<a class="bbl-l" :href="'bb-info-yy.html?id='+item.Id">
+						<p><label><strong>{{item.FullName}}</strong></label><span>{{changeNum(item.Mobile)}}</span></p>
+						<p><label>合同时间：</label><span>{{item.AddTime}}</span></p>
+						<p><label>合同盘源：</label><span>{{item.ProjectName}}</span></p>
+						<p><label>合同单位：</label><span>深圳万科地产</span></p>
+						<p><label>报备人：</label><span>{{item.CompanyUserFullName}}  {{item.CompanyUserMobile}}</span></p>
+						<p><label>所属公司：</label><span>{{item.CompanyName}}</span></p>
+						</a>
+						<!--按钮-->
+						<div class="bbl-r">
+							<!--已签约-->
+							<div class="yrg" v-if="bblkType=='50'">
+								<label v-if="item.StatusCheckType==1&&item.OldStatus==55" style="background: #ccc;">坏账审核中...</label>
+								<label v-if="item.StatusCheckType==1&&item.OldStatus==60" style="background: #ccc;">结佣审核中...</label>
+								<div v-if="item.StatusCheckType!=1">
+									<button class="yqy" @click="changeStatus(item.Id,item.Status,60,'确定已结佣？')">已结佣</button>
+									<button class="yqg" @click="changeStatus(item.Id,item.Status,55,'确定是坏账？')">坏账</button>
+								</div>
+							</div>
+						</div>						
+						
+					</div>	
+					<!--已结佣-->
+					<div class="outer bbl-section" v-if="bblkType=='60'" v-for="item in bblk">
+						<a class="bbl-l" :href="'bb-info-yy.html?id='+item.Id">
+						<p><label><strong>{{item.FullName}}</strong></label><span>{{changeNum(item.Mobile)}}</span></p>
+						<p><label>结佣时间：</label><span>{{item.AddTime}}</span></p>
+						<p><label>结佣盘源：</label><span>{{item.ProjectName}}</span></p>
+						<p><label>报备人：</label><span>{{item.CompanyUserFullName}}  {{item.CompanyUserMobile}}</span></p>
+						<p><label>所属公司：</label><span>{{item.CompanyName}}</span></p>
+						</a>	
+						<!--按钮-->
+						<div class="bbl-r">
+							<!--已结佣-->
+							<div class="yrg" v-if="bblkType=='60'">
+								<label v-if="item.StatusCheckType==1" style="background: #ccc;">平台审核中...</label>
+							</div>
+						</div>											
+					</div>	
+					<!--已失效-->
+					<div class="outer bbl-section" v-if="bblkType=='4,15,30,45,55'" v-for="item in bblk">
+						<a class="bbl-l" :href="'bb-info-yy.html?id='+item.Id">
+						<p><label><strong>{{item.FullName}}</strong></label><span>{{changeNum(item.Mobile)}}</span></p>
+						<p><label>失效时间：</label><span>{{item.AddTime}}</span></p>
+						<p>
+							<label>失效原因：</label>
+							<span v-if="item.Remarks!=null">{{item.Remarks}}</span>
+							<span v-else-if="item.Status==4">跟进无效</span>
+							<span v-else-if="item.Status==15">无效报备</span>
+							<span v-else-if="item.Status==30">无效到访</span>
+							<span v-else-if="item.Status==45">已弃购</span>
+							<span v-else-if="item.Status==55">签约弃购</span>							
+						</p>
+						<p><label>报备人：</label><span>{{item.CompanyUserFullName}}  {{item.CompanyUserMobile}}</span></p>
+						<p><label>所属公司：</label><span>{{item.CompanyName}}</span></p>
+						</a>
+					</div>		
+					<!-- 无记录时 -->
+					<div v-if="bblk==''" class="bb-none"></div>
+				</div>
+				
+				<a style="display: block;text-align: center;line-height: 1rem;" v-if="9<bblk.length&&bblk.length!=dataTotal" @click="readMore">查看更多</a>
+			</div>
+		
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/bb-lk.js" ></script>		
+	</body>
+</html>

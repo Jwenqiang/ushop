@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+<meta name="format-detection" content="telephone=no" /> 
+<!--uc强制全屏-->
+<meta name="full-screen" content="yes">
+<!--QQ强制全屏-->
+<meta name="x5-fullscreen" content="true">	
+<title>消息通知</title>
+<link rel="stylesheet" href="css/font-awesome.min.css" />
+<link rel="stylesheet" href="css/weui.min.css">
+<link rel="stylesheet" href="css/jquery-weui.min.css">		
+<link rel="stylesheet" href="css/style.css" />
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+<!--这里以iphone6尺寸开发，自动适配-->
+</head>
+<body id="body" style="background: #f3f4f8;">
+<div id="loadingDiv"><div id="loadImg"></div></div>			
+	<div class="whole">
+<!--内容START-->	
+		<div class="massage">
+			<a class="massage-list massage-activity" href="massage-hd.html">
+				<p class="ml-title"><label>活动提醒</label><span v-if="hdInfo.AddTime!=null&&hdInfo.Id>0">{{hdInfo.AddTime}}</span><span v-else>--</span> </p>
+				<p v-if="hdInfo.Id>0">"{{hdInfo.ActivityTitle}}"<span v-if="hdInfo.SonType==1">活动开始报名</span><span v-if="hdInfo.SonType==2&&hdInfo.State==true">报名成功</span><span v-if="hdInfo.SonType==2&&hdInfo.State==false">已取消报名</span></p>
+				<p v-else>暂无消息</p>
+				<span class="m-num" v-if="hdMsg.Count>0">{{hdMsg.Count}}</span>
+			</a>
+			<a class="massage-list  massage-u" href="massage-ug.html">
+				<p class="ml-title"><label>U购头条</label><span v-if="ugInfo.AddTime!=null&&ugInfo.Id>0">{{ugInfo.UpdateTimeT}}</span><span v-else>--</span></p>
+				<p v-if="ugInfo.Id>0">{{ugInfo.Title}}</p>
+				<p v-else>暂无消息</p>
+				<span class="m-num" v-if="ugMsg.Count>0">{{ugMsg.Count}}</span>
+			</a>		
+			<a class="massage-list  massage-xttz" href="massage-xt.html">
+				<p class="ml-title"><label>系统通知</label><span v-if="xtInfo.AddTime!=null&&xtInfo.Id>0">{{xtInfo.AddTime}}</span><span v-else>--</span></p>
+				<p v-if="xtInfo.Id>0">{{xtInfo.Title}}</p>
+				<p v-else>暂无消息</p>
+				<span class="m-num" v-if="0<xtMsg.Count&&xtMsg.Count<10">{{xtMsg.Count}}</span>
+				<span class="m-num" v-if="9<xtMsg.Count">9+</span>
+			</a>			
+		</div>		
+		<a id="scrollUp" href="javascript:void(0);"><i class="fa fa-angle-up"></i></a>
+	<!--内容END-->
+	<!--公共底部-->
+	<footer>
+	  <div class="weui-tabbar">
+	    <a href="index.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/fx.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">发现</p>
+	    </a>
+	    <a href="buy_house.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/fy.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">房源</p>
+	    </a>
+	    <a href="my-client.html" class="weui-tabbar__item" v-if="userRole=='2'||userRole=='3'||userRole=='4'">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/kh.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">客户</p>
+	    </a>
+	    <a href="massage.html" class="weui-tabbar__item weui-bar__item--on">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/xx1.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">消息</p>
+	    </a>	    
+	    <a href="account.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/wd.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">我的</p>
+	    </a>
+	  </div>	
+	</footer>		
+</div>	
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-weui.min.js"></script>	
+<script src="js/swiper.min.js"></script>
+<script src="js/city-picker.min.js"></script>
+<script type="text/javascript" src="js/main.js" ></script>
+<script type="text/javascript" src="js/ajax/massage.js" ></script>
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},100)					
+			</script>		
+</body>
+</html>

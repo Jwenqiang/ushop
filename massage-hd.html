@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+<meta name="format-detection" content="telephone=no" /> 
+<!--uc强制全屏-->
+<meta name="full-screen" content="yes">
+<!--QQ强制全屏-->
+<meta name="x5-fullscreen" content="true">	
+<title>活动提醒</title>
+<link rel="stylesheet" href="css/font-awesome.min.css" />
+<link rel="stylesheet" href="css/weui.min.css">
+<link rel="stylesheet" href="css/jquery-weui.min.css">		
+<link rel="stylesheet" href="css/style.css" />
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+<!--这里以iphone6尺寸开发，自动适配-->
+</head>
+<body id="body" style="background: #F5F5F7;">
+<div id="loadingDiv"><div id="loadImg"></div></div>			
+	<div class="whole">
+<!--内容START-->	
+		<div class="massage-hd">
+			<section v-for="item in hdList">
+				<div v-if="item.SonType==2">
+					<a :href="'activity.html?id='+item.ActivityId+'&ym=massage-hd.html'">
+						<p class="massage-time">{{item.AddTime}}</p>
+						<div class="massage-info">
+							<h5 v-if="item.State==false">取消报名成功</h5>
+							<h5 v-if="item.State==true">已报名成功</h5>
+							<p class="massage-tip">您已成功<span v-if="item.State==false">取消</span>报名"{{item.ActivityTitle}}"。</p>
+							<div class="massage-info-msg">
+								<p><label>活动日期：</label><span>{{item.StartTime}}至{{item.EndTime}}</span></p>
+								<p v-if="item.ActivityAddress!=null&&item.ActivityAddress!=''"><label>活动地点：</label><span>{{item.ActivityAddress}}</span></p>
+								<p v-if="item.ActivityRoute!=null&&item.ActivityRoute!=''"><label>活动路线：</label><span>{{item.ActivityRoute}}</span></p>
+							</div>
+							<p class="massage-b">查看详情<i class="fa fa-angle-right"></i></p>
+						</div>
+					</a>
+				</div>
+				<div v-if="item.SonType==1">
+					<a :href="'activity.html?id='+item.ActivityId">
+						<p class="massage-time">{{item.AddTime}}</p>
+						<div class="massage-info">
+							<!-- <h5 style="max-height: 3rem;overflow: hidden;"><img :src="item.MainImg" width="100%"/> </h5> -->
+							<p class="massage-tip">{{item.ActivityTitle}}</p>
+							<div class="massage-info-msg">
+								<p>{{item.ActivityTitleSecond}}</p>
+								<p v-if="item.SignActivityState==2">
+									<label>报名倒计时：</label>
+									<span id="mtime">    
+										<strong id="day" class="day">{{dTime(item.djs)[0]}}</strong>天  
+										<strong id="hour" class="hour">{{dTime(item.djs)[1]}}</strong>时  
+										<strong id="minute" class="minute">{{dTime(item.djs)[2]}}</strong>分  
+									</span>
+								</p>
+								<p v-if="item.SignActivityState==3"><span>报名已结束~</span></p>
+								<p v-if="item.SignActivityState==1"><span>报名未开始~</span></p>
+							</div>
+							<p class="massage-b">查看详情<i class="fa fa-angle-right"></i></p>
+						</div>
+					</a>					
+				</div>
+			</section>		
+			<!--没有记录时显示-->
+			<div class="massage-no" v-if="hdList.length==0">
+				<p></p>
+				<p>暂无消息~</p>
+			</div>			
+		</div>		
+		<!-- <a id="scrollUp" href="javascript:void(0);"><i class="fa fa-angle-up"></i></a> -->
+	<!--内容END-->	
+</div>	
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-weui.min.js"></script>	
+<script src="js/swiper.min.js"></script>
+<script src="js/city-picker.min.js"></script>
+<script type="text/javascript" src="js/main.js" ></script>
+<script type="text/javascript" src="js/ajax/massage-hd.js" ></script>
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>
+<!-- <script type="text/javascript">  
+  
+$(function(){  
+    countDown("2018/11/24 10:31:00","#mtime .day","#mtime .hour","#mtime .minute","#mtime .second");  
+      
+});  
+  
+function countDown(time,day_elem,hour_elem,minute_elem,second_elem){  
+    //if(typeof end_time == "string")  
+    var end_time = new Date(time).getTime(),//月份是实际月份-1  
+    current_time = new Date().getTime(),  
+    sys_second = (end_time-new Date().getTime());  
+    var timer = setInterval(function(){  
+        if (sys_second > 0) {  
+            sys_second -= 10;  
+            var day = Math.floor((sys_second /1000/ 3600) / 24);  
+            var hour = Math.floor((sys_second /1000/ 3600) % 24);  
+            var minute = Math.floor((sys_second /1000/ 60) % 60);  
+            var second = Math.floor(sys_second/1000 % 60);  
+            var haomiao = Math.floor(sys_second%1000);  
+            day_elem && $(day_elem).text(day);//计算天  
+            $(hour_elem).text(hour<10?"0"+hour:hour);//计算小时  
+            $(minute_elem).text(minute<10?"0"+minute:minute);//计算分  后面可+'分'
+            $(second_elem).text(second<10?"0"+second:second);// 计算秒  
+            $("#haomiao").text(haomiao);// 计算毫秒  
+        }else {
+        	$("#mtime").remove();//删除倒计时显示层
+            clearInterval(timer);  
+        }  
+    }, 10);  
+}  
+</script> -->
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},500)					
+			</script>
+</body>
+</html>

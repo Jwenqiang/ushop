@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+<meta name="format-detection" content="telephone=no" /> 
+<!--uc强制全屏-->
+<meta name="full-screen" content="yes">
+<!--QQ强制全屏-->
+<meta name="x5-fullscreen" content="true">	
+<title>U购头条</title>
+<link rel="stylesheet" href="css/font-awesome.min.css" />
+<link rel="stylesheet" href="css/weui.min.css">
+<link rel="stylesheet" href="css/jquery-weui.min.css">		
+<link rel="stylesheet" href="css/style.css" />
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+<!--这里以iphone6尺寸开发，自动适配-->
+</head>
+<body id="body" style="background: #F5F5F7;">
+<div id="loadingDiv"><div id="loadImg"></div></div>			
+	<div class="whole">
+<!--内容START-->	
+		<div class="massage-hd massage-ug">
+			<section v-for="item in ugList">
+				<a :href="'zx-info.html?id='+item.Id">
+					<p class="massage-time">{{item.UpdateTimeT}}</p>
+					<div class="massage-info">
+						<h5 v-if="item.CoverUrl!=null||item.CoverUrl!=''"><img :src="item.CoverUrl" width="100%"/> </h5>
+						<p class="massage-tip">{{item.Title}}</p>
+						<div class="massage-info-msg">
+							<p v-html="item.Introduction"></p>
+						</div>
+						<p class="massage-b">查看详情<i class="fa fa-angle-right"></i></p>
+					</div>
+				</a>
+			</section>			
+			<!--没有记录时显示-->
+			<div class="massage-no" v-if="ugList.length==0">
+				<p></p>
+				<p>暂无消息</p>
+			</div>			
+		</div>		
+		<a id="scrollUp" href="javascript:void(0);"><i class="fa fa-angle-up"></i></a>
+	<!--内容END-->
+	
+</div>	
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-weui.min.js"></script>	
+<script src="js/swiper.min.js"></script>
+<script src="js/city-picker.min.js"></script>
+<script type="text/javascript" src="js/main.js" ></script>
+<script type="text/javascript" src="js/ajax/massage-ug.js" ></script>
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},500)					
+			</script>		
+</body>
+</html>

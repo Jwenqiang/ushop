@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+<meta name="format-detection" content="telephone=no" /> 
+<!--uc强制全屏-->
+<meta name="full-screen" content="yes">
+<!--QQ强制全屏-->
+<meta name="x5-fullscreen" content="true">	
+<title>资讯详情</title>
+<link rel="stylesheet" href="css/font-awesome.min.css" />
+<link rel="stylesheet" href="css/weui.min.css">
+<link rel="stylesheet" href="css/jquery-weui.min.css">		
+<link rel="stylesheet" href="css/style.css" />
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+<style>
+	.viewerimg {
+		width: 100% !important;
+		height: auto;
+	}		
+	.activity-m{padding: 0;box-shadow: 0 0 6px #ededed;}
+	.hasT{overflow: hidden !important;}
+</style>
+<!--这里以iphone6尺寸开发，自动适配-->
+</head>
+<body id="body">
+<div id="loadingDiv"><div id="loadImg"></div></div>			
+	<div class="whole" :class="isF?'':'hasT'">
+<!--内容START-->	
+		<div class="mui-box">
+			<div class="mui-top">
+				<h4>{{zx.Title}}</h4>
+                <p>{{zx.UpdateTimeT}}</p>
+				<h1 v-if="wz" style="text-align: center;color: #999;font-weight: 400;"><i class="fa fa-file-o"></i> 文章已被删除~</h1>
+			</div>
+			<div class="mui-msg" v-html="zx.Content">
+			</div>	
+			<div class="activity-m" id="abm" style="padding-bottom: 0;margin-top: 0;" v-if="zx.EnrollBl">
+				<div class="am-form">
+					<h4>报名参加</h4>
+					<p><label>姓名：</label><input type="text" placeholder="请输入姓名" v-model="msg.name"/></p>
+					<p><label>电话：</label><input type="number" placeholder="请输入您的手机号" v-model="msg.phone"/></p>
+					<p><label>人数：</label><input type="number" placeholder="请输入参加人数" v-model="msg.num"/></p>
+					<button id="go-bm" @click="goActive">立即报名</button>
+				</div>
+			</div>			
+			<div class="hr20"></div>
+			<div class="news-msg" v-if="house_zx.length>0">
+				<article style="font-size: 0.36rem;font-weight: 600;color: #203140;margin-bottom: 0.4rem;">推荐阅读</article>
+				<a class="news-all" style="padding: 0.1rem 0;" v-for="item in house_zx" :href="'zx-info.html?id='+item.Id">
+							<div class="news-all-l">
+								<h5>{{item.Title}}</h5>
+								<p>{{item.UpdateTime}}</p>
+							</div>
+							<div class="news-all-r">
+								<img :src="item.CoverUrl" width="100%" />
+							</div>
+					<div class="clear"></div>
+				</a>	
+			</div>						
+		</div>	
+		<div class="gocall" v-if="isShare&&isMobile==true"><a :href="'tel:'+callNum"><i class="fa fa-phone" style="color: #fff;"></i></a></div>
+		<div class="gocall" v-if="isShare&&isMobile==false" @click.stop="callP(callNum)"><i class="fa fa-phone"></i></div>
+		<a class="gohome" href="index.html?x=1&from=singlemessage" v-if="isShare" @click.stop="showF=true">首页</a>
+		<!-- <a id="scrollUp" href="javascript:void(0);"><i class="fa fa-angle-up"></i></a> -->
+	<!--内容END-->
+	<!--公共底部-->
+	<div class="mui-tj" v-if="correlation.ProjectId>0">
+		<label class="mui-img"><img :src="correlation.MainImg"/></label>
+		<label>
+			<p style="font-weight: bold;">{{correlation.ProjectName}}</p>
+			<p style="color: #C0C4C9;" v-if="correlation.Aprice>0">均价<span class="red">{{correlation.Aprice}}</span>元/㎡</p>
+			<p style="color: #C0C4C9;" v-else>均价<span class="red">待定</span></p>
+		</label>
+		<a :href="'house_info.html?id='+correlation.ProjectId+'&SourceUserId='+SourceUserId">查看详情</a>
+	</div>	
+<!-- 弹窗 -->			
+		<div class="show-af" v-if="callPhone" style="position: fixed;top: 0;left: 0;width: 100%;height: 100%;z-index: 9990;">
+			<div class="bj" style="z-index: 9991;position: fixed;"></div>
+			<div class="af-suc" style="z-index: 9992;background: #fff;width: 84%;left: 8%;height: 5rem;top: 2.8rem;border-radius: 4px;box-shadow: 0 0 2px #ccc;padding: 0.8rem 0.6rem;color: #000;">
+				<div class="phone-msg" style="text-align: left;">
+					<p style="margin: 0.2rem 0;font-size: 0.4rem;">{{phoneF}}-<span style="color: #549fdd;">{{phoneL}}</span></p>
+					<p style="font-size: 0.30rem;">电话接通后，请按照语音提示输入{{phoneL.length}}位数分机号,以便转接专属顾问。</p>
+					<a :href="'tel:'+phoneMsg" style="font-size: 0.32rem; display: block;margin: 0.6rem 0 0;text-align: center;width: 100%;height: 0.9rem;line-height: 0.9rem;background: #549fdd;color: #fff;border-radius: 6px;">拨打电话</a>
+				</div>
+				<label @click="callPhone=false" style="display:block;width: 0.8rem;height: 0.8rem; position: absolute;right: 0.1rem;top: 0.1rem;background: url(img/close.png) center no-repeat;background-size: 0.52rem;"></label>
+			</div>
+		</div>		
+</div>	
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-weui.min.js"></script>	
+<script src="js/swiper.min.js"></script>
+<script src="js/city-picker.min.js"></script>
+<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+<script type="text/javascript" src="js/main.js" ></script>
+<script type="text/javascript" src="js/ajax/zx-info.js" ></script>
+<!-- <script type="text/javascript" src="js/wx.js"></script> -->
+<script>
+// 		setTimeout(function(){
+// 			wxShared();
+// 		},100)	
+// function wxShared(){
+// 	if(Sstorage.getItem("urlf")==String(window.location.href)){
+// 		tp=Sstorage.getItem("tp");
+// 		ms=Sstorage.getItem("ms");
+// 		bt=Sstorage.getItem("bt");
+// 		u=window.location.href;
+// 	}
+	
+// 	shareAll();
+// 	function shareAll(){	
+// 		axios({
+// 			method:"post",
+// 			url:"/Wx/GetJsSdkUiPackage",
+// 			data:JSON.stringify({Url:u})
+// 		})
+// 		.then(function(e){
+// 			console.log(e);
+// 			if(e.data.code==1001){
+// 			  wx.config({
+// 				  debug: false,
+// 				  appId: e.data.data.AppId,
+// 				  timestamp: e.data.data.Timestamp,
+// 				  nonceStr: e.data.data.NonceStr,
+// 				  signature: e.data.data.Signature,
+// 				  jsApiList: ["updateAppMessageShareData","updateTimelineShareData","onMenuShareTimeline", "onMenuShareAppMessage", "onMenuShareQQ", "onMenuShareWeibo","onMenuShareQZone",
+// 						"chooseImage", "getNetworkType", "hideOptionMenu", "showOptionMenu", "hideMenuItems",
+// 						"showMenuItems", "hideAllNonBaseMenuItem", "showAllNonBaseMenuItem", "closeWindow"
+// 					]
+// 			  });			
+// 			}
+// 		})	
+// 		.catch(function(n){
+// 			
+// 		})
+// 	}	
+	
+// 	wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
+// 	// 旧版
+// 		wx.onMenuShareTimeline({ 
+// 			title: bt, // 分享标题
+// 			desc: ms, // 分享描述
+// 			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+// 			imgUrl: tp, // 分享图标
+// 			success: function () {
+// 			  // 设置成功
+// 			  console.log(33);
+// 			}
+// 		})
+// 		wx.onMenuShareAppMessage({ 
+// 			title: bt, // 分享标题
+// 			desc: ms, // 分享描述
+// 			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+// 			imgUrl: tp, // 分享图标
+// 			success: function () {
+// 			  // 设置成功
+// 			}
+// 		})		
+// 		wx.onMenuShareQQ({ 
+// 			title: bt, // 分享标题
+// 			desc: ms, // 分享描述
+// 			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+// 			imgUrl: tp, // 分享图标
+// 			success: function () {
+// 			  // 设置成功
+// 			}
+// 		})	
+// 		wx.onMenuShareWeibo({ 
+// 			title: bt, // 分享标题
+// 			desc: ms, // 分享描述
+// 			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+// 			imgUrl: tp, // 分享图标
+// 			success: function () {
+// 			  // 设置成功
+// 			}
+// 		})
+// 		wx.onMenuShareQZone({ 
+// 			title: bt, // 分享标题
+// 			desc: ms, // 分享描述
+// 			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+// 			imgUrl: tp, // 分享图标
+// 			success: function () {
+// 			  // 设置成功
+// 			}
+// 		})
+// 	});			
+// }		
+</script>
+
+</body>
+</html>

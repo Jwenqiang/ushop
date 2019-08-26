@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>客户详情</title>
+		<!--运营人员/销售人员权限界面-->
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>		
+	</head>
+	<body style="background: #f5f5f7;">
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+	<!--合作公司-->
+			<div class="bb-info">
+				<div class="bbi-top">
+					<h4>客户跟进进度</h4>
+					<div class="bbi-jd">
+						<section v-for="item in jdInfo" v-if="jdInfo.length>0">
+							<p>{{item.AddTime}}</p>
+							<p><strong>{{item.StatusDes}}<span v-if="item.StatusCheckType===3">（审核不通过）</span></strong></p>
+                            <span v-if="item.StatusCheckType!=3">
+                                <p v-if="item.Status==25">到访盘源：{{bbInfo.ProjectName}}</p>
+                                <p v-if="item.Status==10">报备盘源：{{bbInfo.ProjectName}}</p>
+                                <p v-if="item.Status==40">认购盘源：{{bbInfo.ProjectName}}</p>
+                                <p v-if="item.Status==40">认购单位：{{item.Company}}</p>
+                                <p v-if="item.Status==40">认购金额：{{item.Amount}}</p>
+
+                                <p v-if="item.Status==50">签约盘源：{{bbInfo.ProjectName}}</p>
+                                <p v-if="item.Status==50">签约单位：{{item.Company}}</p>
+                                <p v-if="item.Status==50">签约金额：{{item.Amount}}</p>
+
+                                <p v-if="item.Status==60">结佣盘源：{{bbInfo.ProjectName}}</p>
+                                <p v-if="item.Status==60">结佣单位：{{item.Company}}</p>
+                                <p v-if="item.Status==60">结佣金额：{{item.Amount}}</p>
+                            </span>
+						</section>	
+						<p v-if="jdInfo.length==0">暂无数据~</p>						
+					</div>
+				</div>
+				<div class="hr10"></div>
+				<div class="bbi-m">
+					<p><label>客户姓名：</label><span>{{bbInfo.FullName}}</span></p>
+					<p><label>联系电话：</label><span>{{bbInfo.Mobile}}</span><a :href="'tel:'+bbInfo.Mobile"></a></p>
+					<p><label>客户性别：</label><span>{{Gender}}</span></p>
+					<p v-if="role==4"><label>客户质量：</label><span>{{grade}}级</span></p>
+				</div>
+				<div class="hr10"></div>
+				<div class="bbi-m">
+					<p v-if="bbInfo.ProjectName!=''&&bbInfo.ProjectName!=null"><label>报备楼盘：</label><span>{{bbInfo.ProjectName}}</span></p>
+					<p v-if="bbInfo.VisitTime!=''&&bbInfo.VisitTime!=null"><label>预计到访时间：</label><span>{{bbInfo.VisitTime}}</span></p>
+				</div>
+				<div class="hr10"></div>
+				<div class="bbi-m">
+					<p><label>所属公司：</label><span>{{bbInfo.CompanyName}}</span></p>
+					<p><label>联系人：</label><span>{{bbInfo.CompanyUserFullName}}</span></p>
+					<p><label>联系电话：</label><span>{{bbInfo.CompanyUserMobile}}</span><a :href="'tel:'+bbInfo.CompanyUserMobile"></a></p>
+				</div>
+				<div class="hr10"></div>
+				<div class="bbi-b" v-if="role==3">
+					<h4>客户购房意向</h4>
+					<p>{{bbInfo.CustomerDemand}}</p>
+					<p v-if="bbInfo.CustomerDemand==''||bbInfo.CustomerDemand==null">暂无</p>
+				</div>
+				<div class="hr10"></div>
+				<div class="bbi-rj">
+					<h4>跟进日记（仅自己可见）</h4>
+					<div class="rj-info">
+						<section v-for="item in logList">
+							<a href="javascript:;" @click="delLog(item.Id)">删除</a>
+							<p>{{item.AddTime}}</p>
+							<div class="rj-nr">
+								{{item.Remarks}}
+							</div>
+						</section>
+						<p v-if="logList==''||logList==null">暂无</p>
+					</div>
+				</div>
+				<a class="bbi-bj">
+					<i class="fa fa-edit"></i>
+					编辑跟进日志
+				</a>
+			</div>
+			<div class="show-rj" style="left: 7.5rem;">
+				<div class="show-edit">
+					<p>跟进日志<span class="rj-close"></span></p>
+					<textarea placeholder="请输入跟进日志" v-model="log"></textarea>
+					<button class="rj-btn" @click="addLog">确定</button>
+				</div>
+			</div>				
+		</div>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/bb-info-yy.js" ></script>		
+	<script>
+		$(function(){
+			$(".bbi-bj").click(function(){
+				$(".show-rj").css("left",'0');
+			})
+			$(".rj-btn,.rj-close").click(function(){
+				$(".show-rj").css("left",'7.5rem');
+			})
+		})
+	</script>
+	</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+<meta name="format-detection" content="telephone=no" /> 
+<!--uc强制全屏-->
+<meta name="full-screen" content="yes">
+<!--QQ强制全屏-->
+<meta name="x5-fullscreen" content="true">	
+<title>客户</title>
+<link rel="stylesheet" href="css/font-awesome.min.css" />
+<link rel="stylesheet" href="css/weui.min.css">
+<link rel="stylesheet" href="css/jquery-weui.min.css">		
+<link rel="stylesheet" href="css/style.css" />
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+<!--这里以iphone6尺寸开发，自动适配-->
+
+</head>
+<body id="body" style="background: #f2f5f7;">
+<div id="loadingDiv"><div id="loadImg"></div></div>			
+	<div class="whole">
+<!--内容START-->	
+<!--合作公司界面-->
+	<div class="kh-gs" v-if="RoleType=='2'">
+		<div class="mc-top">
+			<div class="mc-top-ico" style="height: 2.4rem;">
+				<label class="mc-ico-t"></label>
+				<div class="mc-ico-info" style="margin-top: 0.56rem;">
+					<a class="mc-ico-y" href="bb-ybb.html">
+						<strong>{{allData.Operate}}</strong>
+						<p>已报备客户</p> 
+					</a>					
+					<a class="mc-ico-d" href="bb-ywt.html">
+						<strong>{{allData.Sale}}</strong>
+						<p>已委托客户</p> 
+					</a>					
+					<div class="clear"></div>
+				</div>
+			</div>
+		</div>
+		<div class="mc-m" style="margin-top: 1.8rem;">
+			<a class="mc-m-bb">
+				报备统计
+			</a>
+			<a class="mc-m-dr">
+				委托统计
+			</a>
+			<a class="mc-m-xm">
+				项目统计
+			</a>				
+			<div class="clear"></div>
+		</div>
+		<div class="mc-b">
+			<a class="mc-b-bb" href="bb-client.html">
+				报备客户
+			</a>			
+			<a class="mc-b-wt" href="bb-client-dr.html">
+				委托客户
+			</a>
+		</div>			
+	</div>	
+<!--销售/资源人员界面-->		
+	<div class="kh-xs" v-if="RoleType=='3'||RoleType=='4'">
+		<!--资源人员-->
+		<div class="mc-top mc-yy" v-if="RoleType=='3'">
+			<div class="mc-top-ico">
+				<label class="mc-ico-t"></label>
+				<div class="mc-ico-info">
+					<a class="mc-ico-y" :href="'bb-lk.html?ApiStatus=1'">
+						<strong>{{allData.StayConfirmed}}</strong>
+						<p>待确客</p> 
+					</a>
+					<a class="mc-ico-d" :href="'bb-lk.html?ApiStatus=10'">
+						<strong>{{allData.ReportEffective}}</strong>
+						<p>有效报备</p> 
+					</a>
+					<a class="mc-ico-d" :href="'bb-lk.html?ApiStatus=25'">
+						<strong>{{allData.ReachEffective}}</strong>
+						<p>有效到访</p> 
+					</a>
+					<a class="mc-ico-d" :href="'bb-lk.html?ApiStatus=40'">
+						<strong>{{allData.Subscription}}</strong>
+						<p>已认购</p> 
+					</a>
+					<a class="mc-ico-d" :href="'bb-lk.html?ApiStatus=50'">
+						<strong>{{allData.SignContract}}</strong>
+						<p>已签合同</p> 
+					</a>
+					<a class="mc-ico-d" :href="'bb-lk.html?ApiStatus=60'">
+						<strong>{{allData.Maid}}</strong>
+						<p>已结佣</p> 
+					</a>
+					<a class="mc-ico-d" :href="'bb-lk.html?ApiStatus=4,15,30,45,55'">
+						<strong>{{allData.AlreadyInvalid}}</strong>
+						<p>已失效</p> 
+					</a>						
+					<div class="clear"></div>
+				</div>
+			</div>
+		</div>
+		<!--销售人员-->
+		<div class="mc-top mc-xs" v-if="RoleType=='4'">
+			<div class="mc-top-ico">
+				<label class="mc-ico-t"></label>
+				<div class="mc-ico-info">
+					<a class="mc-ico-y" :href="'bb-dr-lk.html?ApiStatus=2'">
+						<strong>{{allData.StayFollow}}</strong>
+						<p>待跟进</p> 
+					</a>
+					<a class="mc-ico-d" :href="'bb-dr-lk.html?ApiStatus=3'">
+						<strong>{{allData.AlreadyFollow}}</strong>
+						<p>跟进中</p> 
+					</a>
+					<a class="mc-ico-d" :href="'bb-dr-lk.html?ApiStatus=1,10'">
+						<strong>{{allData.StayConfirmed+allData.ReportEffective}}</strong>
+						<p>已报备</p> 
+					</a>
+					<a class="mc-ico-d" :href="'bb-dr-lk.html?ApiStatus=25'">
+						<strong>{{allData.ReachEffective}}</strong>
+						<p>已到访</p> 
+					</a>
+					<a class="mc-ico-d" :href="'bb-dr-lk.html?ApiStatus=40'">
+						<strong>{{allData.Subscription}}</strong>
+						<p>已认购</p> 
+					</a>
+					<a class="mc-ico-d" :href="'bb-dr-lk.html?ApiStatus=50'">
+						<strong>{{allData.SignContract}}</strong>
+						<p>已签合同</p> 
+					</a>
+					<a class="mc-ico-d" :href="'bb-dr-lk.html?ApiStatus=60'">
+						<strong>{{allData.Maid}}</strong>
+						<p>已结佣</p> 
+					</a>	
+					<a class="mc-ico-d" :href="'bb-dr-lk.html?ApiStatus=4,15,30,45,55'">
+						<strong>{{allData.AlreadyInvalid}}</strong>
+						<p>已失效</p> 
+					</a>					
+					<div class="clear"></div>
+				</div>
+			</div>
+		</div>
+		<div class="mc-m">
+			<a class="mc-m-bb">
+				报备统计
+			</a>
+			<a class="mc-m-dr">
+				委托统计
+			</a>
+			<a class="mc-m-xm">
+				项目统计
+			</a>	
+			<a class="mc-m-gs">
+				公司统计
+			</a>				
+			<div class="clear"></div>
+		</div>
+	</div>	
+	<!--内容END-->
+	<!--公共底部-->
+	<footer>
+	  <div class="weui-tabbar">
+	    <a href="index.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/fx.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">发现</p>
+	    </a>
+	    <a href="buy_house.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/fy.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">房源</p>
+	    </a>
+	    <a href="my-client.html" class="weui-tabbar__item weui-bar__item--on">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/kh1.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">客户</p>
+	    </a>
+	    <a href="massage.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/xx.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">消息</p>
+	    </a>	    
+	    <a href="account.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/wd.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">我的</p>
+	    </a>
+	  </div>	
+	</footer>		
+</div>	
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-weui.min.js"></script>	
+<script src="js/swiper.min.js"></script>
+<script src="js/city-picker.min.js"></script>
+<script type="text/javascript" src="js/main.js" ></script>
+<script type="text/javascript" src="js/ajax/my-client.js" ></script>
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},500)					
+			</script>		
+<script>
+	$(".mc-m a").click(function(){
+		$.toast("敬请期待~", "text");
+	})
+</script>
+</body>
+</html>

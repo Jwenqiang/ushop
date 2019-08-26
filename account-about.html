@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>关于好房U购</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>		
+	</head>
+	<body>
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+			<div class="about">
+				<div class="a-logo"></div>
+				<div class="a-about">
+					<p>房友圈好房U购是一个面向客户自主购房的新房平台。平台主打“盘源+自主+优惠+服务”的平台特色，普通的资讯平台只提供资讯查询功能，好房U购有深圳及临深超500个一手盘源并直接参与项目策划及销售工作，不仅可为客户提供真实的一手房源及优惠资讯，更可提供购房前中后一条龙专业服务，全面打通资讯与销售，帮助客户成功购房！</p>
+				</div>	
+				<div class="a-tg">
+					<img src="img/ab-ewm.jpg"/>
+				</div>
+			</div>
+		</div>	
+		
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>		
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<!-- <script type="text/javascript" src="js/wx.js"></script>			 -->
+	<script>
+		 // 微信分享数据
+		 Sstorage.setItem("urlf",window.location.href);
+		 Sstorage.setItem("bt","好房U购VIP用户权益");
+		Sstorage.setItem("tp","https://hfugweb.centaline.com.cn/img/share/wx_share_logo.jpg");
+		Sstorage.setItem("ms","最全⼀⼿房源，五大购房福利，合作企业员工购房享受优惠折上折，品质生活从买到好房子开始！");
+		setTimeout(function(){
+			wxShared();
+		},500)			
+function wxShared(){
+	if(Sstorage.getItem("urlf")==String(window.location.href)){
+		tp=Sstorage.getItem("tp");
+		ms=Sstorage.getItem("ms");
+		bt=Sstorage.getItem("bt");
+		u=window.location.href;
+	}
+	
+	shareAll();
+	function shareAll(){	
+		axios({
+			method:"post",
+			url:"/Wx/GetJsSdkUiPackage",
+			data:JSON.stringify({Url:u})
+		})
+		.then(function(e){
+			console.log(e);
+			if(e.data.code==1001){
+			  wx.config({
+				  debug: false,
+				  appId: e.data.data.AppId,
+				  timestamp: e.data.data.Timestamp,
+				  nonceStr: e.data.data.NonceStr,
+				  signature: e.data.data.Signature,
+				  jsApiList: ["updateAppMessageShareData","updateTimelineShareData","onMenuShareTimeline", "onMenuShareAppMessage", "onMenuShareQQ", "onMenuShareWeibo","onMenuShareQZone",
+						"chooseImage", "getNetworkType", "hideOptionMenu", "showOptionMenu", "hideMenuItems",
+						"showMenuItems", "hideAllNonBaseMenuItem", "showAllNonBaseMenuItem", "closeWindow"
+					]
+			  });			
+			}
+		})	
+		.catch(function(n){
+			
+		})
+	}	
+	
+	wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
+	// 旧版
+		wx.onMenuShareTimeline({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			  console.log(33);
+			}
+		})
+		wx.onMenuShareAppMessage({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})		
+		wx.onMenuShareQQ({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})	
+		wx.onMenuShareWeibo({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})
+		wx.onMenuShareQZone({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})
+																							
+	});			
+}				
+	</script>
+	</body>
+</html>

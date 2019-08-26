@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>资讯列表</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>		
+	</head>
+	<body>
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+				<div class="index-activity index-news">
+					<div class="news-tab fixed" style="height: 0.9rem;">
+						<ul>
+								<li class="active" style="text-align: left;" @click="zx(1)">
+									<p>楼市热点</p><span style="margin-left: 0.18rem;"></span>
+								</li>
+								<li @click="zx(2)">
+									<p>楼盘解读</p><span></span>
+								</li>
+								<li @click="zx(3)" style="text-align: right;">
+									<p>百科问答</p><span style="margin-right: 0.24rem;"></span>
+								</li>								
+							<div class="clear"></div>
+						</ul>
+					</div>
+					<div class="hr60"></div>
+					<div class="news-msg" v-if="house_zx==null||house_zx==''">
+						<div class="no-zx">
+							<p>敬请期待~</p>
+						</div>
+					</div>							
+					<div class="news-msg" v-else>
+						<a class="news-all" v-for="item in house_zx" :href="'zx-info.html?id='+item.Id+'&SourceUserId='+SourceUserId">
+									<div class="news-all-l">
+										<h5>{{item.Title}}</h5>
+										<p>{{item.AddTime}}</p>
+									</div>
+									<div class="news-all-r">
+										<img :src="item.CoverUrl" width="100%" />
+									</div>
+							<div class="clear"></div>
+						</a>	
+						<a class="news-more" @click="readMore" v-if="9<house_zx.length<dataTotal&&house_zx.length!=dataTotal">查看更多</a>
+					</div>
+<!-- 					<div class="weui-loadmore">
+					  <i class="weui-loading"></i>
+					  <span class="weui-loadmore__tips">正在加载</span>
+					</div>	 -->				
+				</div>	
+				<a class="gohome" href="index.html?x=1&from=singlemessage" v-if="isShare" @click.stop="showF=true">首页</a>
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/index.js" ></script>	
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<!-- <script type="text/javascript" src="js/wx.js"></script>		 -->
+	<script>
+	$(function() {
+		$(".news-tab li").click(function() {
+			$(this).addClass("active").siblings().removeClass("active");
+		})
+
+	})		
+	 // 微信分享数据
+	 Sstorage.setItem("urlf",window.location.href);
+	 Sstorage.setItem("bt","好房U购楼市热点、楼盘解读、百科问答");
+	Sstorage.setItem("tp","https://hfugweb.centaline.com.cn/img/share/wx_share_logo.jpg");
+	Sstorage.setItem("ms","最新鲜的楼市热点搜罗，最专业的楼市政策解读，最全面的房产百科问答！");		
+		setTimeout(function(){
+			wxShared();
+		},100)	
+function wxShared(){
+	if(Sstorage.getItem("urlf")==String(window.location.href)){
+		tp=Sstorage.getItem("tp");
+		ms=Sstorage.getItem("ms");
+		bt=Sstorage.getItem("bt");
+		u=window.location.href;
+	}
+	
+	shareAll();
+	function shareAll(){	
+		axios({
+			method:"post",
+			url:"/Wx/GetJsSdkUiPackage",
+			data:JSON.stringify({Url:u})
+		})
+		.then(function(e){
+			console.log(e);
+			if(e.data.code==1001){
+			  wx.config({
+				  debug: false,
+				  appId: e.data.data.AppId,
+				  timestamp: e.data.data.Timestamp,
+				  nonceStr: e.data.data.NonceStr,
+				  signature: e.data.data.Signature,
+				  jsApiList: ["updateAppMessageShareData","updateTimelineShareData","onMenuShareTimeline", "onMenuShareAppMessage", "onMenuShareQQ", "onMenuShareWeibo","onMenuShareQZone",
+						"chooseImage", "getNetworkType", "hideOptionMenu", "showOptionMenu", "hideMenuItems",
+						"showMenuItems", "hideAllNonBaseMenuItem", "showAllNonBaseMenuItem", "closeWindow"
+					]
+			  });			
+			}
+		})	
+		.catch(function(n){
+			
+		})
+	}	
+	
+	wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
+	// 旧版
+		wx.onMenuShareTimeline({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			  console.log(33);
+			}
+		})
+		wx.onMenuShareAppMessage({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})		
+		wx.onMenuShareQQ({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})	
+		wx.onMenuShareWeibo({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})
+		wx.onMenuShareQZone({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})																						
+	});			
+}			
+	</script>
+	</body>
+</html>

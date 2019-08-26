@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+<meta name="format-detection" content="telephone=no" /> 
+<!--uc强制全屏-->
+<meta name="full-screen" content="yes">
+<!--QQ强制全屏-->
+<meta name="x5-fullscreen" content="true">	
+<title>精选房源</title>
+<link rel="stylesheet" href="css/font-awesome.min.css" />
+<link rel="stylesheet" href="css/weui.min.css">
+<link rel="stylesheet" href="css/jquery-weui.min.css">		
+<link rel="stylesheet" href="css/style.css" />
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+		<style>
+			.showAll{display: block !important;}
+			.hasT{overflow: hidden;}
+			.show-af .af-suc{top: -16rem;transition: all 1s ease;}
+		</style>
+<!--这里以iphone6尺寸开发，自动适配-->
+</head>
+<body id="body">
+<div id="loadingDiv1"><div id="loadImg"></div></div>			
+<!-- <div class="box"> -->
+<div class="whole" :class="isShare?'hasT':''">
+<!-- 分享弹窗 -->			
+	<div class="show-af" v-if="isShare" style="position: fixed;top: 0;left: 0;width: 100%;height: 100%;z-index: 9990;display: none;">
+		<div class="bj" style="z-index: 9991;position: fixed;"></div>
+		<div class="af-suc" style="z-index: 9992;">
+			<img src="img/share-img.png"/>
+			<label class="fx-close" @click="isShare=false"></label>
+		</div>
+	</div>	
+			<!-- 搜索 -->
+			<div class="search-box" :class="showSearch?'left0':'left75'">
+				<div class="search-header">
+					<a class="search-s" href="###">
+						<label class="search"><i class="fa fa-search"></i></label>
+						<input type="text" placeholder="请输入您想要搜索的楼盘" id="s-search" v-model="searchMsg" @change="goList"/>	
+					</a> 
+					<a class="h-user c-back" href="javascript:;" @click.stop="noSearch">取消</a>	
+					<div class="clear"></div>
+				</div>	
+			</div>		
+<!--内容START-->	
+		<div class="b-header">
+			<div class="img-bj">
+				<img src="img/bh1.jpg" width="100%"/>
+			</div>
+			<div class="bh-title">
+				<h4>精选房源</h4>
+				<p>全房源&nbsp;&nbsp;|&nbsp;&nbsp;真优惠&nbsp;&nbsp;|&nbsp;&nbsp;够自主</p>
+			</div>
+			<a class="bh-search">
+				<div class="b-search">
+					<i class="weui-icon-search"></i>
+					<input type="text" placeholder="搜索房源" readonly="" @click.stop="goSearch">
+				</div>
+			</a>
+		</div>
+	
+		<div class="rank-info">
+			<div class="bh-ico">
+				<ul>
+					<li class="bh-ah">
+						<a href="house-list.html">
+							<span>全部房源</span> 
+						</a>
+					</li>
+					<li class="bh-f">
+						<a href="buy-house-help.html">
+							<span>帮我找房</span> 
+						</a>
+					</li>	
+					<div class="clear"></div>
+				</ul>
+			</div>
+
+		</div>
+		<div class="bh-list">
+			<div class="weui-cells rank-title">
+			  <a class="weui-cell weui-cell_access" href="house-list.html" style="padding-right: 0.4rem;">
+			    <div class="weui-cell__bd">
+			      <p class="i-title">新房优选</p>
+			    </div>
+			    <div class="weui-cell__ft">
+			    	更多
+			    </div>
+			  </a>
+			</div>	
+<!-- 			<div class="bh-ltab">
+				<ul>
+					<li class="active">推荐</li>
+					<li>深圳</li>
+					<li>惠州</li>
+					<li>中山</li>
+					<li>东莞</li>
+					<li>佛山</li>
+					<div class="clear"></div>
+				</ul>
+			</div> -->
+			
+			
+			<div class="content-msg" style="margin-right: -0.4rem;">
+				<div class="content-list" id="list">
+					<section v-for="item in productList">
+						<a :href="'house_info.html?id='+item.Id+'&SourceUserId='+SourceUserId">
+							<dl>
+								<dt>
+									<label v-if="item.Coupon.Id>0"><span v-if="item.Coupon.Type==2">优惠</span>{{item.Coupon.Discount}}<span v-if="item.Coupon.Type==1">折</span><span v-if="item.Coupon.Type==2">元</span></label>
+									<img :src="item.MainImg" width="100%"/>
+									<div class="s-bg"></div>
+									<p>{{item.RegionName}}</p>
+								</dt>
+								<dd class="section-msg">
+									<p><strong>{{item.ProjectName}}</strong></p>
+									<p class="list-info-m"><span>{{apply(item.PropertyUsage)}}</span><small>|</small><span>{{item.MinMeasure}}-{{item.MaxMeasure}}㎡</span></p>
+									<p class="list-info-p" v-if="item.Aprice==0">均价<strong>待定</strong><label>{{item.ProjectScore}}</label>评分</p>
+									<p class="list-info-p" v-else>均价<strong>{{item.Aprice}}</strong>元/平<label>{{item.ProjectScore}}</label>评分</p>
+								</dd>
+								<div class="clear"></div>
+							</dl>
+						</a>
+					</section>				
+				</div>		
+			</div>	
+		</div>
+		<div class="rank-info">
+			<!--<p class="rank-title">top10榜单<a href="###">更多</a>  </p>-->
+<!-- 				<div class="weui-cells rank-title">
+				  <a class="weui-cell weui-cell_access" href="bd-all.html">
+				    <div class="weui-cell__bd">
+				      <p class="i-title">top10榜单</p>
+				    </div>
+				    <div class="weui-cell__ft">
+				    	更多
+				    </div>
+				  </a>
+				</div>	 -->
+				<div class="bh-tab">
+					<ul class="outer">
+						<li :class="show=='projectscore'?'active':''" @click="getHot('projectscore')">评分榜<span></span></li>
+						<li :class="show=='hot'?'active':''" @click="getHot('hot')">人气榜<span></span></li>
+						<li :class="show=='rx'?'active':''" @click="getHot('rx')">热销榜<span></span></li>
+					</ul>
+				</div>
+				<div class="news-msg" v-if="hotList==null||hotList==''">
+					<div class="no-zx">
+						<p>敬请期待~</p>
+					</div>
+				</div>					
+				<ol class="rank-all" v-else>
+					<li v-for="(item,index) in hotList">
+						<label>{{index+1}}</label>
+						<div class="rank-l">
+							<p class="l-name"><a :href="'house_info.html?id='+item.Id+'&SourceUserId='+SourceUserId">{{item.ProjectName}}</a><span v-if="item.PropertyUsage!=null">{{apply(item.PropertyUsage)}}</span></p>
+							<p class="l-info"><span>{{item.RegionName}}</span><small>|</small><span v-if="item.Aprice==0">均价待定</span><span v-else>均价{{item.Aprice}}/平</span><small>|</small><span>{{item.ProjectScore}}分</span></p>
+						</div>
+						<div class="clear"></div>
+					</li>					
+				</ol>			
+		</div>
+		<!-- <a id="scrollUp" href="javascript:void(0);"><i class="fa fa-angle-up"></i></a> -->
+	<!--内容END-->
+	<!--公共底部-->
+	<footer>
+	  <div class="weui-tabbar" id="footer">
+	    <a href="index.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/fx.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">发现</p>
+	    </a>
+	    <a href="buy_house.html" class="weui-tabbar__item weui-bar__item--on">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/fy1.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">房源</p>
+	    </a>
+	    <a href="my-client.html" class="weui-tabbar__item" v-if="userRole=='2'||userRole=='3'||userRole=='4'">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/kh.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">客户</p>
+	    </a>
+	    <a href="massage.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/xx.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">消息</p>
+	    </a>	    
+	    <a href="account.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/wd.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">我的</p>
+	    </a>
+	  </div>	
+	</footer>		
+	</div>
+<!-- </div>	 -->
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="js/jquery-weui.min.js"></script>	
+<script src="js/swiper.min.js"></script>
+<!-- <script src="js/city-picker.min.js"></script> -->
+<script type="text/javascript" src="js/main.js" ></script>
+<script type="text/javascript" src="js/ajax/buy_house.js" ></script>
+<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+<!-- <script type="text/javascript" src="js/wx.js"></script> -->
+			<script>
+				$(function(){
+					if($(".show-af")){
+						setTimeout(function(){
+							$(".show-af").css("display","block");
+							setTimeout(function(){
+								$(".af-suc").css("top","1.2rem");
+							},10)
+						},1000)
+					}					
+				})
+		setTimeout(function(){
+			wxShared();
+		},100)	
+function wxShared(){
+	if(Sstorage.getItem("urlf")==String(window.location.href)){
+		tp=Sstorage.getItem("tp");
+		ms=Sstorage.getItem("ms");
+		bt=Sstorage.getItem("bt");
+		u=window.location.href;
+	}
+	
+	shareAll();
+	function shareAll(){	
+		axios({
+			method:"post",
+			url:"/Wx/GetJsSdkUiPackage",
+			data:JSON.stringify({Url:u})
+		})
+		.then(function(e){
+			console.log(e);
+			if(e.data.code==1001){
+			  wx.config({
+				  debug: false,
+				  appId: e.data.data.AppId,
+				  timestamp: e.data.data.Timestamp,
+				  nonceStr: e.data.data.NonceStr,
+				  signature: e.data.data.Signature,
+				  jsApiList: ["updateAppMessageShareData","updateTimelineShareData","onMenuShareTimeline", "onMenuShareAppMessage", "onMenuShareQQ", "onMenuShareWeibo","onMenuShareQZone",
+						"chooseImage", "getNetworkType", "hideOptionMenu", "showOptionMenu", "hideMenuItems",
+						"showMenuItems", "hideAllNonBaseMenuItem", "showAllNonBaseMenuItem", "closeWindow"
+					]
+			  });			
+			}
+		})	
+		.catch(function(n){
+			
+		})
+	}	
+	
+	wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
+	// 旧版
+		wx.onMenuShareTimeline({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			  console.log(33);
+			}
+		})
+		wx.onMenuShareAppMessage({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})		
+		wx.onMenuShareQQ({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})	
+		wx.onMenuShareWeibo({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})
+		wx.onMenuShareQZone({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})																						
+	});			
+}						
+			</script>
+</body>
+</html>

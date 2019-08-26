@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>确认客户信息</title>
+		<!--销售人员-->
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>	
+			<style>
+				.bdlq-info p span{color: #6D7586;}
+			</style>
+	</head>
+	<body style="background: #f5f5f7;">
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+			<div class="bdlq">
+				<div class="bdlq-tip">
+					将状态更新至：跟进中，请确认客户信息
+				</div>
+				<div class="bdlq-info">
+					<p><label><span class="red">*</span>客户姓名</label><span><input type="text" value="小明" v-model="Name"/></span></p>
+					<p><label><span class="red">*</span>联系电话</label><span>{{mobile}}</span></p>
+					<p><label><span class="red">*</span>客户性别</label>
+						<span @click="sex='1'"><input type="radio" class="radio" value="1"/><i class="fa" :class="sex=='1'?'fa-dot-circle-o':'fa-circle-o'"></i>先生</span>
+						<span @click="sex='2'"><input type="radio" class="radio" value="2"/><i class="fa" :class="sex=='2'?'fa-dot-circle-o':'fa-circle-o'"></i>女士</span>
+						<span @click="sex='0'"><input type="radio" class="radio" value="0"/><i class="fa" :class="sex=='0'?'fa-dot-circle-o':'fa-circle-o'"></i>未知</span>
+					</p>
+					<p><label><span class="red">*</span>客户质量</label>
+						<span @click="grade='0'"><input type="radio" class="radio" value="0"/><i class="fa" :class="grade=='0'?'fa-dot-circle-o':'fa-circle-o'"></i>A</span>
+						<span @click="grade='1'"><input type="radio" class="radio" value="1"/><i class="fa" :class="grade=='1'?'fa-dot-circle-o':'fa-circle-o'"></i>B</span>
+						<span @click="grade='2'"><input type="radio" class="radio" value="2"/><i class="fa" :class="grade=='2'?'fa-dot-circle-o':'fa-circle-o'"></i>C</span>
+						<span @click="grade='3'"><input type="radio" class="radio" value="3"/><i class="fa" :class="grade=='3'?'fa-dot-circle-o':'fa-circle-o'"></i>D</span>
+					</p>
+				</div>
+				<div class="gfyx-btn btn-info bdlq-btn">
+					<button @click="saveInfo">确定</button>
+				</div>				
+			</div>							
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>	
+	<script type="text/javascript" src="js/ajax/bb-dr-lk-qrxx.js" ></script>	
+		
+
+	</body>
+</html>

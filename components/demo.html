@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>
+	</head>
+	<body>
+<template>
+  <div>
+    <!--<img src="./assets/logo.png">-->
+    <header class="mod_header">
+      <i class="music_logo">音乐</i>
+      <a href="javascript:;" class="btn_download">下载APP</a>
+    </header>
+    <nav class="mod_nav" @click="goView">
+      <a href="javascript:;" data-nav="Recom" data-index="0" :class="{current:isActive[0]}">推荐</a>
+      <a href="javascript:;" data-nav="TopList" data-index="1" :class="{current:isActive[1]}">排行榜</a>
+      <a href="javascript:;" data-nav="Search" data-index="2" :class="{current:isActive[2]}">搜索</a>
+      <!--<a v-link="/HelloWorld">HelloWorld</a>-->
+    </nav>
+    <!-- 动态组件 -->
+    <keep-alive>
+      <component :is="view"></component>
+    </keep-alive>
+  </div>
+</template>
+
+<script>
+  import Recom from '@/components/Recom'
+  import TopList from '@/components/TopList'
+  import Search from '@/components/Search'
+  export default {
+    name: 'app',
+    data () {
+      return {
+        view: 'Recom',
+        isActive: [true, false, false]
+      }
+    },
+    components: {
+      Recom,
+      TopList,
+      Search
+    },
+    methods: {
+      goView (el) {
+        let me = this
+        me.view = el.target.attributes['data-nav'].nodeValue
+        let dataIndex = el.target.attributes['data-index'].nodeValue
+//   eslint-disable-next-line     这个注释的是说明下面这行代码不用es6检查
+        me.isActive.find((h, i) => {
+          // eslint-disable-next-line
+          if (i == dataIndex) {
+            me.$set(this.isActive, i, true)
+          } else {
+            me.$set(this.isActive, i, false)
+          }
+        })
+      }
+    }
+  }
+</script>		
+	</body>
+</html>

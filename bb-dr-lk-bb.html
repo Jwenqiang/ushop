@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>报备客户</title>
+		<!--销售人员-->
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>		
+	</head>
+	<body style="background: #f5f5f7;">
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+			<div class="bdlq">
+			
+				<div class="bdlq-info">
+					<p><label><span class="red">*</span>客户姓名</label><span>{{Name}}</span></p>
+					<p><label><span class="red">*</span>联系电话</label><span>{{mobile}}</span></p>
+				</div>
+				<div class="hr10"></div>
+				<div class="bbc-mid" style="margin-bottom: 0;">
+					<label><span class="red">*</span>报备盘源</label>
+					<a :href="'bb-xzpy.html?ym=bb-dr-lk-bb.html&id='+urlId+'&CustomerId='+CustomerId" class="fr" style="margin-right: 0.8rem;">
+						<input type="text" placeholder="请选择报备盘源" id="bbc-pro" readonly="" v-model="sName">
+					</a>
+				</div>	
+				<div class="hr10"></div>
+				<div class="bbc-mid">
+					<label><span class="red">*</span>预计到访时间</label>
+					<input type="text" placeholder="请选择到访时间" id="bbc-data" readonly="" v-model="VisitTime">
+					<!-- v-model="VisitTime" -->
+				</div>	
+				<div class="gfyx-btn btn-info bdlb-btn">
+					<button @click="saveInfo">立即报备</button>
+				</div>										
+			</div>							
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>	
+	<script type="text/javascript" src="js/ajax/bb-dr-lk-bb.js" ></script>	
+<script>
+$(function(){
+		//日期选择
+		var sessionstorage=window.sessionStorage;
+			$("#bbc-data").datetimePicker({
+		        years: [2018],
+		        onChange: function (picker, values, displayValues) {
+		          //console.log(values);
+							var btime=values[0]+"-"+values[1]+"-"+values[2]+" "+values[3]+":"+values[4];
+							sessionstorage.setItem('btime',btime);
+		        },
+						onClose:function(values){
+							//console.log(values);
+						},
+	      	});		
+})	
+</script>		
+
+	</body>
+</html>

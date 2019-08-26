@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+		<meta name="format-detection" content="telephone=no" />
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">
+		<title>委托来客</title>
+		<!--销售人员-->
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>
+			<style>
+				.A{background: #fb7874 !important;}
+				.B{background: #73b9fb !important;}
+				.C{background: #71d45d !important;}
+				.D{background: #fcb726 !important;}
+				.bbl-section{padding-right: 0.4rem;}
+			</style>		
+	</head>
+	<body>
+		<div id="loadingDiv">
+			<div id="loadImg"></div>
+		</div>
+		<div class="whole">
+			<!--内容START-->
+			<div class="ybb-t dr-lk-t">
+				<div class="swiper-container">
+					<div class="swiper-wrapper">
+						<div class="swiper-slide" @click="reportInfo(2)" :class="alltype=='2'?'ybb-active':''"><a href="javascript:;">待跟进({{dgj}})<span></span></a></div>
+						<div class="swiper-slide" @click="reportInfo(3)" :class="alltype=='3'?'ybb-active':''"><a href="javascript:;">跟进中({{gjz}})<span></span></a></div>
+						<div class="swiper-slide" @click="reportInfo('1,10')" :class="alltype=='1,10'?'ybb-active':''"><a href="javascript:;">已报备({{ybb}})<span></span></a></div>
+						<div class="swiper-slide" @click="reportInfo(25)" :class="alltype=='25'?'ybb-active':''"><a href="javascript:;">已到访({{ydf}})<span></span></a></div>
+						<div class="swiper-slide" @click="reportInfo(40)" :class="alltype=='40'?'ybb-active':''"><a href="javascript:;">已认购({{yrg}})<span></span></a></div>
+						<div class="swiper-slide" @click="reportInfo(50)" :class="alltype=='50'?'ybb-active':''"><a href="javascript:;">已签约({{yqy}})<span></span></a></div>
+						<div class="swiper-slide" @click="reportInfo(60)" :class="alltype=='60'?'ybb-active':''"><a href="javascript:;">已结佣({{yjy}})<span></span></a></div>
+						<div class="swiper-slide" @click="reportInfo('4,15,30,45,55')" :class="alltype=='4,15,30,45,55'?'ybb-active':''">
+							<a href="javascript:;">已失效({{ysx}})<span></span></a></div>
+					</div>
+				</div>
+			</div>
+			<div class="hr10"></div>
+			<div class="outer bbl-list" style="border-bottom: 0;padding-right: 0;">
+				<div class="outer bbl-section" v-for="item in userInfo" v-if="alltype=='2'">
+					<!--待跟进-->
+					<a class="bbl-l" :href="'bb-info-yy.html?id='+item.Id">
+						<p><label><strong>{{item.FullName}}</strong></label><span>{{changeNum(item.Mobile)}}</span></p>
+						<p><label>分配时间：</label><span>{{item.AddTime}}</span></p>
+						<p><label>客户来源：</label><span>{{item.CompanyName}}</span></p>
+					</a>
+					<div class="bbl-r">
+						<!--待跟进-->
+						<div class="dgj">
+							<a :href="'tel:'+item.Mobile"><label>致电客户</label></a>
+							<button class="gjz"><a :href="'bb-dr-lk-qrxx.html?id='+item.Id+'&CustomerId='+item.CustomerId">跟进中</a></button>
+						</div>
+					</div>
+				</div>
+				<div class="outer bbl-section" v-for="item in userInfo" v-if="alltype=='3'">
+					<!--跟进中-->
+					<a class="bbl-l" :href="'bb-info-yy.html?id='+item.Id">
+						<p><label><strong>{{item.FullName}}</strong></label><span>{{changeNum(item.Mobile)}}</span>
+							 <span v-if="item.CustomerStar==0" class="dj" :class="item.CustomerStar==0?'A':''">A</span>
+							 <span v-if="item.CustomerStar==1" class="dj" :class="item.CustomerStar==1?'B':''">B</span>
+							 <span v-if="item.CustomerStar==2" class="dj" :class="item.CustomerStar==2?'C':''">C</span>
+							 <span v-if="item.CustomerStar==3" class="dj" :class="item.CustomerStar==3?'D':''">D</span>
+						</p>
+						<p><label>跟进时间：</label><span>{{item.AddTime}}</span></p>
+						<p><label>客户来源：</label><span>{{item.CompanyName}}</span></p>
+					</a>
+					<div class="bbl-r">
+						<!--跟进中-->
+						<div class="gjz">
+							<a :href="'tel:'+item.Mobile"><label>致电客户</label></a> 
+							<button class="bbkh"><a :href="'bb-dr-lk-bb.html?id='+item.Id+'&CustomerId='+item.CustomerId">报备客户</a></button>					
+							<button class="gjsx" @click="changeStatus(item.Id,item.Status,4,'确定跟进失效？<span>(请在下方填写备注)</span>','y')">跟进失效</button>					
+						</div>
+					</div>
+				</div>
+				<div class="outer bbl-section" v-for="item in userInfo" v-if="alltype=='1,10'">
+					<!--已报备-->
+					<a class="bbl-l" :href="'bb-info-yy.html?id='+item.Id">
+						<p><label><strong>{{item.FullName}}</strong></label><span>{{changeNum(item.Mobile)}}</span>
+							<span v-if="item.CustomerStar==0" class="dj" :class="item.CustomerStar==0?'A':''">A</span>
+							<span v-if="item.CustomerStar==1" class="dj" :class="item.CustomerStar==1?'B':''">B</span>
+							<span v-if="item.CustomerStar==2" class="dj" :class="item.CustomerStar==2?'C':''">C</span>
+							<span v-if="item.CustomerStar==3" class="dj" :class="item.CustomerStar==3?'D':''">D</span>
+						</p>
+						<p><label>报备时间：</label><span>{{item.AddTime}}</span></p>
+						<p><label>报备盘源：</label><span>{{item.ProjectName}}</span></p>
+						<p><label>客户来源：</label><span>{{item.CompanyName}}</span></p>
+					</a>					
+					<div class="bbl-r">
+						<!--已报备-->
+						<div class="ybb">
+						<a :href="'tel:'+item.Mobile"><label>致电客户</label></a> 
+						<button class="yx-df" @click="changeStatus(item.Id,item.Status,25,'确定有效到访？')">有效到访</button>
+						<button class="wx-df" @click="changeStatus(item.Id,item.Status,30,'确定无效到访？<span>(请在下方填写备注)</span>','y')">无效到访</button>						
+					</div>
+					</div>
+				</div>
+
+				<div class="outer bbl-section" v-for="item in userInfo" v-if="alltype=='25'">
+					<!--已到访-->
+					<a class="bbl-l" :href="'bb-info-yy.html?id='+item.Id">
+						<p><label><strong>{{item.FullName}}</strong></label><span>{{changeNum(item.Mobile)}}</span>
+							<span v-if="item.CustomerStar==0" class="dj" :class="item.CustomerStar==0?'A':''">A</span>
+							<span v-if="item.CustomerStar==1" class="dj" :class="item.CustomerStar==1?'B':''">B</span>
+							<span v-if="item.CustomerStar==2" class="dj" :class="item.CustomerStar==2?'C':''">C</span>
+							<span v-if="item.CustomerStar==3" class="dj" :class="item.CustomerStar==3?'D':''">D</span>						
+						</p>
+						<p><label>到访时间：</label><span>{{item.AddTime}}</span></p>
+						<p><label>到访盘源：</label><span>{{item.ProjectName}}</span></p>
+						<p><label>客户来源：</label><span>{{item.CompanyName}}</span></p>
+					</a>
+					<div class="bbl-r">
+						<!--已到访-->
+                        <div class="ydf">
+                            <a :href="'tel:'+item.Mobile"><label>致电客户</label></a>
+                            <label v-if="item.StatusCheckType==1" style="background: #ccc;">平台审核中...</label>
+                            <button class="yrg" @click="changeStatus(item.Id,item.Status,40,'确定已认购？')" v-if="item.StatusCheckType==0||item.StatusCheckType==2||item.StatusCheckType==3">已认购</button>
+                            <button class="zc-df" @click="changeStatus(item.Id,item.Status,25,'确定再次到访？')">再次到访</button>
+                            <button class="wx-df" @click="changeStatus(item.Id,item.Status,30,'确定无效到访？<span>(请在下方填写备注)</span>','y')">无效到访</button>
+                        </div>
+					</div>
+				</div>
+
+				<div class="outer bbl-section" v-for="item in userInfo" v-if="alltype=='40'">
+					<!--已认购-->
+					<a class="bbl-l" :href="'bb-info-yy.html?id='+item.Id">
+						<p><label><strong>{{item.FullName}}</strong></label><span>{{changeNum(item.Mobile)}}</span>
+							<span v-if="item.CustomerStar==0" class="dj" :class="item.CustomerStar==0?'A':''">A</span>
+							<span v-if="item.CustomerStar==1" class="dj" :class="item.CustomerStar==1?'B':''">B</span>
+							<span v-if="item.CustomerStar==2" class="dj" :class="item.CustomerStar==2?'C':''">C</span>
+							<span v-if="item.CustomerStar==3" class="dj" :class="item.CustomerStar==3?'D':''">D</span>						
+						</p>
+						<p><label>认购时间：</label><span>{{item.AddTime}}</span></p>
+						<p><label>认购盘源：</label><span>{{item.ProjectName}}</span></p>
+						<p><label>认购单位：</label><span>{{item.BuyCompany}}</span></p>
+						<p><label>客户来源：</label><span>{{item.CompanyName}}</span></p>
+					</a>	
+					<div class="bbl-r">
+						<!--已认购-->
+						<div class="yrg">
+						<a :href="'tel:'+item.Mobile"><label>致电客户</label></a>
+						<label v-if="item.StatusCheckType==1" style="background: #ccc;">平台审核中...</label>
+						<div v-else>
+							<button class="yqy" @click="changeStatus(item.Id,item.Status,50,'确定已签约？')" >已签约</button>
+							<button class="yqg" @click="changeStatus(item.Id,item.Status,55,'确定已弃购？<span>(请在下方填写备注)</span>','y')">已弃购</button>	
+						</div>							
+					</div>
+					</div>
+				</div>
+
+				<div class="outer bbl-section" v-for="item in userInfo" v-if="alltype=='50'">
+					<!--已签约-->
+					<a class="bbl-l" :href="'bb-info-yy.html?id='+item.Id">
+						<p><label><strong>{{item.FullName}}</strong></label><span>{{changeNum(item.Mobile)}}</span>
+							<span v-if="item.CustomerStar==0" class="dj" :class="item.CustomerStar==0?'A':''">A</span>
+							<span v-if="item.CustomerStar==1" class="dj" :class="item.CustomerStar==1?'B':''">B</span>
+							<span v-if="item.CustomerStar==2" class="dj" :class="item.CustomerStar==2?'C':''">C</span>
+							<span v-if="item.CustomerStar==3" class="dj" :class="item.CustomerStar==3?'D':''">D</span>					
+						</p>
+						<p><label>合同时间：</label><span>2018-10-12 10:36:05</span></p>
+						<p><label>合同盘源：</label><span>{{item.ProjectName}}</span></p>
+						<p><label>合同单位：</label><span>{{item.BuyCompany}}</p>
+						<p><label>客户来源：</label><span>{{item.CompanyName}}</span></p>
+					</a>	
+					<div class="bbl-r">
+						<!--已签约-->
+                        <div class="yqy">
+                            <a :href="'tel:'+item.Mobile"><label>致电客户</label></a>
+							<label v-if="item.StatusCheckType==1&&item.OldStatus==55" style="background: #ccc;">坏账审核中...</label>
+							<label v-if="item.StatusCheckType==1&&item.OldStatus==60" style="background: #ccc;">结佣审核中...</label>
+							<div v-if="item.StatusCheckType!=1">
+								<button class="yjy" @click="changeStatus(item.Id,item.Status,60,'确定已结佣？')">已结佣</button>
+								<button class="yqg" @click="changeStatus(item.Id,item.Status,55,'确定是坏账？<span>(请在下方填写备注)</span>','y')">坏账</button>
+							</div>
+                        </div>
+					</div>
+				</div>
+
+				<div class="outer bbl-section" v-for="item in userInfo" v-if="alltype=='60'">
+					<!--已结佣-->
+					<a class="bbl-l" :href="'bb-info-yy.html?id='+item.Id">
+						<p><label><strong>{{item.FullName}}</strong></label><span>{{changeNum(item.Mobile)}}</span>
+							<span v-if="item.CustomerStar==0" class="dj" :class="item.CustomerStar==0?'A':''">A</span>
+							<span v-if="item.CustomerStar==1" class="dj" :class="item.CustomerStar==1?'B':''">B</span>
+							<span v-if="item.CustomerStar==2" class="dj" :class="item.CustomerStar==2?'C':''">C</span>
+							<span v-if="item.CustomerStar==3" class="dj" :class="item.CustomerStar==3?'D':''">D</span>						
+						</p>
+						<p><label>结佣时间：</label><span>2018-10-12 10:36:05</span></p>
+						<p><label>结佣盘源：</label><span>{{item.ProjectName}}</span></p>
+						<p><label>结佣单位：</label><span>{{item.BuyCompany}}</span></p>
+						<p><label>客户来源：</label><span>{{item.CompanyName}}</span></p>
+					</a>
+					<div class="bbl-r">
+						<div class="yjy">
+							<label v-if="item.StatusCheckType==1" style="background: #ccc;">平台审核中...</label>
+						</div>
+					</div>
+				</div>
+
+			<div class="outer bbl-section" v-for="item in userInfo" v-if="alltype=='4,15,30,45,55'">
+				<!--已失效-->
+				<a class="bbl-l" :href="'bb-info-yy.html?id='+item.Id">
+					<p><label><strong>{{item.FullName}}</strong></label><span>{{changeNum(item.Mobile)}}</span>
+						<span v-if="item.CustomerStar==0" class="dj" :class="item.CustomerStar==0?'A':''">A</span>
+						<span v-if="item.CustomerStar==1" class="dj" :class="item.CustomerStar==1?'B':''">B</span>
+						<span v-if="item.CustomerStar==2" class="dj" :class="item.CustomerStar==2?'C':''">C</span>
+						<span v-if="item.CustomerStar==3" class="dj" :class="item.CustomerStar==3?'D':''">D</span>
+					</p>
+					<p><label>判断时间：</label><span>{{item.AddTime}}</span></p>
+					<p>
+						<label>失效原因：</label>
+						<span v-if="item.Remarks!=null">{{item.Remarks}}</span>
+						<span v-else-if="item.Status==4">跟进无效</span>
+						<span v-else-if="item.Status==15">无效报备</span>
+						<span v-else-if="item.Status==30">无效到访</span>
+						<span v-else-if="item.Status==45">已弃购</span>
+						<span v-else-if="item.Status==55">签约弃购</span>
+					</p>
+				</a>
+			</div>
+			<!-- 无记录时 -->
+			<div v-if="userInfo==''" class="bb-none">暂无客户</div>
+			<a style="display: block;text-align: center;line-height: 0.8rem;" v-if="9<userInfo.length&&userInfo.length!=dataTotal" @click="readMore">查看更多</a>
+		</div>
+	</div>
+		<script src="js/jquery.min.js"></script>
+		<script src="js/jquery-weui.min.js"></script>
+		<script src="js/swiper.min.js"></script>
+		<script src="js/city-picker.min.js"></script>
+		<script type="text/javascript" src="js/main.js"></script>
+		<script type="text/javascript" src="js/ajax/bb-dr-lk.js"></script>
+		<script>
+			var mySwiper = new Swiper('.swiper-container', {
+				loop: false,
+				//一屏4.1个
+				slidesPerView: 3.6,
+				//每个的距离
+				// spaceBetween : 10,  	
+				//滑动是整个
+				freeMode: false,
+			})
+			$(function() {
+				$(".ybb-t .swiper-slide").click(function() {
+					$(this).addClass("swiper-slide-active").siblings().removeClass('swiper-slide-active');
+				})
+			})
+		</script>
+
+	</body>
+</html>

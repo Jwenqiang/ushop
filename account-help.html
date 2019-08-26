@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>帮助反馈</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>		
+	</head>
+	<body style="background: #F5F5F7;">
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+			<div class="account-help">
+				<div class="account-b account-h">
+					<h4>常见问题</h4>
+					<ul>
+						<li v-for="item in helpList">
+							<a :href="'account-hzh.html?ArticleCategoryId='+item.ArticleCategoryId"><img :src="item.IconUrl"/>{{item.Name}}</a>
+						</li>
+					</ul>
+				</div>	
+				<div class="hr10"></div>
+				<div class="account-call">
+					<p>有疑问可电话咨询平台客服</p>
+					<p><small>24小时在线服务</small></p>
+					<a :href="'tel:'+phoneNum">{{phoneNum}}</a>
+				</div>
+				<div class="ah-bottom">
+					<a :href="userL?('account-idea.html?id='+UserId):('login.html?pre=account-idea.html')">意见反馈</a>
+				</div>
+			</div>	
+		</div>	
+		
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/account-help.js" ></script>		
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>	
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},500)					
+			</script>		
+	</body>
+</html>

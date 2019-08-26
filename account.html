@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>我的</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>		
+	</head>
+	<body style="background: #f5f5f7;">
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+			<div class="account">
+				<div class="account-top">
+					<div v-if="userRole!=''">
+						<a href="account-myself.html">
+							<img src="img/tx.png" v-if="fimg==''||fimg==null"/>
+							<img :src="fimg" v-else/>
+							<p class="account-name" v-if="nickname!=null">{{nickname}}</p>	
+							<p class="account-name" v-else>{{mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}</p>	
+						</a>	
+					</div>
+					<div v-if="userRole==''">
+						<img src="img/tx.png"/>
+						<p style="margin-top: 0.1rem;"><a href="login.html" style="padding: 0.1rem 0.2rem;border: 1px solid #dedede;color: #fa4c4b;">去登录</a></p>
+					</div>
+					<!--运营人员显示下面-->
+					<!-- <p class="account-zw" v-if="userRole=='3'||userRole=='4'">平台运营部 运营经理</p> -->
+				</div>
+			</div>
+			<div class="hr10"></div>
+			<div class="noLogin" v-if="userRole==''">
+				<div class="account-b account-d">
+					<ul>
+						<li>
+							<a href="account-help.html">帮助反馈</a>
+						</li>	
+						<li>
+							<a href="account-about.html">VIP用户权益</a>
+						</li>
+						<li class="kh">
+							<a href="javascript:;" class="lx-kf">联系客服</a>
+						</li>					
+					</ul>
+				</div>				
+			</div>
+			<!--普通用户-->
+			<div class="pt" v-if="userRole=='1'">
+				<div class="account-m">
+					<h3>我的邀请</h3>
+					<div class="account-m-y" v-if="myBg==''||myBg==null">
+						<div class="amy-l">
+							<p>邀请好友成功注册</p>
+							<p>得<strong>500</strong>元奖励</p>
+						</div>
+						<div class="amy-r">
+							<p><strong>{{invCount}}</strong></p>
+							<p>已邀请人</p>
+						</div>
+						<a :href="'account-yq.html?myurl='+myurl" class="account-go">进入<i class="fa fa-angle-right"></i></a>
+					</div>					
+					<div class="account-m-y" :style="'background: url('+myBg+') center no-repeat;background-size: 100%;'" v-else>
+						<div class="amy-l">
+							<p>邀请好友成功注册</p>
+							<p>得<strong>500</strong>元奖励</p>
+						</div>
+						<div class="amy-r">
+							<p><strong>{{invCount}}</strong></p>
+							<p>已邀请人</p>
+						</div>
+						<a :href="'account-yq.html?myurl='+myurl" class="account-go">进入<i class="fa fa-angle-right"></i></a>
+					</div>
+				</div>
+				<div class="hr10"></div>
+				<div class="account-b account-c">
+					<ul>
+						<li>
+							<a href="account-rzgs.html">认证公司</a>
+						</li>
+						<li>
+							<a href="account-sqhz.html">申请合作</a>
+						</li>					
+					</ul>
+				</div>
+				<div class="hr10"></div>
+				<div class="account-b account-d">
+					<ul>
+						<li>
+							<a href="account-activity.html">我的报名</a>
+						</li>
+						<li>
+							<a href="account-help.html">帮助反馈</a>
+						</li>	
+						<li>
+							<a href="account-about.html">VIP用户权益</a>
+						</li>
+						<li class="kh">
+							<a href="javascript:;" class="lx-kf">联系客服</a>
+						</li>	
+						<li>
+							<a href="account-set.html">设置</a>
+						</li>						
+					</ul>
+				</div>
+			</div>
+			<!--认证公司-->
+			<div class="gs" v-if="userRole=='2'">
+				<div class="account-m">
+					<h3>公司二维码</h3>
+					<div class="account-m-ewm">
+						<a href="account-gsm.html" class="account-go">进入<i class="fa fa-angle-right"></i></a>
+					</div>
+				</div>
+				<div class="hr10"></div>
+				<div class="account-b account-c">
+					<ul>
+						<li>
+							<a href="account-yrzgs.html">认证公司<span>已认证</span><label>{{CompanyName}}</label></a>
+						</li>					
+					</ul>
+				</div>
+				<div class="hr10"></div>
+				<div class="account-b account-d">
+					<ul>
+						<li>
+							<a href="account-activity.html">活动报名</a>
+						</li>
+						<li>
+							<a href="account-help.html">帮助反馈</a>
+						</li>	
+						<li>
+							<a href="account-about.html">VIP用户权益</a>
+						</li>
+						<li class="kh">
+							<a href="javascript:;" class="lx-kf">联系客服</a>
+						</li>		
+						<li>
+							<a href="account-set.html">设置</a>
+						</li>						
+					</ul>
+				</div>				
+			</div>
+			<!--运营人员权限显示-->
+			<div class="yy"  v-if="userRole=='3'||userRole=='4'">
+				<div class="account-b account-d">
+					<ul>
+						<li>
+							<a href="account-activity.html">我的获客<span id="hkTip" v-if="hkCount>0">{{hkCount}}</span></a>
+						</li>
+						<li>
+							<a href="account-help.html">帮助反馈</a>
+						</li>	
+						<li>
+							<a href="account-about.html">VIP用户权益</a>
+						</li>
+						<li class="kh">
+							<a href="javascript:;" class="lx-kf">联系客服</a>
+						</li>	
+						<li>
+							<a href="account-set.html">设置</a>
+						</li>						
+					</ul>
+				</div>					
+			</div>
+			<div style="height: 0.8rem;padding: 0 0.4rem;margin: 0.2rem 0;background: #fff;line-height: 0.8rem;">官方公众号：微信搜索 "好房U购"</div>
+	<!--公共底部-->
+	<footer>
+	  <div class="weui-tabbar" id="footer">
+	    <a href="index.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/fx.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">发现</p>
+	    </a>
+	    <a href="buy_house.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/fy.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">房源</p>
+	    </a>
+	    <a href="my-client.html" class="weui-tabbar__item" v-if="userRole=='2'||userRole=='3'||userRole=='4'">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/kh.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">客户</p>
+	    </a>
+	    <a href="massage.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/xx.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">消息</p>
+	    </a>	    
+	    <a href="account.html" class="weui-tabbar__item weui-bar__item--on">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/wd1.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">我的</p>
+	    </a>
+	  </div>	
+	</footer>		
+		<div class="show-kf" style="display: none;">
+			<div class="bj" @click.stop="showK=!showK"></div>
+			<div class="kf">
+				<div class="kf-msg">
+					<p>咨询时间：  周一至周日  9:00~22:00</p>
+					<p><a :href="'tel:'+phoneNum">呼叫&nbsp;&nbsp;{{phoneNum}}</a></p>
+				</div>
+				<button class="kf-qx">取消</button>
+			</div>
+		</div>			
+</div>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/account.js" ></script>	
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>			
+	<script>
+		$(function(){
+			$(".kh").click(function(){
+				$(".show-kf").fadeIn();
+			})
+			$(".kf-qx,.bj").click(function(){
+				$(".show-kf").fadeOut();
+			})
+		})
+		setTimeout(function(){
+			wxShared();
+		},500)		
+	</script>
+	</body>
+</html>

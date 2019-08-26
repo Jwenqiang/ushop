@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>申请合作</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>	
+			<style>
+				.acs-msg p select{
+					height: 0.8rem;
+				}
+			</style>
+	</head>
+	<body style="background: #f5f5f7;">
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+			<div class="account-sqhz">
+				<div class="acs-msg">
+					<p><label>公司名称：</label><input type="text" placeholder="请输入公司名称" v-model="CompanyName"/></p>
+					<p style="padding: 0 0.4rem;height: 1rem;line-height: 1rem;">
+						<label>所在城市：</label>
+							<select v-model="sheng" id="sheng" @change="getArea">
+								<option value="">请选择省份</option>
+								<option v-for="item in allCity.province" :id="item.RegionId" :value="item.RegionId">{{item.Name}}</option>
+							</select>
+							<select v-model="shi" id="shi" :disabled="no?'disabled':no">
+								<option value="">请选择城市</option>
+								<option v-for="item in allCity.town" :id="item.RegionId" :value="item.RegionId">{{item.Name}}</option>
+							</select>
+					</p>
+					<!-- <p><label>所在城市：</label><input type="text" placeholder="请选择所在城市" id="city" @click="getArea"/></p> -->
+					<p><label>联&nbsp;&nbsp;系&nbsp;&nbsp;人：</label><input type="text" placeholder="请输入联系人" v-model="FullName"/></p>
+					<p><label>手机号码：</label><input type="number" id="phone-num" placeholder="请输入联系号码" v-model="Mobile"/><button onclick="getCode();" @click="sendCode" id="r-code">获取验证码</button></p>
+					<p><label>验&nbsp;&nbsp;证&nbsp;&nbsp;码：</label><input type="number" placeholder="请输入验证码" v-model="VerificationCode"/> </p>
+				</div>
+				<div class="acs-tip">
+					<p>提交申请后，平台工作人员将在三个工作日内与您联系。</p>
+					<p>如您所在公司已与好房U购合作，请点击<a href="account-rzgs.html">&nbsp;绑定公司&nbsp;&gt;&gt;</a></p>
+				</div>
+				<button class="acs-btn" @click="goJoin">立即提交</button>
+				<div class="acs-call">
+					免费咨询：<strong>{{phoneNum}}</strong> 
+					<a :href="'tel:'+phoneNum"></a>
+				</div>
+			</div>	
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script src="https://res.wx.qq.com/open/libs/weuijs/1.0.0/weui.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/account-sqhz.js" ></script>		
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>	
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},500)					
+			</script>		
+<script>
+// $("#city").cityPicker({
+// //禁用地区选择
+//   showDistrict: false
+// })
+$(function(){
+	//手机号为11位数时颜色改变	
+	$('#phone-num').bind('input propertychange',function () {
+		if($(this).val().length==11){
+			$(this).siblings('button').css("color",'#5ba6ff');
+		}else{
+			$(this).siblings('button').css("color",'#c0c4c9');
+		}
+	})		
+})
+</script>
+<script>
+    var i;  
+    function getCode(){ 
+			if(!(/^1[345678]\d{9}$/.test($("#phone-num").val()))){
+				return;
+			}else{
+				if(document.getElementById('phone-num').value!=""&&document.getElementById('phone-num').value.length==11){
+						$("#r-code").attr({"disabled":"disabled"});  
+						i = self.setInterval("countdown()", 1000);  
+				 }else{
+						$.toast("号码格式错误", "forbidden", function() {
+					//do something
+					document.getElementById('phone-num').focus();
+						});
+				 }
+			 }
+    }    
+    var int = 60  
+    function countdown() {  
+    	 document.getElementById("phone-num").setAttribute("disabled","disabled");
+        document.getElementById("r-code").innerHTML = int + "秒后重新发送";  
+        int--;  
+        if(int<0){  
+            i=window.clearInterval(i)//结束  
+            int = 60; //重新赋值  
+            $("#r-code").removeAttr("disabled").html("重新获取校验码");//将按钮可用  
+			document.getElementById("phone-num").removeAttribute("disabled");
+        }  
+    } 	
+</script>
+	</body>
+</html>

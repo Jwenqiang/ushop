@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>个人信息</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>		
+<style>
+
+/*对话框遮罩*/
+.show{display: none;z-index: 8;}
+.show .bj{position: fixed;left: 0;top: 0;width: 100%;height: 100%;background: #000;opacity: 0.5;z-index: 99;}
+.show .show-msg{position: fixed;width: 6.6rem;height: 4rem;background: #fff;z-index: 999;left: 0;top: 0;right: 0;bottom: 0;margin: auto;padding: 0.4rem;box-shadow: 0 0 5px #EDEDED;}
+.show .show-tip{height: 3rem;box-shadow: none;}
+.show .show-tip p{text-align: center;color:  #666;}
+.show-btn{margin-top: 0.6rem;}
+.show-btn a{display: inline-block;height: 0.72rem;width: 2rem;text-align: center;line-height: 0.72rem;font-size: 0.32rem;border-radius: 8px;}
+.show-btn .show-register{border: 1px solid #ccc;color: #333;margin-right: 0.6rem;}
+.show-btn .show-login{color: #fff;background: #68B8FB;}
+#show-close{display: block;position: absolute;right: 10px;top: 10px;width: 0.4rem;height: 0.4rem;background: url(../img/close.png) center no-repeat;background-size: 100%;}
+.show .show-msg p{margin-bottom: 0.2rem;}
+.show-msg,.show-dialog,.show-sex{display: none;}
+.show-msg input{height: 0.6rem;padding-left: 0.2rem;width: 3.9rem;}
+#show-yzm{padding-left: 0.6rem;}
+#yzm{width: 1rem;height: 0.6rem;margin-right: 0.2rem;}
+#show-yzm button{padding: 0.1rem 0.4rem;border: 1px solid #EDEDED;background: #68B8FB;color: #fff;}
+#show-yzm button:disabled{background: #ccc;color: #333;}
+#show-btn{text-align: center;margin-top: 0.6rem;}
+#show-btn button{width: 1.6rem;height: 0.6rem;background: #F54B09;border: 1px solid #F54B09;color: #fff;border-radius: 5px;}
+#show-btn button:first-child{margin-right: 1.6rem;border: 1px solid #ccc;background: #ccc;color: #333;}
+.show .show-sex{height: 1.8rem;padding: 0 0.4rem;}
+.show-sex li{width: 100%;border-bottom: 1px solid #EDEDED;line-height: 0.9rem;height: 0.9rem;}
+.show-sex li label{float: left;}
+.show-sex li i{float: right;margin-top: 0.34rem;color: #F54B09;display: none;}	
+</style>			
+	</head>
+	<body>
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+	<div class="box">
+	<div class="status-bar"></div>
+		<div class="whole">
+	<!--内容START-->	
+			<div class="am-content">
+				<ul>
+					<li class="li-tx">
+						<a href="javascript:void(0);">
+							<label>头像</label>
+							<div class="am-tx">
+								<!-- <input type="file"/> -->
+								<span style="float: right;">
+									<img src="img/tx.png" v-if="fimg==''"/>
+									<img :src="fimg" v-else/>
+								</span>
+								<!-- <i class="fa fa-angle-right"></i> -->
+							</div>
+							<div class="clear"></div>
+						</a>
+					</li>
+					<li class="li-name">
+						<a href="javascript:void(0);">
+							<label>昵称</label>
+							<div class="am-tx am-phone">
+								<span v-if="nickname!=null">{{nickname}}</span>
+								<span v-else>{{mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}</span>
+								<!-- <i class="fa fa-angle-right"></i> -->
+							</div>
+							<div class="clear"></div>
+						</a>
+					</li>						
+					<li class="li-phone">
+						<a href="javascript:void(0);">
+							<label>手机号码</label>
+							<div class="am-tx am-phone">
+								<span>{{mobile}}</span>
+								<!-- <i class="fa fa-angle-right"></i> -->
+							</div>
+							<div class="clear"></div>
+						</a>
+					</li>		
+					<li class="li-zc">
+						<a href="javascript:void(0);">
+							<label>注册时间</label>
+							<div class="am-tx am-phone">
+								<span>{{regTime}}</span>
+							</div>
+							<div class="clear"></div>
+						</a>
+					</li>						
+				</ul>
+			</div>
+		</div>	
+	</div>	
+	<script type="text/javascript" src="js/hide.js" ></script>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/account.js" ></script>	
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>	
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},500)					
+			</script>		
+	</body>
+</html>

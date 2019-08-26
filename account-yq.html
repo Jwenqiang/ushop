@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>我的邀请</title>
+		<!--普通用户权限页面-->
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>		
+	</head>
+	<body>
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+				<div class="account-yq" style="height: 100%;">
+					<div class="acyq-t">
+						<div class="outer acyq-tab">
+							<a href="javascript:;" class="on">邀请好友</a>
+							<a href="javascript:;" @click="getData">邀请战绩</a>
+						</div>
+					</div>						
+					<div class="acyq-info" style="background: none;padding: 0;height:100%;overflow-y: auto;">
+						<a href="account-yq-gz.html" class="acyq-gz">活动规则</a>
+						<img :src="yqData.Poster" width="100%" style="border: 0;"/>
+<!-- 						<div class="acyq-ban">
+							<img src="img/yq-money.png"/>
+						</div>
+						<h2>邀请好友方法一</h2>
+						<div class="acyq-ff">
+							<p>将我的专属链接分享给好友</p>
+							<p>好友进入注册页面</p>
+							<h3>注册成功即可</h3>
+							<a id="myShare">发送我的专属链接</a>
+						</div>
+						<h2>邀请好友方法二</h2>
+						<div class="outer acyq-ff acyq-ff2">
+							<div class="acf-l">
+								<p>好友注册时填写的</p>
+								<p>"推荐人手机号"为</p>
+								<p><strong>你的手机号</strong></p>
+							</div>
+						</div>
+						<h2>邀请好友方法三</h2>
+						<div class="outer acyq-ff">
+							<p>好友扫描你的专属二维码(下图)</p>
+							<p class="yq-tip">好友进入注册页面注册成功即可</p>
+							<p class="yq-ewm">
+								<img :src="ewm" />
+							</p>
+						</div>	 -->
+					</div>
+					<div class="acyq-info acyq-hy" style="display: none;" @click="getData">
+						<div class="afy-info">
+							<ul class="outer fx-li">
+								<li @click.stop="yq(1)" :class="atype==1?'on':''">
+									<h3>{{invCount}}</h3>
+									<p>已邀请(人)</p>
+									<span></span>
+								</li>
+								<li @click.stop="yq(2)" :class="atype==2?'on':''">
+									<h3>{{ymoney}}</h3>
+									<p>已获得奖励(元)</p>
+									<span></span>
+								</li>
+								<li @click.stop="yq(3)" :class="atype==3?'on':''">
+									<h3>{{dmoney}}</h3>
+									<p>待激活奖励(元)</p>
+									<span></span>
+								</li>						
+							</ul>
+							<!--第一项-->
+							<div class="afy-info-msg afy-msg-ry" v-if="atype==1">
+								<section class="outer" v-for="item in dataList" v-if="dataList.length>0">
+									<div class="aim-l">
+										<label v-if="item.HeadImg==''"><img src="img/tx.png" /></label>
+										<label v-else><img :src="item.HeadImg" /></label>
+									</div>
+									<div class="aim-r">
+										<p class="outer"><label class="aim-name" v-if="item.NickName==null">{{item.Mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}</label><label class="aim-name" v-else>{{item.NickName}}</label><span class="aim-time">{{item.AddTime}}</span></p>
+										<p class="outer"><label class="aim-phone">{{item.Mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}</label><span class="aim-zt" v-if="item.Count==0">注册成功</span><span class="aim-zt" v-if="item.Count>0">已成交</span></p>
+									</div>
+								</section>
+								<div class="yq-no" v-if="dataList==null||dataList.length==0"></div>
+								<a style="display: block;text-align: center;" v-if="9<dataList.length&&dataList.length!=dataTotal" @click="readMore">查看更多</a>
+							</div>
+							<!--第二项-->
+							<div class="afy-info-msg afy-msg-jl" v-if="atype==2">
+								<section class="outer" v-for="item in dataList" v-if="dataList.length>0">
+									<div class="aim-l">
+										<label v-if="item.HeadImg==''"><img src="img/tx.png" /></label>
+										<label v-else><img :src="item.HeadImg" /></label>
+									</div>
+									<div class="aim-m">
+										<p><label class="aim-name"><span v-if="item.NickName==null">{{item.Mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}</span><span v-else>{{item.NickName}}</span><small>{{item.Mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}</small></label></p>
+										<p><label class="aim-cj">{{item.Description}}</label></p>
+									</div>
+									<div class="aim-mr">
+										<strong>+{{item.RewardMoney}}元</strong>
+									</div>
+								</section>
+								<div class="yq-no1" v-if="dataList==null||dataList.length==0"></div>
+								<a style="display: block;text-align: center;" v-if="9<dataList.length&&dataList.length!=dataTotal" @click="readMore">查看更多</a>
+							</div>
+							<!--第三项-->
+							<div class="afy-info-msg afy-msg-djl" v-if="atype==3">
+								<section class="outer" v-for="item in dataList" v-if="dataList.length>0">
+									<div class="aim-l">
+										<label v-if="item.HeadImg==''"><img src="img/tx.png" /></label>
+										<label v-else><img :src="item.HeadImg" /></label>
+									</div>
+									<div class="aim-m">
+										<p><label class="aim-name"><span v-if="item.NickName==null">{{item.Mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}</span><span v-else>{{item.NickName}}</span></label></p>
+										<p style="color: #C0C4C9;">{{item.Mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}</p>
+										<p><label class="aim-cj">当前状态：待激活</label></p>
+									</div>
+									<div class="aim-mr">
+										<strong>+{{item.RewardMoney}}元</strong>
+									</div>
+								</section>
+								<div class="yq-no2" v-if="dataList==null||dataList.length==0"></div>
+								<a style="display: block;text-align: center;" v-if="9<dataList.length&&dataList.length!=dataTotal" @click="readMore">查看更多</a>
+							</div>					
+						</div>						
+					</div>
+				</div>
+				<div class="activity-b">
+					<button class="setHb" @click="showTip=true"><a>微信邀请</a></button>
+					<button class="setShare"><a href="account-yq-hb.html" style="color: #fb503d;">面对面邀请</a></button>	
+				</div>		
+			<!-- 分享提示 -->
+				<div class="odiv" v-if="showTip">
+					<div class="yq-bj" @click="showTip=false">
+					</div>
+					<span><img src="img/sm.png"></span>
+				</div>								
+				<a class="gohome" href="index.html">首页</a>
+		</div>	
+		<div class="odiv" style="display: none;">
+			<div class="yq-bj">
+			</div>
+			<span><img src="img/sm.png"></span>
+		</div>		
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>	
+	<script type="text/javascript" src="js/ajax/account-yq.js" ></script>	
+	<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>	
+	<script>
+		$(function(){	
+			if(getUrlParam('from')){
+				window.location.href=getUrlParam("myurl");
+			}	
+		// 截取浏览器地址id
+		function getUrlParam(name){
+			let reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)');
+			let r = window.location.search.substr(1).match(reg);
+			if (r != null) return unescape(r[2]);
+			return null;			
+		}				
+			$("#myShare").click(function(){
+				$(".odiv").css("display","block");
+			})
+			$(".odiv").click(function(){
+				$(".odiv").css("display","none");
+			})			
+			$(".acyq-tab a").click(function(){
+				$(this).addClass("on").siblings().removeClass('on');
+				var index=$(this).index();
+				$(".acyq-info").eq(index).show().siblings(".acyq-info").hide();
+			})	
+			$("	.fx-li li").click(function(){
+				$(this).addClass("on").siblings().removeClass('on');
+				var index=$(this).index();
+				$(".afy-info-msg").eq(index).show().siblings(".afy-info-msg").hide();
+			})	
+		
+	var u=window.location.href,
+		tp="https://hfugweb.centaline.com.cn/img/share/wx_share_logo.jpg",
+		ms="好友送你一张好房U购专属邀请卡，加入即可享受购房优惠折上折~",
+		bt="我正在使用好房U购，低价买到了心仪好房~";				
+		shareAll();
+		function shareAll(){
+			axios({
+				method:"post",
+				url:"/Wx/GetJsSdkUiPackage",
+				data:JSON.stringify({Url:u})
+			})
+			.then(function(e){
+				console.log(e);
+				if(e.data.code==1001){
+				  wx.config({
+					  debug: false,
+					  appId: e.data.data.AppId,
+					  timestamp: e.data.data.Timestamp,
+					  nonceStr: e.data.data.NonceStr,
+					  signature: e.data.data.Signature,
+					  jsApiList: ["onMenuShareTimeline", "onMenuShareAppMessage", "onMenuShareQQ", "onMenuShareWeibo","onMenuShareQZone",
+							"chooseImage", "getNetworkType", "hideOptionMenu", "showOptionMenu", "hideMenuItems",
+							"showMenuItems", "hideAllNonBaseMenuItem", "showAllNonBaseMenuItem", "closeWindow"
+						]
+				  });			
+				}
+			})	
+		}	
+		wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
+			// document.querySelector('#myShare').onclick = function () {	
+				console.log(bt);
+				console.log(u);
+			// 旧版
+				wx.onMenuShareAppMessage({
+					title: bt, // 分享标题
+					desc: ms, // 分享描述
+					link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+					imgUrl: tp, // 分享图标
+					type: '', // 分享类型,music、video或link，不填默认为link
+					dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空			
+					success: function (res) {
+					}
+				})
+				wx.onMenuShareTimeline({ 
+					title: bt, // 分享标题
+					desc: ms, // 分享描述
+					link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+					imgUrl: tp, // 分享图标
+					success: function () {
+					  // 设置成功
+					  // console.log(33);
+					}
+				})			
+			// }
+		})	
+})
+	</script>
+	</body>
+</html>

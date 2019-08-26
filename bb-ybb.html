@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>已报备客户</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>		
+		<style>
+			.ybbi-m p{white-space: nowrap;text-overflow: ellipsis;overflow: hidden;}
+		</style>
+	</head>
+	<body>
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole" style="padding-bottom: 0;">
+	<!--内容START-->	
+	<!--合作公司-->
+			<div class="bb-ybb">
+				<div class="ybb-t">
+					<div class="swiper-container">
+						<div class="swiper-wrapper">
+							<div class="swiper-slide" @click="reportInfo()" :class="alltype==''?'ybb-active':''"><a href="javascript:;">全部({{allNum}})<span></span></a></div>
+							<div class="swiper-slide" @click="reportInfo('1,10')" :class="alltype=='1,10'?'ybb-active':''"><a href="javascript:;">已报备({{ybb}})<span></span></a></div>
+							<div class="swiper-slide" @click="reportInfo(25)" :class="alltype==25?'ybb-active':''"><a href="javascript:;">已到访({{ydf}})<span></span></a></div>
+							<div class="swiper-slide" @click="reportInfo(40)" :class="alltype==40?'ybb-active':''"><a href="javascript:;">已认购({{yrg}})<span></span></a></div>
+							<div class="swiper-slide" @click="reportInfo(50)" :class="alltype==50?'ybb-active':''"><a href="javascript:;">已签约({{yqy}})<span></span></a></div>
+							<div class="swiper-slide" @click="reportInfo(60)" :class="alltype==60?'ybb-active':''"><a href="javascript:;">已结佣({{yjy}})<span></span></a></div>
+							<div class="swiper-slide" @click="reportInfo('4,15,30,45,55')" :class="alltype=='4,15,30,45,55'?'ybb-active':''"><a href="javascript:;">已失效({{ysx}})<span></span></a></div>
+						</div>
+					</div>						
+				</div>
+				<div class="hr10"></div>
+				<div class="ybb-list">
+					<div class="ybb-info" v-for="item in userInfo">
+						<a :href="'bb-info.html?id='+item.Id">
+							<div class="ybbi-l">
+								<label class="xing" v-if="item.FullName!=null">{{item.FullName.substring(0,1)}}</label>
+								<label class="xing" v-else>1</label>
+							</div>
+							<div class="ybbi-m">
+								<h4><label v-if="item.FullName!=null">{{item.FullName}}</label><label v-else>changeNum(item.Mobile)</label> <span v-if="getStatus(item.Status)!=null">{{getStatus(item.Status)}}</span></h4>
+								<p v-if="item.Status==10||item.Status==1"><label>报备时间：</label><span>{{item.AddTime}}</span></p>
+								<p v-else-if="item.Status==25"><label>到访时间：</label><span>{{item.AddTime}}</span></p>
+								<p v-else-if="item.Status==40"><label>认购时间：</label><span>{{item.AddTime}}</span></p>
+								<p v-else-if="item.Status==50"><label>签约时间：</label><span>{{item.AddTime}}</span></p>
+								<p v-else-if="item.Status==60"><label>结佣时间：</label><span>{{item.AddTime}}</span></p>
+								<p v-else><label>失效时间：</label><span>{{item.AddTime}}</span></p>
+							
+							
+								<p v-if="item.Status==4||item.Status==15||item.Status==30||item.Status==45||item.Status==55">
+									<label>失效原因：</label>
+									<span v-if="item.Remarks!=null">{{item.Remarks}}</span>
+									<span v-else-if="item.Status==4">跟进无效</span>
+									<span v-else-if="item.Status==15">无效报备</span>
+									<span v-else-if="item.Status==30">无效到访</span>
+									<span v-else-if="item.Status==45">已弃购</span>
+									<span v-else-if="item.Status==55">签约弃购</span>
+								</p>
+									
+								<p v-if="item.Status==25">到访盘源：{{item.ProjectName}}</p>
+								<p v-if="item.Status==10||item.Status==1">报备盘源：{{item.ProjectName}}</p>
+								
+								<p v-if="item.Status==40">认购盘源：{{item.ProjectName}}</p>
+								
+								<p v-if="item.Status==50">签约盘源：{{item.ProjectName}}</p>	
+													
+								<p v-if="item.Status==60">结佣盘源：{{item.ProjectName}}</p>								
+								
+							</div>
+							<div class="ybbi-r">
+								<p style="margin-bottom: 0.2rem;">{{changeNum(item.Mobile)}}</p>
+								<label v-if="item.StatusCheckType==1&&RoleType!=2" style="border-radius: 2px; background: rgb(251, 120, 116);padding: 0.08rem 0.1rem;color: #fff;margin-top: 0.1rem;font-size: 0.2rem;">平台审核中...</label>
+							</div>	
+							<div class="clear"></div>
+						</a>
+					</div>
+					<!-- 无记录时 -->
+					<div v-if="userInfo==''" class="bb-none">暂无客户</div>
+					<a style="display: block;text-align: center;line-height: 0.8rem;" v-if="9<userInfo.length&&userInfo.length!=dataTotal" @click="readMore">查看更多</a>				
+				</div>
+				<a class="ybb-bb" href="bb-client.html"><i class="fa fa-plus"></i>报备客户 </a>
+			</div>
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/bb-ybb.js" ></script>		
+	<script>
+var mySwiper = new Swiper('.swiper-container',{  
+	loop:false,
+	//一屏3.5个
+	slidesPerView : 3.6,
+	//每个的距离
+	// spaceBetween : 10,  	
+	//滑动是整个
+    freeMode: false, 
+}) 	
+$(function(){
+	$(".ybb-t .swiper-slide").click(function(){
+		$(this).addClass("swiper-slide-active").siblings().removeClass('swiper-slide-active');
+	})
+})
+	</script>
+	</body>
+</html>

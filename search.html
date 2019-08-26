@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>搜索</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+<!-- 		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>	 -->	
+	</head>
+	<body>
+<!-- <div id="loadingDiv"><div id="loadImg"></div></div>				 -->
+		<div class="whole">
+	<!--内容START-->	
+			<div class="search-box">
+				<div class="search-header">
+					<a class="search-s" href="###">
+						<label class="search"><i class="fa fa-search"></i></label>
+						<input type="tel" placeholder="请输入您想要搜索的楼盘" id="s-search" autofocus="autofocus"/>	
+						<!-- autofocus="autofocus" -->
+					</a> 
+					<a class="h-user c-back" href="javascript:history.back();">取消</a>	
+					<div class="clear"></div>
+				</div>	
+<!-- 				<div class="history-info">
+					<p>历史搜索<span style="float: right;"><i class="fa fa-trash-o"></i></span></p>
+					<a href="###">天机公馆二期</a>
+					<a href="###">海洋新天地</a>
+					<a href="###">天机公馆</a>
+					<a href="###">天机公馆</a>
+					<a href="###">天机公馆</a>
+					<a href="###">天机公馆</a>
+					<a href="###">天机公馆</a>
+					<a href="###">天机公馆</a>					
+				</div> -->
+			</div>	
+			<div class="list-bg" style="position: fixed;top: 1.2rem;width: 100%;height: 100%;background: #000;opacity: 0.5;z-index: 9;display: none;"></div>
+		</div>	
+	<script src="js/jquery.min.js"></script>
+<!-- 	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>	 -->	
+	<script>
+		$(document).onload(function(){
+			$("#s-search").focus();
+			$("#s-search").trigger("click").focus();
+		})	
+	</script>
+<script>
+	
+	$(function(){
+		$("#s-search").focus(function(){
+			$(".list-bg").css("display","block");
+		})
+		$("#s-search").blur(function(){
+			$(".list-bg").css("display","none");
+		})			
+	})
+</script>	
+	</body>
+</html>

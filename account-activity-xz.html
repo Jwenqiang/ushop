@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>新增跟进记录</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>		
+		<style>
+			.account-activity{padding: 0.4rem;}
+			textarea{width: 100%;height: 4rem;padding: 0.4rem;}
+			button{width: 100%;height: 0.72rem;margin-top: 0.8rem;background: #5e8dfb;border: 0;color: #fff;border-radius: 5px;}
+		</style>
+	</head>
+	<body>
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+			<div class="account-activity">
+				<textarea v-model="xzMsg" maxlength="200" autofocus placeholder="请输入200字以内的内容"></textarea>	
+				<button @click="getData">新增</button>
+			</div>
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/account-activity-xz.js" ></script>	
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>		
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},500)					
+			</script>		
+	<script>
+	</script>
+	</body>
+</html>

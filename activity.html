@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<!-- 不缓存 -->
+		<meta http-equiv="Expires" content="0">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Cache" content="no-cache">		
+		<title>活动报名</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>
+				<style>
+					html,body,.whole{min-height: 100%;position: relative;}
+				.activity-top .activity-top-msg{padding: 0.4rem;}
+				.activity-info p img{width: 100%;}
+				.activity-top-msg p.ftitle{white-space: nowrap;text-overflow: ellipsis;overflow: hidden;width: 100%;font-size: 0.24rem;color: #203140;}
+				.activity-top-msg p.fmsg{margin-top: 0.2rem;}
+				.viewerimg {
+					width: 100% !important;
+					height: auto;
+				}	
+				/* .noS{height: 7rem !important;overflow-y: auto;}		 */
+				.acontent{margin-top: 0.2rem;}
+				.noB input[disabled]{background: none;}
+				.acontent img{width: 100%;}
+				.weui-dialog, .weui-toast{z-index: 9999;}
+				.hasT{overflow: hidden !important;}
+				</style>
+	</head>
+	<body style="background: #f5f5f7;">
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole" style="padding: 0;" :class="isF?'':'hasT'">
+	<!--内容START-->	
+			<div class="activity" style="position: relative;">
+				<div v-if="isOther==false">
+					<div class="activity-top" v-if="activeInfo.CoverImg==''||activeInfo.CoverImg==null">
+						<div class="activity-top-msg">
+							<h4>{{activeInfo.ActivityTitle}}</h4>
+							<p class="ftitle">{{activeInfo.ActivityTitleSecond}}</p>
+							<p v-if="activeInfo.SignActivityState===3" class="fmsg">
+								<label>活动报名已结束，敬请期待下一次活动！</label>
+							</p>
+							<p v-else-if="activeInfo.SignActivityState===1" class="fmsg">
+								<label>活动未开始，敬请期待！</label>
+							</p>
+							<p v-else class="fmsg" style="margin-top: 0.1rem;">
+								<label>报名倒计时：</label>
+								<span id="mtime">
+									<strong id="day" class="day">{{tian}}</strong>天
+									<strong id="hour" class="hour">{{shi}}</strong>时
+									<strong id="minute" class="minute">{{fen}}</strong>分
+								</span>
+							</p>
+						</div>
+					</div>
+					<div class="activity-top" :style='"background: url("+activeInfo.CoverImg+") left top no-repeat;background-size:100%"' v-else>
+						<div class="activity-top-msg">
+							<h4>{{activeInfo.ActivityTitle}}</h4>
+							<p class="ftitle">{{activeInfo.ActivityTitleSecond}}</p>
+							<p v-if="activeInfo.SignActivityState===3" class="fmsg">
+								<label>活动报名已结束，敬请期待下一次活动！</label>
+							</p>
+							<p v-else-if="activeInfo.SignActivityState===1" class="fmsg">
+								<label>活动未开始，敬请期待！</label>
+							</p>
+							<p v-else class="fmsg" style="margin-top: 0.1rem;">
+								<label>报名倒计时：</label>
+								<span id="mtime">
+									<strong id="day" class="day">{{tian}}</strong>天
+									<strong id="hour" class="hour">{{shi}}</strong>时
+									<strong id="minute" class="minute">{{fen}}</strong>分
+								</span>
+							</p>
+						</div>
+					</div>	
+				</div>
+				<div v-if="isOther==true">
+					<div class="activity-top" v-if="activeInfo.CentanetCoverImg==''||activeInfo.CentanetCoverImg==null">
+						<div class="activity-top-msg">
+							<h4>{{activeInfo.ActivityTitle}}</h4>
+							<p class="ftitle">{{activeInfo.ActivityTitleSecond}}</p>
+							<p v-if="activeInfo.SignActivityState===3" class="fmsg">
+								<label>活动报名已结束，敬请期待下一次活动！</label>
+							</p>
+							<p v-else-if="activeInfo.SignActivityState===1" class="fmsg">
+								<label>活动未开始，敬请期待！</label>
+							</p>
+							<p v-else class="fmsg" style="margin-top: 0.1rem;">
+								<label>报名倒计时：</label>
+								<span id="mtime">
+									<strong id="day" class="day">{{tian}}</strong>天
+									<strong id="hour" class="hour">{{shi}}</strong>时
+									<strong id="minute" class="minute">{{fen}}</strong>分
+								</span>
+							</p>
+						</div>
+					</div>
+					<div class="activity-top" :style='"background: url("+activeInfo.CentanetCoverImg+") left top no-repeat;background-size:100%"' v-else>
+						<div class="activity-top-msg">
+							<h4>{{activeInfo.ActivityTitle}}</h4>
+							<p class="ftitle">{{activeInfo.ActivityTitleSecond}}</p>
+							<p v-if="activeInfo.SignActivityState===3" class="fmsg">
+								<label>活动报名已结束，敬请期待下一次活动！</label>
+							</p>
+							<p v-else-if="activeInfo.SignActivityState===1" class="fmsg">
+								<label>活动未开始，敬请期待！</label>
+							</p>
+							<p v-else class="fmsg" style="margin-top: 0.1rem;">
+								<label>报名倒计时：</label>
+								<span id="mtime">
+									<strong id="day" class="day">{{tian}}</strong>天
+									<strong id="hour" class="hour">{{shi}}</strong>时
+									<strong id="minute" class="minute">{{fen}}</strong>分
+								</span>
+							</p>
+						</div>
+					</div>	
+				</div>				
+				<!-- <div class="activity-m" style="padding-bottom: 0;" v-if="activeInfo.SignActivityState===2 && activeTime.SignEndTime!='0'"> -->
+				<div class="activity-m" id="abm" style="padding-bottom: 0;" :class="activeInfo.SignActivityState==2 && activeTime.SignEndTime!='0'?'':'noB'">
+					<div class="am-form">
+						<h4>报名参加</h4>
+						<p><label>姓名：</label><input type="text" placeholder="请输入姓名" v-model="msg.name"/></p>
+						<p><label>电话：</label><input type="number" placeholder="请输入您的手机号" v-model="msg.phone"/></p>
+						<p><label>人数：</label><input type="number" placeholder="请输入参加人数" v-model="msg.num"/></p>
+						<button id="go-bm" @click="goActive">立即报名</button>
+					</div>
+				</div>
+				<div class="activity-m">
+					<div class="activity-info" :class="(activeInfo.SignActivityState==1||activeInfo.SignActivityState==3)?'noS':''">
+						<h4>活动详情</h4>
+						<p class="active-time"><label>活动开始日期：</label><span>{{activeTime.startTime}}</span></p>
+						<p class="active-time"><label>活动结束日期：</label><span>{{activeTime.endTime}}</span></p>
+						<p v-if="activeTime.activityAddress!=null&&activeTime.activityAddress!=''"><label>活动地点：</label><span>{{activeTime.activityAddress}}</span></p>
+						<p v-if="activeTime.activityRoute!=null&&activeTime.activityRoute!=''"><label>活动路线：</label><span>{{activeTime.activityRoute}}</span></p>
+						<div v-html="activeTime.activityContent" class="acontent"></div>
+						<div style="display: block;width: 100%;height: 0.2rem;"></div>
+					</div>
+				</div>	
+				<div class="hr10"></div>
+				<div class="gocall" v-if="activeTime.ActivityPhone!=null&&activeTime.ActivityPhone!=''" @click.stop="callP(activeTime.ActivityPhone)"><i class="fa fa-phone"></i></div>
+				<div class="activity-b">
+					<button class="setHb"><a :href="'activity-hb.html?ActivityId='+activeId">生成海报</a></button>
+					<button class="setShare" @click="showTip=true">微信分享</button>
+				</div>	
+			</div>
+<!-- 弹窗 -->			
+		<div class="show-af" v-if="callPhone" style="position: fixed;top: 0;left: 0;width: 100%;height: 100%;z-index: 9990;">
+			<div class="bj" style="z-index: 9991;position: fixed;"></div>
+			<div class="af-suc" style="z-index: 9992;background: #fff;width: 84%;left: 8%;height: 5rem;top: 2.8rem;border-radius: 4px;box-shadow: 0 0 2px #ccc;padding: 0.8rem 0.6rem;color: #000;">
+				<div class="phone-msg" style="text-align: left;">
+					<p style="margin: 0.2rem 0;font-size: 0.4rem;">{{phoneF}}-<span style="color: #549fdd;">{{phoneL}}</span></p>
+					<p style="font-size: 0.30rem;">电话接通后，请按照语音提示输入{{phoneL.length}}位数分机号,以便转接专属顾问。</p>
+					<a :href="'tel:'+phoneMsg" style="font-size: 0.32rem; display: block;margin: 0.6rem 0 0;text-align: center;width: 100%;height: 0.9rem;line-height: 0.9rem;background: #549fdd;color: #fff;border-radius: 6px;">拨打电话</a>
+				</div>
+				<label @click="callPhone=false" style="display:block;width: 0.8rem;height: 0.8rem; position: absolute;right: 0.1rem;top: 0.1rem;background: url(img/close.png) center no-repeat;background-size: 0.52rem;"></label>
+			</div>
+		</div>	
+					
+	<!-- 分享提示 -->
+		<div class="odiv" v-if="showTip">
+			<div class="yq-bj" @click="showTip=false">
+			</div>
+			<span><img src="img/sm.png"></span>
+		</div>					
+			<a class="gohome" href="index.html?x=1&from=singlemessage" v-if="isShare&&isOther==false" @click.stop="showF=true">首页</a>
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<!-- <script src="js/city-picker.min.js"></script> -->
+	<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/active.js" ></script>	
+	<!-- <script type="text/javascript" src="js/wx.js"></script>	 -->
+<!-- 	<script>
+		setTimeout(function(){
+			wxShared();
+		},100)
+function wxShared(){
+	// if(Sstorage.getItem("urlf")==String(window.location.href)){
+		tp=Sstorage.getItem("tp");
+		ms=Sstorage.getItem("ms");
+		bt=Sstorage.getItem("bt");
+		u=window.location.href;
+	// }
+	
+	shareAll();
+	function shareAll(){	
+		axios({
+			method:"post",
+			url:"/Wx/GetJsSdkUiPackage",
+			data:JSON.stringify({Url:u})
+		})
+		.then(function(e){
+			console.log(e);
+			if(e.data.code==1001){
+			  wx.config({
+				  debug: false,
+				  appId: e.data.data.AppId,
+				  timestamp: e.data.data.Timestamp,
+				  nonceStr: e.data.data.NonceStr,
+				  signature: e.data.data.Signature,
+				  jsApiList: ["updateAppMessageShareData","updateTimelineShareData","onMenuShareTimeline", "onMenuShareAppMessage", "onMenuShareQQ", "onMenuShareWeibo","onMenuShareQZone",
+						"chooseImage", "getNetworkType", "hideOptionMenu", "showOptionMenu", "hideMenuItems",
+						"showMenuItems", "hideAllNonBaseMenuItem", "showAllNonBaseMenuItem", "closeWindow"
+					]
+			  });			
+			}
+		})	
+		.catch(function(n){
+			
+		})
+	}	
+	
+	wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
+	// 旧版
+		wx.onMenuShareTimeline({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			  console.log(33);
+			}
+		})
+		wx.onMenuShareAppMessage({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})		
+		wx.onMenuShareQQ({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})	
+		wx.onMenuShareWeibo({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})
+		wx.onMenuShareQZone({ 
+			title: bt, // 分享标题
+			desc: ms, // 分享描述
+			link: u, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+			imgUrl: tp, // 分享图标
+			success: function () {
+			  // 设置成功
+			}
+		})																						
+	});			
+}		
+	</script> -->
+	<script>
+		$(function(){
+			$("input").focus(function(){
+				$(".activity-b").css("position","absolute");
+			})
+			$("input").blur(function(){
+			  $(".activity-b").css("position","fixed");
+			  window.scroll(0,document.body.scrollHeight);
+			});
+// $('input,textarea').on('blur', function () {
+// 	console.log(document.body.scrollHeight);
+// 	window.scroll(0,document.body.scrollHeight);
+// });			
+		})
+	</script>
+	</body>
+</html>

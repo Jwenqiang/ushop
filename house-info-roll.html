@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>领取优惠</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>		
+	</head>
+	<body>
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+			<div class="hir-top">
+				<div class="hir-troll">
+					<div class="hir-a">
+						<div class="hir-l">{{rollMsg.Discount}}<label v-if="rollMsg.Type==1">折</label><label v-else>元</label></div>
+						<span></span>
+						<div class="hir-r">
+							<p>购房优惠券</p>
+							<p><small>（仅限该楼盘使用）</small></p>
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="hir-b">
+						<p>有效期:&nbsp;{{rollMsg.StartDate}}&nbsp;至&nbsp;{{rollMsg.EndDate}}</p>
+					</div>
+				</div>
+			</div>
+			<div class="hr10"></div>
+			<div class="hir-mid">
+				<h4>获取优惠</h4>
+				<p class="hir-mid-tip">请填写正确的信息，顾问会及时联系您，为您提供详细的优惠信息。</p>
+				<div class="hir-mid-form">
+					<p><label>姓&nbsp;&nbsp;名</label><input type="text" placeholder="请输入您的姓名" id="name" v-model="name"/></p>
+					<p><label>电&nbsp;&nbsp;话</label><input type="number" placeholder="请输入手机号码" id="phone-num" v-model="username"/><button id="r-code" onclick="getCode()" @click="sendCode" style="color: #59a0f9;">获取验证码</button> </p>
+					<p><label>验证码</label><input type="number" placeholder="请输入验证码" id="yzm" v-model="uCode"/></p>
+					<button id="go-hir" @click="goSave">立即获取</button>
+				</div>
+			</div>
+			<div class="hr10"></div>
+			<div class="hir-bottom">
+				<h4>优惠详情</h4>
+				<p>{{rollMsg.Description}}</p>
+			</div>
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/house-info-roll.js" ></script>		
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>	
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},500)					
+			</script>		
+<script>
+	$(function(){
+		//手机号为11位数时颜色改变	
+		$('#phone-num').bind('input propertychange',function () {
+			if($(this).val().length==11){
+				$(this).siblings('button').css("color",'#59a0f9');
+			}else{
+				$(this).siblings('button').css("color",'#ccc');
+			}
+		})			
+		
+	})
+</script>
+<script>
+	// 验证码倒计时效果
+			var i;  
+			function getCode(){ 
+				if(document.getElementById('phone-num').value!=""&&document.getElementById('phone-num').value.length==11&&(/^1[345678]\d{9}$/.test(document.getElementById('phone-num').value))){
+					$("#r-code").attr({"disabled":"disabled"});  
+					i = self.setInterval("countdown()", 1000);  
+			   }else{
+					$.toast("号码格式错误", "forbidden", function() {
+					  //do something
+					  document.getElementById('phone-num').focus();
+					});
+			   }
+			}    
+			var int = 60  
+			function countdown() {  
+				 document.getElementById("phone-num").setAttribute("disabled","disabled");
+				document.getElementById("r-code").innerHTML = int + "秒后重新发送";  
+				int--;  
+				if(int<0){  
+					i=window.clearInterval(i)//结束  
+					int = 60; //重新赋值  
+					$("#r-code").removeAttr("disabled").html("重新获取校验码");//按钮可用  
+					document.getElementById("phone-num").removeAttribute("disabled");
+				}  
+			} 
+</script>	
+	</body>
+</html>

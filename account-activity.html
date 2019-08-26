@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>报名记录</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>		
+	</head>
+	<body style="background: #f5f5f7;">
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+			<div class="account-activity">
+				<div class="aa-tab">
+					<ul>
+						<li :class="isOn==1?'on':''" @click="selectN(1)"><p>活动报名({{bmActive}})</p> <span></span></li>
+						<li :class="isOn==2?'on':''" @click="selectN(2)"><p>资讯报名({{bmMsg}})</p> <span></span></li>
+						<li :class="isOn==3?'on':''" @click="selectN(3)"><p>房源带看({{bmHouse}})</p> <span></span></li>
+					</ul>
+				</div>
+				<div class="aa-list" v-if="activeList.length>0" v-for="item in activeList">
+					<!-- <a :href="'activity.html?id='+item.ActivityId+'&ym=account-activity.html'"> -->
+						<div class="outer aa-t">
+							<span class="aa-zt fl success" v-if="item.State==true"><i class="fa fa-check-circle"></i>报名成功！</span>
+							<span class="aa-zt fl cancel" v-if="item.State==false"><i class="fa fa-times-circle"></i>已取消报名！</span>
+							<span class="fr aa-time">{{item.AddTime}}</span>
+						</div>
+						<div class="outer aa-b">
+	<!-- 						<div class="aa-l">
+								<img src="img/ia1.jpg"/>
+								<span v-if="item.ActivityEnableState==true">
+									<label class="aa-zt" v-if="item.SignActivityState==1">报名未开始</label>
+									<label class="aa-zt" v-if="item.SignActivityState==2">报名进行中</label>
+									<label class="aa-zt" v-if="item.SignActivityState==3">报名已结束</label>
+								</span>
+								<label class="aa-zt" v-if="item.ActivityEnableState==false">报名已结束</label>
+							</div> -->
+							<div class="aa-r">
+								<p>标题：<strong>{{item.ActivityTitle}}</strong></p>
+								<p>姓名：{{item.FullName}}</p>
+								<p>电话：{{item.Mobile}} <a :href="'tel:'+item.Mobile" v-if="role==4" style="float: right;display: inline-block;background: #007AFF;border-radius: 50%; padding: 0 0.12rem;color: #fff;"><i class="fa fa-phone"></i></a></p>
+								<p>人数：{{item.Number}}人</p>
+							</div>						
+						</div>
+						<!-- </a> -->
+						<div class="aa-btn">
+							<span v-if="item.ActivityEnableState==true">
+								<a class="btn qx-btn" @click="cancelApply(item.Id,item.ActivityId,isOn)" v-if="item.State==true&&item.SignActivityState!=3&&role!=4">取消报名</a>						
+								<a class="btn bm-btn" v-if="item.State==false&&item.SignActivityState!=3&&isOn==1" :href="'activity.html?id='+item.ActivityId">去报名</a>										
+								<a class="btn bm-btn" v-if="item.State==false&&item.SignActivityState!=3&&isOn==2" :href="'zx-info.html?id='+item.ActivityId">去报名</a>										
+								<a class="btn bm-btn" v-if="item.State==false&&item.SignActivityState!=3&&isOn==3" :href="'house_info.html?id='+item.ActivityId">去报名</a>										
+								<a class="btn js-btn" v-if="item.SignActivityState==3&&isOn==1">已结束</a>
+							</span>
+							
+							<a class="btn js-btn" v-if="item.ActivityEnableState==false&&isOn==1">已结束</a>
+							<a class="btn" v-if="item.SignActivityState!=3&&item.ActivityEnableState==true&&isOn==1" style="margin-left: 0.8rem;background: #4091ea;color: #fff;" :href="'activity.html?id='+item.ActivityId+'&ym=account-activity.html'">活动详情</a>	
+							<a class="btn" v-if="item.SignActivityState!=3&&item.ActivityEnableState==true&&isOn==2" style="margin-left: 0.8rem;background: #4091ea;color: #fff;" :href="'zx-info.html?id='+item.ActivityId+'&ym=account-activity.html'">资讯详情</a>	
+							<a class="btn" v-if="item.SignActivityState!=3&&item.ActivityEnableState==true&&isOn==3" style="margin-left: 0.8rem;background: #4091ea;color: #fff;" :href="'house_info.html?id='+item.ActivityId+'&ym=account-activity.html'">房源详情</a>	
+						</div>		
+						<div class="aa-btn" v-if="role==4">
+							<a class="aa-gj" :href="'account-activity-gj.html?id='+item.Id">客户跟进（{{item.EnrollUserLogCount}}）</a>
+							<a class="aa-gj" :href="'account-activity-xz.html?id='+item.Id">新增跟进记录</a>
+						</div>						
+	
+				</div>
+				<a style="display: block;text-align: center;" v-if="9<activeList.length&&activeList.length!=dataTotal" @click="readMore">查看更多</a>
+<!-- 				<div class="aa-list">
+					<div class="outer aa-t">
+						<span class="aa-zt fl cancel"><i class="fa fa-times-circle"></i>已取消报名</span>
+						<span class="fr aa-time">2018/10/12 15:30:28</span>
+					</div>
+					<div class="outer aa-b">
+						<div class="aa-l">
+							<img src="img/ia2.jpg"/>
+							<label class="aa-zt">报名进行中</label>
+						</div>
+						<div class="aa-r">
+							<p><strong>八月第一周看房团火热报名中</strong></p>
+							<p>姓名：王小明</p>
+							<p>电话：136****8899</p>
+							<p>人数：2人</p>
+							<a class="btn bm-btn" href="activity.html">去报名</a>						
+						</div>
+					</div>
+				</div>		
+				<div class="aa-list">
+					<div class="outer aa-t">
+						<span class="aa-zt fl success"><i class="fa fa-check-circle"></i>报名成功</span>
+						<span class="fr aa-time">2018/10/12 15:30:28</span>
+					</div>
+					<div class="outer aa-b">
+						<div class="aa-l">
+							<img src="img/ia2.jpg"/>
+							<label class="aa-zt aa-js">报名已结束</label>
+						</div>
+						<div class="aa-r">
+							<p><strong>八月第一周看房团火热报名中</strong></p>
+							<p>姓名：王小明</p>
+							<p>电话：136****8899</p>
+							<p>人数：2人</p>
+							<a class="btn js-btn">已结束</a>						
+						</div>
+					</div>
+				</div>	 -->
+				<!-- 无记录时显示 -->
+				<div class="no-aa" v-if="activeList.length==0">
+					<p>暂无记录~</p>
+				</div>				
+			</div>
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/account-activity.js" ></script>	
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>		
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},500)					
+			</script>		
+	<script>
+	// $(function(){
+// 		// 无记录时显示
+// 		if($(".aa-list").length==0){
+// 			$(".no-aa").css("display","block");
+// 		}else{
+// 			$(".no-aa").css("display","none");
+// 		}
+// 		
+// 		$(".qx-btn").click(function(){
+// 			$.confirm({
+// 			  title: '取消活动报名',
+// 			  text: '确认取消该活动报名吗？',
+// 			  onOK: function () {
+// 			    //点击确认
+// 			  },
+// 			  onCancel: function () {
+// 			  }
+// 			});			
+// 		})
+// 	})
+	</script>
+	</body>
+</html>

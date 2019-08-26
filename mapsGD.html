@@ -1,0 +1,305 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>位置及周边</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>		
+
+<!--这里以iphone6尺寸开发，自动适配-->
+		<style type="text/css">
+			.map-box{max-width: 750px;margin: 0 auto;position: relative;height: 100%;}
+			#container {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				width: 100%;
+				height: 100%;
+			}
+			
+			.button-group {
+				position: absolute;
+				bottom: 20px;
+				right: 20px;
+				font-size: 12px;
+				padding: 10px;
+			}
+			
+			.button-group .button {
+				height: 28px;
+				line-height: 28px;
+				background-color: #0D9BF2;
+				color: #FFF;
+				border: 0;
+				outline: none;
+				padding-left: 5px;
+				padding-right: 5px;
+				border-radius: 3px;
+				margin-bottom: 4px;
+				cursor: pointer;
+			}
+			
+			.button-group .inputtext {
+				height: 26px;
+				line-height: 26px;
+				border: 1px;
+				outline: none;
+				padding-left: 5px;
+				padding-right: 5px;
+				border-radius: 3px;
+				margin-bottom: 4px;
+				cursor: pointer;
+			}
+			
+			#tip {
+				background-color: #fff;
+				padding-left: 10px;
+				padding-right: 10px;
+				position: absolute;
+				font-size: 12px;
+				right: 10px;
+				top: 20px;
+				border-radius: 3px;
+				border: 1px solid #ccc;
+				line-height: 30px;
+			}
+			
+			.amap-info-content {
+				font-size: 12px;
+			}
+			
+			#myPageTop {
+				position: absolute;
+				top: 5px;
+				right: 10px;
+				background: #fff none repeat scroll 0 0;
+				border: 1px solid #ccc;
+				margin: 10px auto;
+				padding: 6px;
+				font-family: "Microsoft Yahei", "微软雅黑", "Pinghei";
+				font-size: 14px;
+			}
+			
+			#myPageTop label {
+				margin: 0 20px 0 0;
+				color: #666666;
+				font-weight: normal;
+			}
+			
+			#myPageTop input {
+				width: 170px;
+			}
+			
+			#myPageTop .column2 {
+				padding-left: 25px;
+			}
+			
+			
+			#container {
+				max-width: 100%;
+				margin: 0 auto;
+				height: 86%;
+			}
+			
+			.map-type {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				z-index: 999;
+				width: 100%;
+				padding: 0.2rem;
+			}
+			
+			.map-type li {
+				width: 1.01rem;
+				height: 1.2rem;
+				float: left;
+				list-style-type: none;
+				text-align: center;
+			}
+			.map-type i{color: #bec6de;}
+			.map-type li span{
+				display: inline-block;
+				width: 0.6rem;
+				height: 0.6rem;
+				background: #ededfa;
+				text-align: center;
+				line-height: 0.6rem;
+				border-radius: 50%;
+			}
+			.map-type li p{font-size: 0.22rem;text-align: center;color: #bec6de;}
+			.select span{background: #fa5e3c !important;}
+			.select span i{color: #fff !important;}
+			.select p{color: #fa5e3c !important;}	
+			.amap_lib_placeSearch_poi{background: url(img/mark1.png) left center no-repeat !important;background-size: 100% !important;line-height: 20px;}	
+			.amap-icon{width: 28px !important;height: 35px !important;}
+			.amap-icon img{height: 100%;}
+			.amap-marker-label{border: 0;padding: 5px 20px !important;background: #2198fd;color: #fff;border-radius: 5px;}
+		</style>
+	</head>
+
+	<body>
+<div id="loadingDiv"><div id="loadImg"></div></div>		
+	<div class="map-box">			
+		<div id="container"></div>
+		<div class="map-type">
+			<ul>
+				<li>
+					<span><i class="fa fa-bus"></i></span> 
+					<p>公交</p> 
+				</li>
+				<li>
+					<span><i class="fa fa-train"></i></span> 
+					<p>地铁</p> 
+				</li>
+				<li>
+					<span><i class="fa fa-mortar-board"></i></span> 
+					<p>学校</p> 
+				</li>
+				<li>
+					<span><i class="fa fa-building"></i></span> 
+					<p>小区</p> 
+				</li>
+				<li>
+					<span><i class="fa fa-medkit"></i></span> 
+					<p>医院</p> 
+				</li>	
+				<li>
+					<span><i class="fa fa-shopping-cart"></i></span> 
+					<p>商场</p> 
+				</li>
+				<li>
+					<span><i class="fa fa-bank"></i></span> 
+					<p>银行</p> 
+				</li>	
+				<div class="clear"></div>
+			</ul>
+		</div>
+	</div>
+		<!--<button id="bt">点击调取高德地图</button>-->
+	<script type="text/javascript" src="js/hide.js" ></script>	
+	<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.12&key=18ad0f6352a933a11fa16f1e54f07413"></script>	
+	<script src="js/jquery.min.js"></script>
+	<!--<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>-->
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/maps.js" ></script>		
+		<script type="text/javascript">
+			
+			$(function() {
+				var lstorage=window.sessionStorage;
+				var pointName=lstorage.getItem('pointName');
+				var x=lstorage.getItem("x");
+				var y=lstorage.getItem("y");
+				var map = new AMap.Map("container", {
+					resizeEnable: true,
+					zoom: 15,
+					//显示的地图中心点
+					center: [x, y]
+				});
+			
+				//添加点标记，并使用自己的icon
+				var marker = new AMap.Marker({
+					map: map,
+					//需要标记的地图中心点
+					position: [x, y],
+					icon: new AMap.Icon({
+						size: new AMap.Size(40, 50), //图标大小
+						image: "img/mark2.png",
+//						imageOffset: new AMap.Pixel(0, -60)
+					}),
+				});
+			    marker.setLabel({//label默认蓝框白底左上角显示，样式className为：amap-marker-label
+			        offset: new AMap.Pixel(30, 0),//修改label相对于maker的位置
+			        content: pointName
+			    });	
+			    //点击标注的点调起高德地图
+	            marker.on('click',function(e){
+	                marker.markOnAMAP({
+	                    name:pointName,
+	                    position:marker.getPosition()
+	                })
+	            })			    
+				//新加插件功能'AMap.Geolocation'定位
+				AMap.plugin(['AMap.ToolBar', 'AMap.Geolocation'], function() {
+					//创建并添加工具条控件
+					var toolBar = new AMap.ToolBar();
+					map.addControl(toolBar);
+
+					//创建并添加获取当前定位
+					var geolocation = new AMap.Geolocation();
+					map.addControl(geolocation);          
+
+				})
+
+				$(".map-type li").click(function() {
+					//每次点击不同类型的地点时  重新初始化加载地图
+					//重新初始化地图
+					var map = new AMap.Map("container", {
+						resizeEnable: true,
+						zoom: 13,
+					});
+					//新加插件功能'AMap.Geolocation'定位
+					AMap.plugin(['AMap.ToolBar', 'AMap.Geolocation'], function() {
+						//创建并添加工具条控件
+						var toolBar = new AMap.ToolBar();
+						map.addControl(toolBar);
+
+						//创建并添加获取当前定位
+						var geolocation = new AMap.Geolocation();
+						map.addControl(geolocation);
+					})
+					//添加点标记，并使用自己的icon
+					marker=new AMap.Marker({
+						map: map,
+						position: [x, y],
+						icon: new AMap.Icon({
+							size: new AMap.Size(40, 50), //图标大小
+							image: "img/mark2.png",
+//							imageOffset: new AMap.Pixel(0, -60)
+						})
+					});
+		            marker.on('click',function(e){
+		                marker.markOnAMAP({
+		                    name:pointName,
+		                    position:marker.getPosition()
+		                })
+		            });						
+					var typeName = $(this).children('p').text();
+					$(this).addClass('select').siblings('li').removeClass('select');
+					AMap.service(["AMap.PlaceSearch"], function() {
+						var placeSearch = new AMap.PlaceSearch({ //构造地点查询类
+							pageSize: 100, //一页显示几个
+							type: typeName,
+							pageIndex: 1,
+							//city: "深圳", //城市
+							map: map,
+							autoFitView: true,
+						});
+
+						var cpoint = [x, y]; //中心点坐标 搜索周边设施
+						placeSearch.searchNearBy('', cpoint, 2000, function(status, result) {
+							//console.log(status);
+							//console.log(result);
+						});
+					});
+
+				})
+			})
+		</script>
+	</body>
+
+</html>

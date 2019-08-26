@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>项目图册</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>	
+			<style>
+.swiper-container1{height: 5rem;}				
+.swiper-container1 .swiper-slide-active {
+    margin: 0 !important;
+}	
+.swiper-container1 .swiper-slide-active img{
+	transform: scale(1);
+}	
+.hib-m .swiper-pagination{position: fixed; bottom: 0.4rem;}
+.hib-m{height: auto;min-height: 5rem;}	
+	.hib-m img{height: auto;}
+			</style>
+	</head>
+	<body style="background: #484848;">
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+				<div class="hib-box">
+					<div class="hib-top">
+						<div class="swiper-container">
+							<div class="swiper-wrapper">
+<!-- 								<div class="swiper-slide" @click="selectPic(2)" :class="allType=='2'?'ban-active':''"><a href="javascript:;">外景图</a></div>
+								<div class="swiper-slide"><a href="javascript:;">样板图</a></div>
+								<div class="swiper-slide"><a href="javascript:;">效果图</a></div>
+								<div class="swiper-slide"><a href="javascript:;">交通图</a></div> -->
+								<div class="swiper-slide" v-for="(item,index) in picType" @click="selectPic(index)" :class="index==current?'ban-active':''">
+									<a href="javascript:;">{{item.PhotoType}}</a>
+								</div>
+							</div>
+						</div>	
+					</div>
+					<div class="hib-m" style="overflow: inherit;">
+						<div class="swiper-container1">
+							<div class="swiper-wrapper">
+								<div class="swiper-slide" v-for="item in imgList"><img :src="item.FilePath" width="100%"/></div>
+							</div>
+							<div class="swiper-pagination"></div>
+						</div>						
+					</div>
+<!-- 					<div class="hib-b">
+						<h4>前庭花园</h4>
+						<p>
+							描述详情描述详情描述详情描述详情描述详情描述详情描述详情描述详情描述详情描述详情描述详情
+						</p>
+					</div> -->
+				</div>
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/house-info-ban.js" ></script>
+	<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+	<script type="text/javascript" src="js/wx.js"></script>		
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},500)					
+			</script>	
+	</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>报备客户</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>	
+			<style>
+				.bb-tip{line-height: 1rem;padding: 0 0.4rem;font-size: 0.24rem;font-weight: bold;}
+			</style>
+	</head>
+	<body style="background: #F5F5F7;">
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+			<div class="bb-tip">
+				<p>说明：如果客户购房意向明确，请在下方报备客户</p>
+			</div>
+	<!--内容START-->	
+			<div class="bbc-top bbc-ct">
+				<p class="bbc-t"><span class="red">*</span>报备盘源<span style="font-size: 0.2rem;color: #FF1100;">（请先选盘源）</span></p>
+				<ul class="bbc-l py-l">
+					<li class="list-li" v-for="(item,index) in selectedProjectList">
+						<ul class="bbc-kh bbc-py">
+							<i class="fa fa-minus-circle minus minus-py" @click="minusProduct(index)"></i>
+							<li class="bbc-py-num"><span>{{item.pname}}</span><!-- <span class="bb-phone"><input type="checkbox" class="checked"/><i class="fa fa-dot-circle-o"></i>前三后四</span> --></li>
+							<li><label>报备接收人</label><span>{{item.uname}}</span></li>
+						</ul>
+					</li>
+				</ul>
+				<a class="add-kh py-add" href="bb-xzpy.html?ym=bb-client.html"><i class="fa fa-plus-circle"></i>选择盘源</a>
+			</div>		
+			<div class="bbc-top">
+				<p class="bbc-t"><span class="red">*</span>报备客户</p>
+				<ul class="bbc-l kh-l">
+					<li class="list-li kh-list" v-for="(item,index) in userInfoList">
+						<ul class="bbc-kh">
+							<i class="fa fa-minus-circle minus minus-kh" @click="minusList(index)"></i>
+							<li><label>客户姓名</label><input type="text" placeholder="请输入客户姓名" v-model="item.FullName"/></li>
+							<li><label>电话号码</label><input type="number" placeholder="请输入联系电话" v-model="item.Mobile"/></li>
+							<li class="bbc-kh-sex"><label>客户性别</label>
+								<span @click="item.Gender='1'"><i class="fa" :class="item.Gender=='1'?'fa-dot-circle-o':'fa-circle-o'"></i>先生</span>
+								<span @click="item.Gender='2'"><i class="fa" :class="item.Gender=='2'?'fa-dot-circle-o':'fa-circle-o'"></i>女士</span>
+								<span @click="item.Gender='0'"><i class="fa" :class="item.Gender=='0'?'fa-dot-circle-o':'fa-circle-o'"></i>未知</span>
+							</li>
+						</ul>
+					</li>																						
+				</ul>
+				<label class="add-kh kh-add" @click="addList"><i class="fa fa-plus-circle"></i>添加客户</label>
+			</div>
+			<div class="bbc-mid">
+				<label><span class="red">*</span>预计到访时间</label>
+				<input type="text" placeholder="请选择到访时间" id="bbc-data" readonly="" v-model="VisitTime">
+			</div>
+			<div class="bbc-b">
+				<label>客户购房意向</label>
+				<span class="fr" style="padding-right: 0.52rem;color: #ccc;" id="bbc-yx"  @click="show=!show">请选择客户购房意向</span>
+				<!-- <input type="text" placeholder="请选择客户购房意向" id="bbc-yx" readonly="" @click="show=!show">	 -->
+			</div>
+			<textarea class="gfxy-tj" v-model="CustomerDemand" style="width: 100%;" readonly=""></textarea>
+			<div class="bbc-foot">
+				<button @click="goReport">立即报备</button>
+			</div>
+			<div class="bb-bg" style="position: fixed;top: 0;width: 100%;height: 100%;background: #000;opacity: 0.5;z-index: 99;display: none;"></div>			
+			<!--购房意向选择-->
+			<div class="bbc-gfyx" v-show="show">
+				
+			<div style="position: relative;padding-bottom: 1.4rem;">
+				<div class="gfyx-all">
+					<div class="gfyx-list">
+						<label>意向区域</label>
+						<div class="gfyx-r">
+							<span v-for="item in RegionList"><input type="checkbox"  v-model="selectAll" :value="item.Name.trim()"/>{{item.Name}}</span>
+						</div>
+						<div class="clear"></div>
+					</div>					
+					<div class="gfyx-list">
+						<label>意向户型</label>
+						<div class="gfyx-r">
+							<span v-for="item in Apartment"><input type="checkbox" v-model="selectAll" :value="item.AttributeValueName"/>{{item.AttributeValueName}}</span>
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="gfyx-list">
+						<label>意向面积</label>
+						<div class="gfyx-r">
+							<span v-for="item in Measure"><input type="checkbox"  v-model="selectAll" :value="item.AttributeValueName"/>{{item.AttributeValueName}}</span>
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="gfyx-list">
+						<label>购房预算</label>
+						<div class="gfyx-r">
+							<span v-for="item in Total"><input type="checkbox"  v-model="selectAll" :value="item.AttributeValueName"/>{{item.AttributeValueName}}</span>
+						</div>
+						<div class="clear"></div>
+					</div>	
+					<div class="gfyx-list">
+						<label>物业类型</label>
+						<div class="gfyx-r">
+							<span v-for="item in Property"><input type="checkbox"  v-model="selectAll" :value="item.AttributeValueName"/>{{item.AttributeValueName}}</span>
+						</div>
+						<div class="clear"></div>
+					</div>	
+				</div>
+				<div class="hr10"></div>
+				<div class="gfyx-msg">
+					<p>客户需求描述<label style="font-size: 0.32rem;">(<span>{{selectOther.length}}</span>/200)</label></p>
+					<textarea placeholder="如果您有额外需求，请输入您的需求" v-model="selectOther"></textarea>
+				</div>	
+				<div class="gfyx-btn" style="position: fixed;bottom: 0;">
+					<button @click.stop="selectMsg">确定</button>
+				</div>
+				</div>	
+			</div>				
+		</div>	
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>		
+	<script type="text/javascript" src="js/ajax/bb-client.js" ></script>	
+
+	<script>
+		$(function(){
+		//日期选择
+		var sessionstorage=window.sessionStorage;
+			$("#bbc-data").datetimePicker({
+		        years: [2019],
+		        onChange: function (picker, values, displayValues) {
+		          //console.log(values);
+							var atime=values[0]+"-"+values[1]+"-"+values[2]+" "+values[3]+":"+values[4];
+							sessionstorage.setItem('atime',atime);
+							$(".bb-bg").css("display","block");
+		        },
+						onClose:function(values){
+							//console.log(values);
+							$(".bb-bg").css("display","none");
+						},
+	      	});	
+			$("#bbc-data").click(function(){
+				$(".bb-bg").css("display","block");
+			})
+			$(".bb-phone").click(function(){
+				if($(this).children('i').hasClass("fa-circle-o")){
+					$(this).children('input').attr("checked","checked");
+					$(this).children('i').removeClass("fa-circle-o").addClass("fa-dot-circle-o");				
+				}else{
+					$(this).children('input').removeAttr("checked");
+					$(this).children('i').removeClass("fa-dot-circle-o").addClass("fa-circle-o");							
+				}
+			})
+			//添加客户列
+			var n=0;
+	
+			//购房意向条件
+			$(".gfyx-r span").click(function(){
+				$(this).toggleClass("on");
+			})
+		})
+	</script>
+	</body>
+</html>

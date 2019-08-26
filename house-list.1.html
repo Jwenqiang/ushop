@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+<meta name="format-detection" content="telephone=no" /> 
+<!--uc强制全屏-->
+<meta name="full-screen" content="yes">
+<!--QQ强制全屏-->
+<meta name="x5-fullscreen" content="true">	
+<title>房源列表</title>
+<link rel="stylesheet" href="css/font-awesome.min.css" />
+<link rel="stylesheet" href="css/weui.min.css">
+<link rel="stylesheet" href="css/jquery-weui.min.css">		
+<link rel="stylesheet" href="css/style.css" />
+<script src="js/vue.js"></script>
+<script src="js/axios.js"></script>
+<!--这里以iphone6尺寸开发，自动适配-->
+</head>
+<body id="body">
+<div id="loadingDiv"><div id="loadImg"></div></div>			
+	<div class="whole">
+<!--内容START-->	
+		<div class="hl-header">
+			<div class="b-top hl-top">
+				<a href="javascript:history.back();" class="return">
+					<i class="fa fa-angle-left"></i>
+				</a>
+				<div class="b-search">
+					<i class="weui-icon-search"></i>
+					<input type="text" placeholder="请输入您想要搜索的楼盘">
+				</div>
+			</div>
+		</div>
+		<div class="b-type">
+			<a href="javascript:void(0)">
+				<span><label>区域</label><i class="fa fa-caret-down"></i></span>
+				<div class="type-select pd0">
+					<div class="s-left">
+						<ul>
+							<li class="sl-on">区域</li>
+							<li>地铁</li>
+						</ul>
+					</div>
+					<div class="s-right s-right-l">
+						<ul style="display: block;" class="s-right-l-q">
+							<li>不限</li>
+							<li>福田</li>
+							<li>罗湖</li>
+							<li>宝安</li>
+							<li>龙岗</li>
+							<li>龙华新区</li>
+							<li>南山</li>
+							<li>大鹏新区</li>
+						</ul>
+						<ul class="s-right-l-d">
+							<li>不限</li>
+							<li>1号线</li>
+							<li>2号线</li>
+							<li>3号线</li>
+							<li>4号线</li>
+							<li>5号线</li>
+						</ul>						
+					</div>
+					<div class="s-right s-right-r">
+						<div class="s-right-r-q">
+							<ul>
+								<li>不限</li>
+							</ul>
+							<ul>
+								<li>不限</li>
+								<li>福田1</li>
+								<li>福田2</li>
+								<!--等等-->
+							</ul>
+							<ul>
+								<li>不限</li>
+								<li>罗湖1</li>
+								<li>罗湖2</li>
+								<!--等等-->
+							</ul>							
+							<!--等等-->
+						</div>
+						<div class="s-right-r-d">
+							<ul>
+								<li>不限</li>
+							</ul>							
+							<ul>
+								<li>不限</li>
+								<li>罗湖</li>
+								<li>国贸</li>
+								<!--等等-->
+							</ul>	
+							<ul>
+								<li>不限</li>
+								<li>新秀</li>
+								<li>黄贝岭</li>
+								<!--等等-->
+							</ul>	
+							<!--等等-->
+						</div>
+					</div>					
+				</div>
+			</a>
+			<a href="javascript:void(0)">
+				<span>价格<i class="fa fa-caret-down"></i></span>
+				<div class="outer type-select pd0">
+					<div class="s-left s-pricel">
+						<ul>
+							<li class="sl-on">总价</li>
+							<li>均价</li>
+						</ul>
+					</div>
+					<div class="s-right s-pricer">
+						<ul style="display: block;">
+							<li>不限</li>
+							<li>100万以下</li>
+							<li>100-150万</li>
+							<li>150-200万</li>
+							<li>200-300万</li>
+							<li>300-500万</li>
+							<li>500万以上</li>
+						</ul>
+						<ul>
+							<li>不限</li>
+							<li>3万以下</li>
+							<li>3-5万</li>
+							<li>5-6万</li>
+							<li>6-7万</li>
+							<li>8-9万</li>
+							<li>9万以上</li>
+						</ul>						
+					</div>			
+				</div>				
+			</a>
+			<a href="javascript:void(0)">
+				<span>户型<i class="fa fa-caret-down"></i></span>
+				<div class="type-select">
+					<div class="price-area num-area room-area">
+						<p>户型选择</p>
+						<ul>
+							<li>不限</li>
+							<li>一室</li>
+							<li>二室</li>
+							<li>三室</li>
+							<li>四室</li>
+							<li>五室</li>
+						</ul>
+					</div>
+					<div style="text-align: center;"><button class="price-confirm">确定</button>	</div>
+				</div>
+			</a>	
+			<a href="javascript:void(0)">
+				<span>更多<i class="fa fa-caret-down"></i></span>
+				<div class="type-select">
+					<div class="price-area room-area b-more">
+						<p>建地面积（m²）</p>
+						<ul>
+							<li>50以下</li>
+							<li>50-70</li>
+							<li>70-90</li>
+							<li>90-110</li>
+							<li>110-130</li>
+							<li>130-150</li>
+						</ul>
+					</div>
+					<div class="price-area room-area b-more">
+						<p>朝向</p>
+						<ul>
+							<li>朝南</li>
+							<li>朝西</li>
+							<li>朝北</li>
+							<li>朝东</li>
+							<li>东南</li>
+							<li>西南</li>
+						</ul>
+					</div>		
+					<div class="price-area room-area b-more">
+						<p>装修</p>
+						<ul>
+							<li>精装修</li>
+							<li>简单装修</li>
+							<li>毛坯房</li>
+						</ul>
+					</div>		
+					<div class="price-area room-area b-more">
+						<p>性质</p>
+						<ul>
+							<li>住宅</li>
+							<li>公寓</li>
+							<li>别墅</li>
+							<li>写字楼</li>
+							<li>商铺</li>
+						</ul>
+					</div>	
+					<div style="text-align: center;">
+						<button class="more-concel">清空筛选条件</button>			
+						<button class="more-confirm">确定</button>		
+					</div>
+				</div>
+			</a>
+			<a href="javascript:void(0)">
+				<span></span>
+				<div class="type-select">
+					<div class="price-area room-area">
+						<ul id="b-sort">
+							<li>默认排序</li>
+							<li>最新发布</li>
+							<li>总价从低到高</li>
+							<li>总价从高到低</li>
+							<li>单价从低到高</li>
+							<li>单价从高到低</li>		
+							<li>面积从大到小</li>
+						</ul>
+					</div>
+				</div>
+			</a>				
+		</div>	
+		<div class="bh-list hl-list">
+			<!--筛选条件-->
+			<div class="bh-condition">
+				<p><label><i class="fa fa-trash-o"></i>清空所有条件</label></p>
+				<!--条件列表-->
+				<div class="bhc-msg">
+					 <a v-for="item in tj_arr">{{item}}</a>
+				</div>
+			</div>
+			<!--搜索结果-->
+			<div class="content-msg" v-if="house_list.length>0">
+				<h3>共{{house_list.length}}个筛选结果</h3>
+			<div class="content-list info-list" v-if="house_list.length>0">
+				<section v-for="item in house_list">
+					<a :href="item.href">
+						<dl>
+							<dt>
+								<label>{{item.zk}}</label>
+								<img :src="item.src" width="100%"/>
+								<p>{{item.addr}}</p>
+							</dt>
+							<dd class="section-msg">
+								<p><strong>{{item.name}}</strong></p>
+								<p class="list-info-m"><span>{{item.yt}}</span>|<span>{{item.pm}}㎡</span>|<span>{{item.hx}}</span></p>
+								<p class="list-info-p">均价：<strong>{{item.price}}</strong>元/平<label>{{item.grade}}</label>评分</p>
+							</dd>
+							<div class="clear"></div>
+						</dl>
+					</a>
+				</section>
+											
+<!-- 				<section>
+					<a href="house_info.html">
+						<dl>
+							<dt>
+								<label>99折</label>
+								<img src="img/a4.jpg" width="100%"/>
+								<p>深圳·福田</p>
+							</dt>
+							<dd class="section-msg">
+								<p><strong>龙岗远洋新天地2期</strong></p>
+								<p class="list-info-m"><span>住宅</span>|<span>103㎡</span>|<span>3室2厅</span></p>
+								<p class="list-info-p">均价：<strong>28500</strong>元/平<label>5.0</label>评分</p>
+							</dd>
+							<div class="clear"></div>
+						</dl>
+					</a>
+				</section> -->				
+			</div>
+			
+			<div class="weui-loadmore" v-if="house_list.length>3">
+			  <i class="weui-loading"></i>
+			  <span class="weui-loadmore__tips">正在加载</span>
+			</div>				
+		</div>	
+		<!--无搜索结果显示部分-->
+		<div class="content-like" v-if="house_list.length<1">
+			<div class="no-list">
+				<label class="hl-no"></label>
+				<p>抱歉，当前没有符合条件的房源~</p>
+				<a href="###">我要找房</a>
+			</div>
+			<div class="content-list like-list">
+				<h3>猜你喜欢</h3>
+				<section>
+					<a href="house_info.html">
+						<dl>
+							<dt>
+								<label>99折</label>
+								<img src="img/a4.jpg" width="100%"/>
+								<p>深圳·福田</p>
+							</dt>
+							<dd class="section-msg">
+								<p><strong>龙岗远洋新天地2期</strong></p>
+								<p class="list-info-m"><span>住宅</span>|<span>103㎡</span>|<span>3室2厅</span></p>
+								<p class="list-info-p">均价：<strong>28500</strong>元/平<label>5.0</label>评分</p>
+							</dd>
+							<div class="clear"></div>
+						</dl>
+					</a>
+				</section>
+				<section>
+					<a href="house_info.html">
+						<dl>
+							<dt>
+								<label>99折</label>
+								<img src="img/a4.jpg" width="100%"/>
+								<p>深圳·福田</p>
+							</dt>
+							<dd class="section-msg">
+								<p><strong>龙岗远洋新天地2期</strong></p>
+								<p class="list-info-m"><span>住宅</span>|<span>103㎡</span>|<span>3室2厅</span></p>
+								<p class="list-info-p">均价：<strong>28500</strong>元/平<label>5.0</label>评分</p>
+							</dd>
+							<div class="clear"></div>
+						</dl>
+					</a>
+				</section>				
+			</div>			
+		</div>
+		
+		</div>
+		<a id="scrollUp" href="javascript:void(0);"><i class="fa fa-angle-up"></i></a>
+	<!--内容END-->
+	<!--公共底部-->
+	<!--<footer>
+	  <div class="weui-tabbar">
+	    <a href="index.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/fx.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">发现</p>
+	    </a>
+	    <a href="buy_house.html" class="weui-tabbar__item weui-bar__item--on">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/fy1.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">房源</p>
+	    </a>
+	    <a href="my-client.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/kh.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">客户</p>
+	    </a>
+	    <a href="massage.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/xx.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">消息</p>
+	    </a>	    
+	    <a href="account.html" class="weui-tabbar__item">
+	      <div class="weui-tabbar__icon">
+	        <img src="img/wd.png" alt="">
+	      </div>
+	      <p class="weui-tabbar__label">我的</p>
+	    </a>
+	  </div>	
+	</footer>		-->
+	</div>
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-weui.min.js"></script>	
+<script src="js/swiper.min.js"></script>
+<script src="js/city-picker.min.js"></script>
+<script type="text/javascript" src="js/main.js" ></script>
+<script type="text/javascript" src="js/house-list.js" ></script>
+<script>
+var num=$(".b-type").offset().top+$(window).height();
+$(".whole").scroll(function(){
+	if($(".whole").scrollTop()==num||$(".whole").scrollTop()>num){
+		$(".b-type").addClass("fixed");
+	}else{
+		$(".b-type").removeClass("fixed");
+	}
+})
+$(function(){
+// 无结果时显示下面
+// if($(".info-list section").length==0){
+// 	$(".content-like").css("display","block");
+// }else{
+// 	$(".content-like").css("display","none");
+// }
+// if($(".info-list section").length<5){
+// 	$(".weui-loadmore").css("display","none");
+// }else{
+// 	$(".weui-loadmore").css("display","block");
+// }
+
+	$('.tab-sel li').click(function(){
+		$(this).addClass('on').siblings().removeClass('on');
+	})	
+	//区域选择
+	$(".s-left li").click(function(){
+		$(this).addClass("sl-on").siblings().removeClass("sl-on");
+		var index=$(this).index();
+		$(".s-right-l ul").eq(index).css("display","block").siblings('ul').css("display","none");
+		$(".s-right-r-d ul,.s-right-r-q ul").css("display","none");
+		$(".s-right-l-q li").removeClass("on");
+		$(".s-right-l-d li").removeClass("on");
+	})
+	$(".b-type span").click(function(){
+		if($(this).siblings(".type-select").css("display")=='block'){
+			$(this).siblings(".type-select").css("display","none");
+		}else{
+			$(this).siblings('.type-select').css("display","block");
+		}
+		$(this).parent().siblings('a').children('.type-select').css("display","none");
+		$(this).parent().siblings('a').children('.type-select').find('li').removeClass('hover');
+	})
+	$(".s-right-l-q li").click(function(){
+		var index=$(this).index();
+		$(".s-right-r-q ul").eq(index).show().siblings("ul").hide();
+		$(this).addClass('on').siblings().removeClass('on');
+		$(this).parent().siblings('ul').children('li').removeClass('on');
+		$(".s-right-r-d ul").css("display","none");
+	})
+	$(".s-right-l-d li").click(function(){
+		var index=$(this).index();
+		$(".s-right-r-d ul").eq(index).show().siblings("ul").hide();
+		$(this).addClass('on').siblings().removeClass('on');
+		$(this).parent().siblings('ul').children('li').removeClass('on');
+		$(".s-right-r-q ul").css("display","none");
+	})	
+//区域选的值	
+	$(".s-right-r-q li").click(function(){
+		$(this).addClass('on').siblings().removeClass("on");
+		$(this).parents('ul').siblings('ul').children('li').removeClass('on');
+//		$(this).parents(".type-select").siblings("span").children("label").text($(this).text());
+		$(".bh-condition").css("display","block");
+		$(".bhc-msg").append("<a>"+$(this).text()+"</a>");
+		$(".type-select").fadeOut();
+			 // 点击删除条件显示
+			$(".bhc-msg a").click(function(){
+				$(this).remove();
+				if($(".bh-condition a").length==0){
+					$(".bh-condition p").css("display","none");
+				}
+			})		
+	})
+	$(".num-area li").click(function(){
+		$(this).addClass('hover').siblings().removeClass('hover');
+	})
+	$(".b-more li").click(function(){
+		$(this).toggleClass("hover");
+	})	
+	$(".price-confirm,.more-confirm").click(function(){
+		$(this).parent().parent().fadeOut();
+	})
+	$(".price-concel,.more-concel").click(function(){
+		$(".price-area li").removeClass("hover");
+	})
+	$("#b-sort li").click(function(){
+		$(".type-select").fadeOut();
+	})	
+//价格选择
+	$(".s-pricel li").click(function(){
+		$(this).addClass("sl-on").siblings().removeClass("sl-on");
+		var index=$(this).index();
+		$('.s-pricer ul').eq(index).css("display","block").siblings('ul').css("display","none");
+	})	
+	$(".s-pricer li").click(function(){
+		$(".bh-condition").css("display","block");
+		$(".bhc-msg").append("<a>"+$(this).text()+"</a>");	
+		$(".type-select").fadeOut();
+			 // 点击删除条件显示
+			$(".bhc-msg a").click(function(){
+				$(this).remove();
+				if($(".bh-condition a").length==0){
+					$(".bh-condition p").css("display","none");
+				}
+			})		
+	})
+	$(".bhc-msg a").click(function(){
+		$(this).remove();
+	})
+//户型选择加条件
+ $(".price-confirm").click(function(){
+			$(".bh-condition").css("display","block");
+			$(".bhc-msg").append("<a>"+$(".room-area .hover").text()+"</a>");	
+			$(".type-select").fadeOut();	
+			 // 点击删除条件显示
+			$(".bhc-msg a").click(function(){
+				$(this).remove();
+				if($(".bh-condition a").length==0){
+					$(".bh-condition p").css("display","none");
+				}
+			})			 
+	 })
+//更多条件选择 ---显示条件
+ $(".more-confirm").click(function(){
+			$(".bh-condition").css("display","block");
+			$(".b-more .hover").each(function(){
+				$(".bhc-msg").append("<a>"+$(this).text()+"</a>");	
+			})
+			$(".type-select").fadeOut();	
+			 // 点击删除条件显示
+			$(".bhc-msg a").click(function(){
+				$(this).remove();
+				if($(".bh-condition a").length==0){
+					$(".bh-condition p").css("display","none");
+				}
+			})
+	 }) 
+})
+</script>
+</body>
+</html>

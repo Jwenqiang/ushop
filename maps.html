@@ -1,0 +1,309 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>位置及周边</title>
+		<!-- 百度地图 -->
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/axios.js"></script>
+<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=eTmIqPdOws4kscIGLiyhSG650wwtbrUw"></script>		
+<link rel="stylesheet" href="https://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.css"/>
+<script type="text/javascript" src="https://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.js"></script>
+<!--这里以iphone6尺寸开发，自动适配-->
+		<style type="text/css">
+			.map-box{max-width: 750px;margin: 0 auto;position: relative;height: 100%;}
+			#container {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				width: 100%;
+				height: 100%;
+			}
+			
+			.button-group {
+				position: absolute;
+				bottom: 20px;
+				right: 20px;
+				font-size: 12px;
+				padding: 10px;
+			}
+			
+			.button-group .button {
+				height: 28px;
+				line-height: 28px;
+				background-color: #0D9BF2;
+				color: #FFF;
+				border: 0;
+				outline: none;
+				padding-left: 5px;
+				padding-right: 5px;
+				border-radius: 3px;
+				margin-bottom: 4px;
+				cursor: pointer;
+			}
+			
+			.button-group .inputtext {
+				height: 26px;
+				line-height: 26px;
+				border: 1px;
+				outline: none;
+				padding-left: 5px;
+				padding-right: 5px;
+				border-radius: 3px;
+				margin-bottom: 4px;
+				cursor: pointer;
+			}
+			
+			#tip {
+				background-color: #fff;
+				padding-left: 10px;
+				padding-right: 10px;
+				position: absolute;
+				font-size: 12px;
+				right: 10px;
+				top: 20px;
+				border-radius: 3px;
+				border: 1px solid #ccc;
+				line-height: 30px;
+			}
+			
+			.amap-info-content {
+				font-size: 12px;
+			}
+			
+			#myPageTop {
+				position: absolute;
+				top: 5px;
+				right: 10px;
+				background: #fff none repeat scroll 0 0;
+				border: 1px solid #ccc;
+				margin: 10px auto;
+				padding: 6px;
+				font-family: "Microsoft Yahei", "微软雅黑", "Pinghei";
+				font-size: 14px;
+			}
+			
+			#myPageTop label {
+				margin: 0 20px 0 0;
+				color: #666666;
+				font-weight: normal;
+			}
+			
+			#myPageTop input {
+				width: 170px;
+			}
+			
+			#myPageTop .column2 {
+				padding-left: 25px;
+			}
+			
+			
+			#container {
+				max-width: 100%;
+				margin: 0 auto;
+				height: 86%;
+			}
+			
+			.map-type {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				z-index: 999;
+				width: 100%;
+				height: 14%;
+				padding: 0.5rem 0.25rem 0;
+			}
+			
+			.map-type li {
+				width: 1rem;
+				height: 1.2rem;
+				float: left;
+				list-style-type: none;
+				text-align: center;
+				margin: 0;
+			}
+			.map-type i{color: #bec6de;}
+			.map-type li span{
+				display: inline-block;
+				width: 0.6rem;
+				height: 0.6rem;
+				background: #ededfa;
+				text-align: center;
+				line-height: 0.6rem;
+				border-radius: 50%;
+			}
+			.map-type li p{font-size: 0.22rem;text-align: center;color: #bec6de;}
+			.select span{background: #fa5e3c !important;}
+			.select span i{color: #fff !important;}
+			.select p{color: #fa5e3c !important;}	
+			.amap_lib_placeSearch_poi{background: url(img/mark1.png) left center no-repeat !important;background-size: 100% !important;line-height: 20px;}	
+			.amap-icon{width: 28px !important;height: 35px !important;}
+			.amap-icon img{height: 100%;}
+			.amap-marker-label{border: 0;padding: 5px 20px !important;background: #2198fd;color: #fff;border-radius: 5px;}
+			#BMapLib_search_bus_btn0{margin-right: 0 !important;}
+		</style>
+	</head>
+
+	<body>
+<!-- <div id="loadingDiv"><div id="loadImg"></div></div>		 -->
+	<div class="map-box">			
+		<div id="container"></div>
+		<div class="map-type">
+			<ul>
+				<li>
+					<span><i class="fa fa-bus"></i></span> 
+					<p>公交</p> 
+				</li>
+				<li>
+					<span><i class="fa fa-train"></i></span> 
+					<p>地铁</p> 
+				</li>
+				<li>
+					<span><i class="fa fa-mortar-board"></i></span> 
+					<p>学校</p> 
+				</li>
+				<li>
+					<span><i class="fa fa-building"></i></span> 
+					<p>小区</p> 
+				</li>
+				<li>
+					<span><i class="fa fa-medkit"></i></span> 
+					<p>医院</p> 
+				</li>	
+				<li>
+					<span><i class="fa fa-shopping-cart"></i></span> 
+					<p>商场</p> 
+				</li>
+				<li>
+					<span><i class="fa fa-bank"></i></span> 
+					<p>银行</p> 
+				</li>	
+				<div class="clear"></div>
+			</ul>
+		</div>
+	</div>
+	<script src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>	
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>	
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},500)					
+			</script>			
+<script type="text/javascript">
+$(function(){
+	var lstorage=window.sessionStorage;
+	var pointName=lstorage.getItem('pointName');
+	var addr=lstorage.getItem('addr');
+	var IMG=lstorage.getItem('IMG');
+	var x=lstorage.getItem("x");
+	var y=lstorage.getItem("y");	
+	// 百度地图API功能
+	var map = new BMap.Map("container");          
+	var point=new BMap.Point(x,y);  
+	map.enableScrollWheelZoom();
+	// 标注
+	map.centerAndZoom(point, 15);
+	
+	// 添加一个控件
+	map.addControl(new BMap.NavigationControl());
+	var marker = new BMap.Marker(point);        // 创建标注    
+	map.addOverlay(marker);                     // 将标注添加到地图中 	
+	dingwei();
+
+//启用滚轮放大缩小	
+    map.enableScrollWheelZoom();
+    var content = '<div style="margin:0;line-height:20px;padding:5px;">'+ '<img src="'+IMG+ '"style="float:left;zoom:1;overflow:hidden;width:100px;margin-right:10px;"/>'+'地址：' +addr +'</div>';			
+   //创建检索信息窗口对象
+    var searchInfoWindow = null;
+	searchInfoWindow = new BMapLib.SearchInfoWindow(map, content, {
+			title  : pointName,      //标题
+			width  : 290,             //宽度
+			height : 105,              //高度
+			panel  : "panel",         //检索结果面板
+			enableAutoPan : true,     //自动平移
+			searchTypes   :[
+				BMAPLIB_TAB_SEARCH,   //周边检索
+				BMAPLIB_TAB_TO_HERE,  //到这里去
+				BMAPLIB_TAB_FROM_HERE //从这里出发
+			]
+		});
+    // marker.enableDragging(); //marker可拖拽
+    marker.addEventListener("click", function(e){
+	    searchInfoWindow.open(marker);	
+    })
+    map.addOverlay(marker); //在地图中添加marker	
+	
+
+// 显示label
+label = new BMap.Label(pointName, {
+ offset: new BMap.Size(20, 0)
+ }); //创建marker点的标记,这里注意下,因为百度地图可以对label样式做编辑,
+ label.setStyle({
+	display: "block",
+	border:"1px solid #dedede",
+	background: '#f5f5f7',
+	boxShadow: '0 0 10px #ddd',
+	borderRadius: '4px',
+	padding:"5px 15px"
+ }); //对label 样式隐藏 
+ marker.setLabel(label); //把label设置到maker上 
+	
+		// 点击搜索
+	$(".map-type li").click(function() {
+		map.clearOverlays();//清除图层覆盖物
+		var marker = new BMap.Marker(point);        // 创建标注    
+		map.addOverlay(marker);                     // 将标注添加到地图中 			
+		var typeName = $(this).children('p').text();
+		$(this).addClass('select').siblings('li').removeClass('select');
+		searchPoint(typeName);
+	})			
+	function searchPoint(a){
+		var circle = new BMap.Circle(point,2000,{fillColor:"#f5f5f7", strokeWeight: 1 ,fillOpacity: 0.3, strokeOpacity: 0.3});
+			map.addOverlay(circle);
+			var local =  new BMap.LocalSearch(map, {renderOptions: {map: map, autoViewport: false},pageCapacity: 8});  
+			local.searchNearby(a,point,2000);	
+	}
+	function dingwei(){
+	//定位 
+	  // 添加带有定位的导航控件
+	  var navigationControl = new BMap.NavigationControl({
+		// 启用显示定位
+		enableGeolocation: true
+	  });
+	  map.addControl(navigationControl);
+	  // 添加定位控件
+	  var geolocationControl = new BMap.GeolocationControl();
+	  geolocationControl.addEventListener("locationSuccess", function(e){
+		// 定位成功事件
+		var address = '';
+		address += e.addressComponent.province;
+		address += e.addressComponent.city;
+		address += e.addressComponent.district;
+		address += e.addressComponent.street;
+		address += e.addressComponent.streetNumber;
+	  });
+	  geolocationControl.addEventListener("locationError",function(e){
+		// 定位失败事件
+		alert(e.message);
+	  });
+	  map.addControl(geolocationControl);
+	// 定位结束	
+	}	
+})	
+</script>
+	</body>
+
+</html>

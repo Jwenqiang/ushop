@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"/>
+		<meta name="format-detection" content="telephone=no" /> 
+		<!--uc强制全屏-->
+		<meta name="full-screen" content="yes">
+		<!--QQ强制全屏-->
+		<meta name="x5-fullscreen" content="true">	
+		<title>好房U购邀请您加入</title>
+		<!--分享页面---已注册-->
+		<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/weui.min.css">
+		<link rel="stylesheet" href="css/jquery-weui.min.css">		
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/vue.js"></script>
+		<script src="js/axios.js"></script>		
+	</head>
+	<body>
+<div id="loadingDiv"><div id="loadImg"></div></div>				
+		<div class="whole">
+	<!--内容START-->	
+			<div class="afy">
+				<div class="afy-t">
+					<h2>您已是注册用户啦~</h2>
+					<div style="text-align: center;line-height: 0.6rem;"><a href="index.html" style="color: #fff;">前往首页&gt;&gt;</a> </div>
+					<div class="afy-gz">
+						<h5>活动规则</h5>
+						<p>1、每邀请一位好友成功注册，您即可获得500元现金奖励，好友成功购房激活奖励并发放奖励。</p>
+						<p>2、您邀请的好友注册成为平台用户并且成功购房后，您的现金奖励即被激活，平台工作人员会及时联系您线下发放现金奖励。</p>
+					</div>					
+				</div>
+					<div class="acyq-info acyq-hy">
+						<div class="afy-info">
+							<ul class="outer fx-li">
+								<li :class="AllType==1?'on':''" @click="yq(1)">
+									<h3>{{invCount}}</h3>
+									<p>已邀请(人)</p>
+									<span></span>
+								</li>
+								<li @click="yq(2)" :class="AllType==2?'on':''">
+									<h3>{{ymoney}}</h3>
+									<p>已获得奖励(元)</p>
+									<span></span>
+								</li>
+								<li @click="yq(3)" :class="AllType==3?'on':''">
+									<h3>{{dmoney}}</h3>
+									<p>待激活奖励(元)</p>
+									<span></span>
+								</li>						
+							</ul>
+							<!--第一项-->
+							<div class="afy-info-msg afy-msg-ry" v-if="AllType==1">
+								<section class="outer" v-for="item in dataList">
+									<div class="aim-l">
+										<label><img :src="item.HeadImg" /></label>
+									</div>
+									<div class="aim-r">
+										<p class="outer"><label class="aim-name">{{item.NickName}}</label><span class="aim-time">{{item.AddTime}}</span></p>
+										<p class="outer"><label class="aim-phone">{{item.Mobile}}</label><span class="aim-zt" v-if="item.Count==0">注册成功</span><span class="aim-zt" v-if="item.Count>0">已成交</span></p>
+									</div>
+								</section>
+								<a style="display: block;text-align: center;" v-if="9<dataList.length&&dataList.length!=dataTotal" @click="readMore">查看更多</a>
+							</div>
+							<!--第二项-->
+							<div class="afy-info-msg afy-msg-jl" v-if="AllType==2">
+								<section class="outer" v-for="item in dataList">
+									<div class="aim-l">
+										<label><img :src="item.HeadImg" /></label>
+									</div>
+									<div class="aim-m">
+										<p><label class="aim-name">{{item.NickName}}<small>{{item.Mobile}}</small></label></p>
+										<p><label class="aim-cj">{{item.Description}}</label></p>
+									</div>
+									<div class="aim-mr">
+										<strong>+{{item.RewardMoney}}元</strong>
+									</div>
+								</section>
+								<a style="display: block;text-align: center;" v-if="9<dataList.length&&dataList.length!=dataTotal" @click="readMore">查看更多</a>
+							</div>
+							<!--第三项-->
+							<div class="afy-info-msg afy-msg-djl" v-if="AllType==3">
+								<section class="outer" v-for="item in dataList">
+									<div class="aim-l">
+										<label><img :src="item.HeadImg" /></label>
+									</div>
+									<div class="aim-m">
+										<p><label class="aim-name">{{item.NickName}}<small>{{item.Mobile}}</small></label></p>
+										<!-- <p><label class="aim-cj">当前状态：未到访</label></p> -->
+									</div>
+									<div class="aim-mr">
+										<strong>+{{item.RewardMoney}}元</strong>
+									</div>
+								</section>
+								<a style="display: block;text-align: center;" v-if="9<dataList.length&&dataList.length!=dataTotal" @click="readMore">查看更多</a>
+							</div>					
+						</div>						
+					</div>
+<!-- 				<div class="afy-foot">
+					发送我的专属链接
+					<a :href="userHref+'&type=1'">立即发送</a>
+				</div> -->
+			</div>	
+		</div>	
+		
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-weui.min.js"></script>	
+	<script src="js/swiper.min.js"></script>
+	<script src="js/city-picker.min.js"></script>
+	<script type="text/javascript" src="js/main.js" ></script>	
+	<script type="text/javascript" src="js/ajax/account-yq.js" ></script>
+		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
+		<script type="text/javascript" src="js/wx.js"></script>		
+			<script>
+		setTimeout(function(){
+			wxShared();
+		},500)					
+			</script>		
+	<script>
+	$(".fx-li li").click(function(){
+		$(this).addClass("on").siblings().removeClass('on');
+		var index=$(this).index();
+		$(".afy-info-msg").eq(index).show().siblings(".afy-info-msg").hide();
+	})
+	</script>
+	</body>
+</html>
