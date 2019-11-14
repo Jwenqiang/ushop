@@ -29,12 +29,13 @@
 				<img class="imgCode" :src="ewm" style="display: none;"/>
 			</div>
 			<div id="canvas">
-				<img :src="hb"/>
+				<img :src="hb" @click="imgChange(hb)"/>
 			</div>
 			<!-- <canvas id="canvas"></canvas> -->
 			<div class="foot_tip">--长按图片保存到相册--</div>
 		</div>	
 	<script src="js/jquery.min.js"></script>
+	<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
 	<script type="text/javascript" src="js/main.js" ></script>	
 	<script>
 		var storage=window.localStorage;
@@ -77,6 +78,12 @@
 						_this.hb=res.data.data.QRcodePosterImg
 					}
 				})					
+				},
+				imgChange(e){
+					wx.previewImage({
+					  current: e, // 当前显示图片的http链接
+					  urls: [e] // 需要预览的图片http链接列表
+					}) 			
 				},
 				/**
 				 * 根据window.devicePixelRatio获取像素比

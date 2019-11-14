@@ -6,7 +6,8 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 		allType:"",
 		picType:[],
 		imgList:[],
-		current:0
+		current:0,
+		imgArr:[]
 	},
 	beforeCreate: function() { //创建实例el前
 
@@ -38,7 +39,9 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 				 if(r.data.code=='1001'){
 					 _this.picType=r.data.data;
 					 _this.imgList=r.data.data[index].PhotoList;
-					 // //console.log(_this.imgList);
+					 for(var i in _this.imgList){
+						 _this.imgArr.push(_this.imgList[i].FilePath);
+					 }
 						// DOM还没有更新
 						_this.$nextTick(() => {
 							// DOM更新了
@@ -96,6 +99,12 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 			}) 	
 		},		
 
+		imgChange(e){
+			wx.previewImage({
+			  current: e, // 当前显示图片的http链接
+			  urls: this.imgArr // 需要预览的图片http链接列表
+			}) 			
+		},
 		
 		// 截取浏览器地址id
 		getUrlParam:function(name){

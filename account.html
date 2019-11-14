@@ -28,6 +28,7 @@
 							<img :src="fimg" v-else/>
 							<p class="account-name" v-if="nickname!=null">{{nickname}}</p>	
 							<p class="account-name" v-else>{{mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}</p>	
+							<p class="account-name" v-if="userRole==6&&yjMoney>0"><label style="font-size: 14px;color: #999;">佣金</label><span style="margin-left: 3px;font-size: 18px;color: #ff0000;">{{yjMoney}}%</span></p>	
 						</a>	
 					</div>
 					<div v-if="userRole==''">
@@ -39,9 +40,12 @@
 				</div>
 			</div>
 			<div class="hr10"></div>
-			<div class="noLogin" v-if="userRole==''">
+			<div class="noLogin" v-if="userRole==6">
 				<div class="account-b account-d">
 					<ul>
+						<li>
+							<a href="account-activity.html">我的报名</a>
+						</li>						
 						<li>
 							<a href="account-help.html">帮助反馈</a>
 						</li>	
@@ -50,12 +54,15 @@
 						</li>
 						<li class="kh">
 							<a href="javascript:;" class="lx-kf">联系客服</a>
-						</li>					
+						</li>	
+						<li>
+							<a href="account-set.html">设置</a>
+						</li>											
 					</ul>
 				</div>				
 			</div>
 			<!--普通用户-->
-			<div class="pt" v-if="userRole=='1'">
+			<div class="pt" v-if="userRole=='1'||userRole=='5'">
 				<div class="account-m">
 					<h3>我的邀请</h3>
 					<div class="account-m-y" v-if="myBg==''||myBg==null">

@@ -56,6 +56,7 @@
 				<h4>{{product.ProjectName}}</h4>
 				<p class="hi-price" v-if="product.Aprice==0"><label>均价<span>待定</span></label><label><span>{{product.ProjectScore}}</span>评分</label></p>
 				<p class="hi-price" v-else><label>均价<span>{{product.Aprice}}</span>元/㎡</label><label><span>{{product.ProjectScore}}</span>评分</label></p>
+				<p class="hi-price" v-if="product.ProjectAward>0"><label>佣金<span>{{product.ProjectAward}}</span>%/套</label></p>
 			</div>
 			<div class="info-r">
 				<p class="outer hi-tag">

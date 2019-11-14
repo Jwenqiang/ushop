@@ -49,7 +49,7 @@
 					<div class="hib-m" style="overflow: inherit;">
 						<div class="swiper-container1">
 							<div class="swiper-wrapper">
-								<div class="swiper-slide" v-for="item in imgList"><img :src="item.FilePath" width="100%"/></div>
+								<div class="swiper-slide" v-for="item in imgList"><img :src="item.FilePath" width="100%" @click="imgChange(item.FilePath)"/></div>
 							</div>
 							<div class="swiper-pagination"></div>
 						</div>						

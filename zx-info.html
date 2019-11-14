@@ -35,7 +35,7 @@
                 <p>{{zx.UpdateTimeT}}</p>
 				<h1 v-if="wz" style="text-align: center;color: #999;font-weight: 400;"><i class="fa fa-file-o"></i> 文章已被删除~</h1>
 			</div>
-			<div class="mui-msg" v-html="zx.Content">
+			<div class="mui-msg" v-html="zx.Content" @click="imgChange($event)">
 			</div>	
 			<div class="activity-m" id="abm" style="padding-bottom: 0;margin-top: 0;" v-if="zx.EnrollBl">
 				<div class="am-form">

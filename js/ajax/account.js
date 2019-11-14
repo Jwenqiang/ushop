@@ -24,7 +24,8 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 		regTime:"",
 		myurl:"",
 		hkCount:0,
-		myBg:""
+		myBg:"",
+		yjMoney:""
 	},
 	beforeCreate: function() { //创建实例el前
 
@@ -62,6 +63,7 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 					 console.log(r);
 					 if(r.data.code=='1001'){
 						 _this.userRole=r.data.data.RoleType;
+						 _this.yjMoney=r.data.data.UserAward;
 						 _this.myBg=r.data.data.SystemConfigMainImg;
 						 _this.CompanyName=r.data.data.CompanyName;
                          _this.fname = r.data.data.FullName;

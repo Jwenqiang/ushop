@@ -37,7 +37,10 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 		callPhone:false,
 		isMobile:false,
 		isF:true,
-		wz:false
+		wz:false,
+		imgUrls:"",
+		oldImglist:[],
+		newImglist:[]		
 	},
 	beforeCreate: function() { //创建实例el前
 
@@ -163,6 +166,20 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 					 _this.correlation.Aprice=r.data.data.Aprice;
 					 // 推荐阅读
 					_this.house_zx=r.data.data.InformationList;
+					
+							// 富文本图片处理点击放大
+							_this.imgUrls=_this.zx.Content.match(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi);
+							let arrImg=[];
+							let srcList=[];
+							for(var j=0;j<_this.imgUrls.length;j++){
+								_this.imgUrls[j].replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi,function(match,capture){
+									arrImg.push(capture);
+									srcList.push(capture+'?x-oss-process=image/ratate,270')
+								})
+							}
+							_this.oldImglist=arrImg;
+							_this.newImglist=srcList;					
+					
 					// DOM还没有更新
 					_this.$nextTick(() => {
 						_this.getShare();
@@ -279,6 +296,13 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 			let r = window.location.search.substr(1).match(reg);
 			if (r != null) return unescape(r[2]);
 			return null;			
-		},		
+		},	
+		imgChange(e){
+			console.log(e);
+			wx.previewImage({
+			  current: e.target.src, // 当前显示图片的http链接
+			  urls: this.oldImglist // 需要预览的图片http链接列表
+			}) 			
+		}			
 	}
 })

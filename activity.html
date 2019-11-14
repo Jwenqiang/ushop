@@ -36,6 +36,10 @@
 				.acontent img{width: 100%;}
 				.weui-dialog, .weui-toast{z-index: 9999;}
 				.hasT{overflow: hidden !important;}
+				.am-form p label{width: 1.6rem;display: inline-block;text-align: right;}
+				.weui-dialog__bd {
+				    padding-bottom: 2em;
+				}
 				</style>
 	</head>
 	<body style="background: #f5f5f7;">
@@ -129,13 +133,21 @@
 				</div>				
 				<!-- <div class="activity-m" style="padding-bottom: 0;" v-if="activeInfo.SignActivityState===2 && activeTime.SignEndTime!='0'"> -->
 				<div class="activity-m" id="abm" style="padding-bottom: 0;" :class="activeInfo.SignActivityState==2 && activeTime.SignEndTime!='0'?'':'noB'">
-					<div class="am-form">
+					<div class="am-form" v-if="activeInfo.CategoryId==7">
+						<h4>报名参加</h4>
+						<p><label>姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名：</label><input type="text" placeholder="请输入姓名" v-model="msg.name"/></p>
+						<p><label>电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话：</label><input type="number" placeholder="请输入您的手机号" v-model="msg.phone"/></p>
+						<p><label>公&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;司：</label><input type="text" placeholder="请输入公司名" v-model="msg.gs"/></p>
+						<p><label>渠道经理：</label><input type="text" placeholder="请输入渠道经理" v-model="msg.qdjl"/></p>
+						<button id="go-bm" @click="goActive">立即报名</button>
+					</div>					
+					<div class="am-form" v-else>
 						<h4>报名参加</h4>
 						<p><label>姓名：</label><input type="text" placeholder="请输入姓名" v-model="msg.name"/></p>
 						<p><label>电话：</label><input type="number" placeholder="请输入您的手机号" v-model="msg.phone"/></p>
 						<p><label>人数：</label><input type="number" placeholder="请输入参加人数" v-model="msg.num"/></p>
 						<button id="go-bm" @click="goActive">立即报名</button>
-					</div>
+					</div>					
 				</div>
 				<div class="activity-m">
 					<div class="activity-info" :class="(activeInfo.SignActivityState==1||activeInfo.SignActivityState==3)?'noS':''">
@@ -144,12 +156,13 @@
 						<p class="active-time"><label>活动结束日期：</label><span>{{activeTime.endTime}}</span></p>
 						<p v-if="activeTime.activityAddress!=null&&activeTime.activityAddress!=''"><label>活动地点：</label><span>{{activeTime.activityAddress}}</span></p>
 						<p v-if="activeTime.activityRoute!=null&&activeTime.activityRoute!=''"><label>活动路线：</label><span>{{activeTime.activityRoute}}</span></p>
-						<div v-html="activeTime.activityContent" class="acontent"></div>
+						<div v-html="activeTime.activityContent" class="acontent" @click="imgChange($event)"></div>
 						<div style="display: block;width: 100%;height: 0.2rem;"></div>
 					</div>
 				</div>	
 				<div class="hr10"></div>
-				<div class="gocall" v-if="activeTime.ActivityPhone!=null&&activeTime.ActivityPhone!=''" @click.stop="callP(activeTime.ActivityPhone)"><i class="fa fa-phone"></i></div>
+				<div class="gocall" v-if="activeTime.ActivityPhone!=null&&activeTime.ActivityPhone!=''&&activeTime.ActivityPhone.length==11"><a :href="'tel:'+activeTime.ActivityPhone"><i class="fa fa-phone" style="color: #fff;"></i></a></div>
+				<div class="gocall" v-if="activeTime.ActivityPhone!=null&&activeTime.ActivityPhone!=''&&activeTime.ActivityPhone.length!=11" @click.stop="callP(activeTime.ActivityPhone)"><i class="fa fa-phone"></i></div>
 				<div class="activity-b">
 					<button class="setHb"><a :href="'activity-hb.html?ActivityId='+activeId">生成海报</a></button>
 					<button class="setShare" @click="showTip=true">微信分享</button>

@@ -77,7 +77,7 @@
 					<div class="index-t">
 						<p class="index-tp"><span>深圳市场行情</span></p>
 						<div class="i-city-info" v-if="szhq!=null">
-							<p class="inde-price"><label class="fl"><strong>{{szhq.Price}}</strong>元/平</label>
+							<p class="inde-price"><label class="fl"><strong>{{Math.round(szhq.Price)}}</strong>元/平</label>
 								<label class="fr index-num" v-if="szhq.RangeType==1"><strong>{{szhq.Range}}</strong></label>
 								<label class="fr index-num" v-if="szhq.RangeType==2"><i class="fa fa-long-arrow-up"></i><strong>{{szhq.Range}}</strong>%</label>
 								<label class="fr index-num" v-if="szhq.RangeType==3"><i class="fa fa-long-arrow-down"></i><strong>{{szhq.Range}}</strong>%</label>

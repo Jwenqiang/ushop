@@ -1,5 +1,11 @@
 var storage=window.localStorage;	
 var lstorage=window.sessionStorage;
+if(storage.getItem("userInfo")){
+	var token=JSON.parse(storage.getItem("userInfo")).Token; 
+	// var userId=JSON.parse(storage.getItem("userInfo")).UserId; 
+// 验证令牌
+axios.defaults.headers.common['token'] = token;	
+}
 var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 	el: '.whole', // el属性：把当前Vue对象挂载到 div标签上，#app是id选择器
 	data: { // data: 是Vue对象中绑定的数据
@@ -29,12 +35,16 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 		ms:"",
 		bt:"",
 		u:"",
-		SourceUserId:""
+		SourceUserId:"",
+		userToken:""
 	},
 	beforeCreate: function() { //创建实例el前
 
 	},
 	created: function(e) { //创建实例el后
+		if(storage.getItem("userInfo")){
+			this.userToken=JSON.parse(storage.getItem("userInfo")).Token;
+		}		
 		this.getData();
 		if(this.getUrlParam('from')){
 			this.isShare=true;

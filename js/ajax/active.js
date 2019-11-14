@@ -9,7 +9,9 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 		msg:{
 			name:"",
 			phone:"",
-			num:""
+			num:"",
+			gs:"",
+			qdjl:""
 		},
 		aTime:'',
 		activeTime:{
@@ -41,7 +43,11 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 		phoneL:"",
 		isFoot:true	,
 		showTip:false,
-		activeId:""
+		activeId:"",
+		isQd:false,
+		imgUrls:"",
+		oldImglist:[],
+		newImglist:[],
 	},
 	beforeCreate: function() { //创建实例el前
 
@@ -92,6 +98,7 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 				}
 			})
 				.then(function(r){
+					console.log(r);
                     if (r.data.code == "1001") {
 						if(r.data.data.State==false){
 							$.alert({
@@ -108,6 +115,9 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 							})
 						}else{
 							_this.activeInfo=r.data.data;
+							if(r.data.data.CategoryId==7){
+								_this.isQd=true;
+							}
 							$('title').html(r.data.data.ActivityTitle);
 					 // 微信分享数据
 					 // Sstorage.setItem("urlf",window.location.href);
@@ -199,6 +209,20 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 								_this.activeTime.ActivityPhone=r.data.data.CentanetActivityPhone;
 								_this.activeTime.activityContent=r.data.data.CentanetActivityDes;
 							}
+							
+							// 富文本图片处理点击放大
+							_this.imgUrls=_this.activeTime.activityContent.match(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi);
+							let arrImg=[];
+							let srcList=[];
+							for(var j=0;j<_this.imgUrls.length;j++){
+								_this.imgUrls[j].replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi,function(match,capture){
+									arrImg.push(capture);
+									srcList.push(capture+'?x-oss-process=image/ratate,270')
+								})
+							}
+							_this.oldImglist=arrImg;
+							_this.newImglist=srcList;
+							
 						}
 						// DOM还没有更新
 						_this.$nextTick(() => {
@@ -257,8 +281,12 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 			}else if(!(/^1[345678]\d{9}$/.test(_this.msg.phone))){
 				$.toast("电话填写有误~", "text");
 			}
-			else if(_this.msg.num==""){
+			else if(_this.msg.num==""&&_this.isQd==false){
 				$.toast("人数不能为空~", "text");
+			}else if(_this.msg.gs==""&&_this.isQd==true){
+				$.toast("请填写公司名~", "text");
+			}else if(_this.msg.qdjl==""&&_this.isQd==true){
+				$.toast("请填写渠道经理~", "text");
 			}else{
 				if(storage.getItem("userInfo")){
 					var data={
@@ -268,7 +296,9 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 							Number: _this.msg.num,
 							UserId:JSON.parse(storage.getItem("userInfo")).UserId,
 							ActivityChannelId:this.getUrlParam('ActivityChannelId'),
-							SourceUserId:this.getUrlParam('SourceUserId')
+							SourceUserId:this.getUrlParam('SourceUserId'),
+							EnrollCompany:_this.msg.gs,
+							EnrollChannelManage:_this.msg.qdjl
 					};
 				}else{
 					var data={
@@ -277,7 +307,9 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 							Mobile: _this.msg.phone,
 							Number: _this.msg.num,
 							ActivityChannelId:this.getUrlParam('ActivityChannelId'),
-							SourceUserId:this.getUrlParam('SourceUserId')							
+							SourceUserId:this.getUrlParam('SourceUserId'),
+							EnrollCompany:_this.msg.gs,
+							EnrollChannelManage:_this.msg.qdjl														
 					};				
 				}
 				axios({
@@ -289,16 +321,30 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 						//console.log(r);
 						if(r.data.code=="1001"){
 							_this.isF=false;
-							$.alert({
-							  title: '恭喜您报名成功！',
-							  text: '"您已报名成功，稍后会有我们的工作人员为您确认，请留意电话~"',
-							  onOK: function () {
-								//点击确认
-								location.reload();
-								_this.isF=true;
-							  }
-						   })
+							if(_this.isQd==false){
+								$.alert({
+								  title: '恭喜您报名成功！',
+								  text: '"您已报名成功，稍后会有我们的工作人员为您确认，请留意电话~"',
+								  onOK: function () {
+									//点击确认
+									location.reload();
+									_this.isF=true;
+								  }
+							   })								
+							}else{
+								$.alert({
+								  title: '恭喜您报名成功！',
+								  text: '<div style="width:100%;height:180px;"><p style="font-size: 14px;">长按识别二维码,添加客服微信</p><img src="./img/a-ewm.jpg" style="width:150px;height:150px;"/><p style="font-size: 14px;">核对报名信息</p></div> ',
+								  onOK: function () {
+									//点击确认
+									location.reload();
+									_this.isF=true;
+								  }
+							   })								
+							}
+
 						}else{
+							console.log(1);
 							$.toast(r.data.message, "cancel");
 						}
 					})						
@@ -312,7 +358,9 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 		callP:function(p){
 			var _this=this;
 			_this.phoneMsg=p;
+			console.log(p);
 			var index=_this.phoneMsg.indexOf("\,");
+			console.log(index);
 			_this.phoneF=_this.phoneMsg.substring(0,index);
 			_this.phoneL=_this.phoneMsg.substring(index+1,_this.phoneMsg.length);
 			_this.callPhone=true;
@@ -361,6 +409,13 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 					clearInterval(timer);  
 				}  
 			}, 10);  
+		},
+		imgChange(e){
+			console.log(e.target);
+			wx.previewImage({
+			  current: e.target.src, // 当前显示图片的http链接
+			  urls: this.oldImglist // 需要预览的图片http链接列表
+			}) 			
 		}
 	}
 })
