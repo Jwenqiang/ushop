@@ -7,7 +7,8 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 		picType:[],
 		imgList:[],
 		bigImg:"",
-		showBig:false
+		showBig:false,
+		imgArr:[]
 	},
 	beforeCreate: function() { //创建实例el前
 
@@ -22,7 +23,7 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 
 	},
 	updated:function(){
-		// wxShared();	
+		// wxShared();
 	},	
 	methods:{
 		getData:function(){
@@ -39,6 +40,10 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 				 if(r.data.code=='1001'){
 					 //console.log(r);
 					 _this.picType=r.data.data;
+					 _this.imgList=r.data.data.EstatePhotosList;
+					 for(var i in _this.imgList){
+					 	_this.imgArr.push(_this.imgList[i].FilePath);
+					 }
 					 // //console.log(_this.imgList);
 						// DOM还没有更新
 						_this.$nextTick(() => {
@@ -77,10 +82,11 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 			if (r != null) return unescape(r[2]);
 			return null;			
 		},
-		bigBan:function(imgUrl){
-			var _this=this;
-			_this.bigImg=imgUrl;
-			_this.showBig=true;
+		bigBan:function(e){
+			wx.previewImage({
+			  current: e, // 当前显示图片的http链接
+			  urls: this.imgArr // 需要预览的图片http链接列表
+			}) 				
 		},		
 	}
 })

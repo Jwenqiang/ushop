@@ -65,10 +65,10 @@
 						</p>
 					</div>						
 				</div>
-				<div style="position: fixed;left: 0;top: 0;z-index: 997;width: 100%;height: 100%;display: none;" :class="showBig?'showAll':''">
+<!-- 				<div style="position: fixed;left: 0;top: 0;z-index: 997;width: 100%;height: 100%;display: none;" :class="showBig?'showAll':''">
 					<div style="background: #000;opacity: 0.5;width: 100%;height: 100%;" @click.stop="showBig=false"></div>
 					<img id="imgView" class="viewerimg" draggable="true" :src="bigImg" style="position: absolute;top: 0;bottom: 0;margin: auto;transition: all 0.5s linear;"/>
-				</div>
+				</div> -->
 		</div>	
 	<script src="js/jquery.min.js"></script>
 	<script src="js/jquery-weui.min.js"></script>	
@@ -78,58 +78,12 @@
 	<script type="text/javascript" src="js/ajax/house-info-big.js" ></script>	
 		<script type='text/javascript' src='https://res.wx.qq.com/open/js/jweixin-1.4.0.js'></script>
 		<script type="text/javascript" src="js/wx.js"></script>	
-	<script src="js/touch.js"></script>
+	<!-- <script src="js/touch.js"></script> -->
 			<script>
 		setTimeout(function(){
 			wxShared();
 		},500)					
 			</script>	
-		<script>
-var target = document.getElementById("imgView");
-    target.style.webkitTransition = 'all ease 0.05s';
-
-    touch.on('#imgView', 'touchstart', function (ev) {
-        ev.preventDefault();
-    });
-
-    var initialScale = -10;
-    var currentScale;
-    var dx, dy;
-    touch.on('#imgView', 'pinchend', function (ev) {
-        if ($("#imgView").hasClass('viewerimg')) {
-            $("#imgView").removeClass("viewerimg");
-        };
-        currentScale = ev.scale - 1;
-        currentScale = initialScale + currentScale;
-        currentScale = currentScale > 2 ? 2 : currentScale;
-        currentScale = currentScale < 1 ? 1 : currentScale;
-        if (currentScale == 1) {
-            $("#imgView").addClass("viewerimg");
-        };
-        this.style.webkitTransform = 'scale(' + currentScale + ')';
-        //console.log("当前缩放比例为:" + currentScale + ".");
-        
-    });
-
-    touch.on('#imgView', 'pinchend', function (ev) {
-        initialScale = currentScale;
-       
-    });
-
-    touch.on('#imgView', 'drag', function (ev) {
-        dx = dx || 0;
-        dy = dy || 0;
-        this.style.webkitTransform = 'scale(' + currentScale + ')';
-        //console.log("当前x值为:" + dx + ", 当前y值为:" + dy + ".");
-        var offx = dx + ev.x + "px";
-        var offy = dy + ev.y + "px";
-        this.style.webkitTransform = "translate3d(" + offx + "," + offy + ",0)";
-    });
-
-    touch.on('#imgView', 'dragend', function (ev) {
-        dx += ev.x;
-        dy += ev.y;
-    });			
-		</script>		
+	
 	</body>
 </html>

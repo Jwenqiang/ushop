@@ -33,6 +33,25 @@
 .hi-art span{float: right;font-size: 0.28rem;font-weight: 400;}
 .hi-art span i{margin-left: 0.2rem;font-size: 0.32rem;}
 .hasT{overflow: hidden;}
+.yjMoney{padding: 0.2rem 0.4rem;}
+.yjMoney p{font-size: 0.24rem;padding: 0.14rem 0;border-bottom: 1px solid #f5f5f5;}
+.yjMoney p:last-child{margin-bottom: 0;border-bottom: 0;}
+.yjMoney label{width: 2.6rem;margin-right: 0.14rem;display: inline-block;}
+.yjMoney label:last-child{margin-right: 0;}
+label.tag-label{
+	display: inline-block;
+	width: 1.2rem;
+	text-align: center;
+	border: 1px solid #549fdd;
+	color: #549fdd;
+	font-size: 0.24rem;
+}
+.yjMoney span{
+    font-size: 0.38rem;
+    font-weight: 600;
+    margin: 0 0.08rem;
+    color: #f74045;
+}
 </style>
 
 </head>
@@ -56,7 +75,7 @@
 				<h4>{{product.ProjectName}}</h4>
 				<p class="hi-price" v-if="product.Aprice==0"><label>均价<span>待定</span></label><label><span>{{product.ProjectScore}}</span>评分</label></p>
 				<p class="hi-price" v-else><label>均价<span>{{product.Aprice}}</span>元/㎡</label><label><span>{{product.ProjectScore}}</span>评分</label></p>
-				<p class="hi-price" v-if="product.ProjectAward>0"><label>佣金<span>{{product.ProjectAward}}</span>%/套</label></p>
+				<!-- <p class="hi-price" v-if="product.ProjectAward>0"><label>佣金<span>{{product.ProjectAward}}</span>%/套</label></p> -->
 			</div>
 			<div class="info-r">
 				<p class="outer hi-tag">
@@ -73,6 +92,10 @@
 			</div>
 		</div>
 		<div class="hr10"></div>
+		<div class="yjMoney" v-if="productYj.length>0">
+			<p  v-for="item in productYj" :key="item.Id"><label class="tag-label">{{item.ProjectAwardName}}</label><label v-if="item.ProjectAwardRatio>0">佣金<span>{{item.ProjectAwardRatio}}</span>%/套</label><label v-if="item.ProjectAwardAmount>0">佣金<span>{{item.ProjectAwardAmount}}</span>元/套</label><label v-if="item.CashAwardRatio>0">现金奖<span>{{item.CashAwardRatio}}</span>%/套</label><label v-if="item.CashAward>0">现金奖<span>{{item.CashAward}}</span>元</label></p>
+		</div>
+		<div class="hr10" v-if="productYj.length>0"></div>
 		<div class="hi-roll" v-if="roll.Id!=0" v-show="roll.Id!=0">
 			<div class="hi-roll-l">
 				<a :href="'house-info-roll.html?CouponId='+roll.Id+'&ProjectId='+infoId+'&hid='+product.Id">
@@ -81,7 +104,7 @@
 				</a>
 			</div>
 		</div>		
-		<div class="hr10"></div>
+		<div class="hr10" v-if="roll.Id!=0"></div>
 		<div class="hi-house">
 			<h3><p class="hi-house-l">楼盘户型<span>（{{houseType.length}}）</span></p><a :href="'house-info-hxlist.html?id='+product.Id" class="hi-house-r" v-if="houseType.length!=0">更多<i class="fa fa-angle-right"></i></a><div class="clear"></div> </h3>
 			<div class="swiper-container hi-all">  

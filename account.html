@@ -28,7 +28,7 @@
 							<img :src="fimg" v-else/>
 							<p class="account-name" v-if="nickname!=null">{{nickname}}</p>	
 							<p class="account-name" v-else>{{mobile.replace(/^(\d{3})\d{4}(\d+)/,"$1****$2")}}</p>	
-							<p class="account-name" v-if="userRole==6&&yjMoney>0"><label style="font-size: 14px;color: #999;">佣金</label><span style="margin-left: 3px;font-size: 18px;color: #ff0000;">{{yjMoney}}%</span></p>	
+							<!-- <p class="account-name" v-if="userRole==6&&yjMoney>0"><label style="font-size: 14px;color: #999;">佣金</label><span style="margin-left: 3px;font-size: 18px;color: #ff0000;">{{yjMoney}}%</span></p>	 -->
 						</a>	
 					</div>
 					<div v-if="userRole==''">
@@ -122,13 +122,13 @@
 			</div>
 			<!--认证公司-->
 			<div class="gs" v-if="userRole=='2'">
-				<div class="account-m">
+<!-- 				<div class="account-m">
 					<h3>公司二维码</h3>
 					<div class="account-m-ewm">
 						<a href="account-gsm.html" class="account-go">进入<i class="fa fa-angle-right"></i></a>
 					</div>
 				</div>
-				<div class="hr10"></div>
+				<div class="hr10"></div> -->
 				<div class="account-b account-c">
 					<ul>
 						<li>
@@ -195,7 +195,7 @@
 	      </div>
 	      <p class="weui-tabbar__label">房源</p>
 	    </a>
-	    <a href="my-client.html" class="weui-tabbar__item" v-if="userRole=='2'||userRole=='3'||userRole=='4'">
+	    <a href="my-client.html" class="weui-tabbar__item" v-if="userRole=='3'||userRole=='4'">
 	      <div class="weui-tabbar__icon">
 	        <img src="img/kh.png" alt="">
 	      </div>

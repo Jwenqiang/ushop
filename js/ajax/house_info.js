@@ -36,7 +36,8 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 		bt:"",
 		u:"",
 		SourceUserId:"",
-		userToken:""
+		userToken:"",
+		productYj:""
 	},
 	beforeCreate: function() { //创建实例el前
 
@@ -150,6 +151,8 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 					
 										
 						_this.product=r.data.data;
+						_this.productYj=r.data.data.ProjectAwardList;
+						console.log(_this.productYj);
 						_this.imgBan=r.data.data.Estate.EstatePhotosAllList;
 						//console.log(_this.imgBan);
 						_this.houseJd=r.data.data.Information;
