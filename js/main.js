@@ -9,15 +9,15 @@ var phoneNum="4000-666-030";
 
 //所有页面公共JS
 $(window).load(function() {
-    var wechatis = window.navigator.userAgent.toLowerCase();
-    if (wechatis .match(/MicroMessenger/i) == 'micromessenger') {
-        //是微信端
-		console.log('微信端');	
-    } else {
-        //不是微信端
-		console.log('不是微信端');
-		// window.location.href="tip.html"
-    }	
+//     var wechatis = window.navigator.userAgent.toLowerCase();
+//     if (wechatis .match(/MicroMessenger/i) == 'micromessenger') {
+//         //是微信端
+// 		console.log('微信端');	
+//     } else {
+//         //不是微信端
+// 		console.log('不是微信端');
+// 		// window.location.href="tip.html"
+//     }	
 	$("#loadingDiv").addClass("loader-chanage")
 	$("#loadingDiv").fadeOut(300);	
 })

@@ -149,7 +149,7 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 	});						
 					
 					
-										
+							console.log(r);			
 						_this.product=r.data.data;
 						_this.productYj=r.data.data.ProjectAwardList;
 						console.log(_this.productYj);
