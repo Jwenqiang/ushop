@@ -4094,6 +4094,9 @@ footer .weui-tabbar__icon img {
 	color: #fff;
 	position: relative;
 	left: 0.1rem;
+	display: inline-block;
+    height: 20px;
+    line-height: 20px;	
 }
 .gs .account-c li label{color: #ccc;font-size: 0.24rem;display: inline-block;height: 100%;float: right;padding-right: 0.4rem;font-weight: 500;}
 .gs .account-c li:nth-of-type(1) a{background: url(../img/a-rz.png) left center no-repeat;background-size: 0.5rem;}

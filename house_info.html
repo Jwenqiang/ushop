@@ -94,6 +94,12 @@ label.tag-label{
 		<div class="hr10"></div>
 		<div class="yjMoney" v-if="productYj.length>0">
 			<p  v-for="item in productYj" :key="item.Id"><label class="tag-label">{{item.ProjectAwardName}}</label><label v-if="item.ProjectAwardRatio>0">佣金<span>{{item.ProjectAwardRatio}}</span>%/套</label><label v-if="item.ProjectAwardAmount>0">佣金<span>{{item.ProjectAwardAmount}}</span>元/套</label><label v-if="item.CashAwardRatio>0">现金奖<span>{{item.CashAwardRatio}}</span>%/套</label><label v-if="item.CashAward>0">现金奖<span>{{item.CashAward}}</span>元</label></p>
+			<p v-if="product.CompanyAwardRemarks!=''&&product.CompanyAwardRemarks!=null" style="margin-top: 0.2rem;">
+				异业说明：{{product.CompanyAwardRemarks}}
+			</p>
+			<p v-if="product.ProjectAwardRemarks!=''&&product.ProjectAwardRemarks!=null" style="margin-top: 0.2rem;">
+				佣金说明：{{product.ProjectAwardRemarks}}
+			</p>
 		</div>
 		<div class="hr10" v-if="productYj.length>0"></div>
 		<div class="hi-roll" v-if="roll.Id!=0" v-show="roll.Id!=0">
