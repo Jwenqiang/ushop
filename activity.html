@@ -146,6 +146,7 @@
 						<p><label>姓名：</label><input type="text" placeholder="请输入姓名" v-model="msg.name"/></p>
 						<p><label>电话：</label><input type="number" placeholder="请输入您的手机号" v-model="msg.phone"/></p>
 						<p><label>人数：</label><input type="number" placeholder="请输入参加人数" v-model="msg.num"/></p>
+						<p v-if="activeInfo.CategoryId==8"><label>关键人：</label><input type="text" placeholder="例如:张某13512345678" v-model="msg.qdjl"/></p>
 						<button id="go-bm" @click="goActive">立即报名</button>
 					</div>					
 				</div>

@@ -84,34 +84,6 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 		// wxShared();
 	},
 	methods:{
-		// 网页授权
-		getSq:function(a){
-			var _this=this;
-			var ua = navigator.userAgent.toLowerCase();
-			var isWeixin = ua.indexOf('micromessenger') != -1;
-			if(_this.getUrlParam("code")!=null&&_this.getUrlParam("state")!=null){
-				return false;
-            }
-            else {
-				if (isWeixin) {
-					axios.get("/Wx/OAuth",{
-						params:{
-							JumpHtml:"active.html",
-						}
-					})
-						.then(function(r){
-							console.log(r);
-							window.location.href=r.data;
-						})
-						.catch(function(e){
-							//console.log('授权失败');
-						})
-					
-				}
-			}
-
-		},		
-		
 		getData:function(a){
 			var _this=this;
 			// shareData("http://hfugweb.centaline.com.cn/activity.html?id=16");	
@@ -143,11 +115,8 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 							})
 						}else{
 							_this.activeInfo=r.data.data;
-							
-							if(r.data.data.CategoryId==7){
+							if(r.data.data.CategoryId==7||r.data.data.CategoryId==8){
 								_this.isQd=true;
-								// 授权
-								_this.getSq();
 							}
 							$('title').html(r.data.data.ActivityTitle);
 					 // 微信分享数据
@@ -314,10 +283,15 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 			}
 			else if(_this.msg.num==""&&_this.isQd==false){
 				$.toast("人数不能为空~", "text");
-			}else if(_this.msg.gs==""&&_this.isQd==true){
-				$.toast("请填写公司名~", "text");
+			}else if(_this.msg.gs==""&&_this.isQd==true&&_this.activeInfo.CategoryId==7){
+					$.toast("请填写公司名~", "text");
 			}else if(_this.msg.qdjl==""&&_this.isQd==true){
-				$.toast("请填写渠道经理~", "text");
+				var qdjl_var="请填写渠道经理~";
+				if(_this.activeInfo.CategoryId==8)
+				{
+					qdjl_var="请填写关键人~";
+				}
+				$.toast(qdjl_var, "text");
 			}else{
 				if(storage.getItem("userInfo")){
 					var data={
