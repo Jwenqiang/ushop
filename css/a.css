@@ -1,0 +1,52 @@
+/*所有元素默认字体大小*/
+* {
+	box-sizing: border-box;
+	-webkit-overflow-scrolling: touch;
+	font-family: "microsoft yahei", "helvetica", "heiti SC", "droid", "sans";
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	font-size: 50px;
+	height: 100%;
+	/* min-height: 100%; */
+}
+
+body {
+	font-size: 0.28rem;
+	background-color: #fff;
+	transition: transform 1s ease-in-out;
+	height: 100%;
+	color: #203140;
+	overflow-x: hidden;
+	font-family: "microsoft yahei", "helvetica", "heiti SC", "droid", "sans";
+}
+a {
+	color: #666;
+	text-decoration: none
+}
+.page{max-width: 7.5rem;margin: 0 auto;}
+.page img{width: 100%;}
+.part1{height: 7.73rem;}
+.part2{height: 12.64rem;}
+.part3{height: 5.77rem;}
+.part4{height: 6.19rem;}
+.part5{height: 8.78rem;position: relative;}
+.part5 a{width: 7.5rem;height: 1rem;position: absolute;left: 0;display: block;}
+a.one{top: 2rem;}
+a.two{top: 3.24rem;}
+a.three{top: 4.48rem;}
+a.four{top: 5.72rem;}
+a.five{top: 6.96rem;}
+.bj{
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background: #000;
+    opacity: 0.5;
+    z-index: 8;	
+}
+.show-af{position: fixed;top: 0;left: 0;width: 100%;height: 100%;z-index: 99;display: none;}

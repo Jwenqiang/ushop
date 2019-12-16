@@ -134,12 +134,13 @@
 				<!-- <div class="activity-m" style="padding-bottom: 0;" v-if="activeInfo.SignActivityState===2 && activeTime.SignEndTime!='0'"> -->
 				<div class="activity-m" id="abm" style="padding-bottom: 0;" :class="activeInfo.SignActivityState==2 && activeTime.SignEndTime!='0'?'':'noB'">
 					<div class="am-form" v-if="activeInfo.CategoryId==7">
-						<h4>报名参加</h4>
+						<h4>报名参加<small style="font-size: 0.24rem;margin-left: 0.2rem;color: #ff0000;" v-if="activeInfo.PaymentType>1">(点击立即报名需支付定金:{{activeInfo.PaymentAmount}}元)</small></h4>
 						<p><label>姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名：</label><input type="text" placeholder="请输入姓名" v-model="msg.name"/></p>
 						<p><label>电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话：</label><input type="number" placeholder="请输入您的手机号" v-model="msg.phone"/></p>
 						<p><label>公&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;司：</label><input type="text" placeholder="请输入公司名" v-model="msg.gs"/></p>
 						<p><label>渠道经理：</label><input type="text" placeholder="请输入渠道经理" v-model="msg.qdjl"/></p>
-						<button id="go-bm" @click="goActive">立即报名</button>
+						<button id="go-bm" @click="goActive" v-if="activeInfo.PaymentType>1">立即报名</button>
+						<button id="go-bm" @click="goActive" v-else>立即报名</button>
 					</div>					
 					<div class="am-form" v-else>
 						<h4>报名参加</h4>

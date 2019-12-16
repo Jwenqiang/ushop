@@ -108,9 +108,9 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 						 //console.log(r.data.data);
 						 storage.setItem("userInfo",JSON.stringify(r.data.data));						 
 						 $.toast("注册成功", "success");
-						setTimeout(function(){
-							 window.location.href="./index.html";
-						 },500)						 
+						// setTimeout(function(){
+						// 	 window.location.href="./index.html";
+						//  },500)						 
 					 }else{
 						 $.toast(r.data.message, "cancel");
 					 }

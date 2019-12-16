@@ -212,17 +212,18 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 							
 							// 富文本图片处理点击放大
 							_this.imgUrls=_this.activeTime.activityContent.match(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi);
-							let arrImg=[];
-							let srcList=[];
-							for(var j=0;j<_this.imgUrls.length;j++){
-								_this.imgUrls[j].replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi,function(match,capture){
-									arrImg.push(capture);
-									srcList.push(capture+'?x-oss-process=image/ratate,270')
-								})
+							if(_this.imgUrls!=null){
+								let arrImg=[];
+								let srcList=[];
+								for(var j=0;j<_this.imgUrls.length;j++){
+									_this.imgUrls[j].replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi,function(match,capture){
+										arrImg.push(capture);
+										srcList.push(capture+'?x-oss-process=image/ratate,270')
+									})
+								}
+								_this.oldImglist=arrImg;
+								_this.newImglist=srcList;
 							}
-							_this.oldImglist=arrImg;
-							_this.newImglist=srcList;
-							
 						}
 						// DOM还没有更新
 						_this.$nextTick(() => {
@@ -338,7 +339,7 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 							   })								
 							}else{
 								$.alert({
-								  title: '恭喜您报名成功！',
+								  title: '申请已提交待审核！',
 								  text: '<div style="width:100%;height:180px;"><p style="font-size: 14px;">长按识别二维码,添加客服微信</p><img src="./img/a-ewm.jpg" style="width:150px;height:150px;"/><p style="font-size: 14px;">核对报名信息</p></div> ',
 								  onOK: function () {
 									//点击确认
