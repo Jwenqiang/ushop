@@ -7,7 +7,8 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 		userInfo:{
 			username:"",
 			password:""
-		}
+		},
+		isNeed:false
 	},
 	beforeCreate: function() { //创建实例el前
 
@@ -19,7 +20,10 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 
 	},
 	mounted: function() { //下面表示已执行方法  编译好html后在这操作
-
+		var _this=this;
+		if(_this.getUrlParam("membertype")){
+			_this.isNeed=true
+		}
 	},
 	updated:function(){
 		// wxShared();	

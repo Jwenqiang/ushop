@@ -18,15 +18,15 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 	},
 	created: function(e) { //创建实例el后
 		this.getData();
+		if(this.getUrlParam("membertype")){
+			this.isNeed=true
+		}			
 	},
 	beforeMount: function() { //下面表示已执行方法  虚拟dom还没有内容
 
 	},
 	mounted: function() { //下面表示已执行方法  编译好html后在这操作
-	var _this=this;
-		if(_this.getUrlParam("membertype")==2){
-			_this.isNeed=true;
-		}
+
 	},
 	updated:function(){
 		// wxShared();	
@@ -55,8 +55,10 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 							console.log(r);
 							if(_this.getUrlParam("membertype")==2){
 								window.location.href=r.data+'&membertype=2';
+								_this.isNeed=true
 							}else{
 								window.location.href=r.data;
+								_this.isNeed=false
 							}
 							
 						})
@@ -80,9 +82,9 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 				$.toast("密码不能为空", "text");
 			}else if(_this.isNeed==true){
 				if(!(/^1[345678]\d{9}$/.test(_this.userInfo.fNum))){
-					$.toast("请填写推荐人手机号", "text");
+					$.toast("请填写推荐人号码", "text");
 				}else if(_this.userInfo.gsName==""){
-					$.toast("请填写推荐企业名称", "text");
+					$.toast("请填写推荐企业", "text");
 				}
 			}
 			else if(_this.userInfo.password.length>18||_this.userInfo.password.length<6){

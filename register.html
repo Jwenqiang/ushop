@@ -35,7 +35,7 @@
 				<div class="l-tip">注册/登录即代表同意<a href="rule.html">《好房U购用户协议》</a></div>
 				<div class="login-sub"><a><button @click="goReg">立即注册</button></a></div>
 				<div class="login-find">
-					<a href="login.html">已有账号?</a>
+					<a :href="isNeed?'login.html?membertype=2':'login.html'">已有账号?</a>
 					<div class="clear"></div>
 				</div>				
 		</div>
