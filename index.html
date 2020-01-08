@@ -117,6 +117,34 @@
 
 						</div>
 					</section>
+					<section id="HotProject">
+						<div class="weui-cells">
+							<a class="weui-cell weui-cell_access" href="house-list.html">
+								<div class="weui-cell__bd">
+									<p class="i-title">特惠热盘</p>
+								</div>
+								<div class="weui-cell__ft">
+									更多
+								</div>
+							</a>
+						</div>
+						<div class="index-activity">
+							<div class="swiper-container2">
+								<div class="swiper-wrapper">
+									<div class="swiper-slide" v-for="item in house_hot">
+										<div class="title">
+											<a :href="'house_info.html?id='+item.ProjectId+'&SourceUserId='+SourceUserId"><img :src="item.MainImg" /><span class="bj"></span><span class="ihot-score">{{item.ProjectScore}}分</span>
+												<div class="ihot-msg">
+													<p>{{item.RecommendName}}</p>
+													<p>{{item.RecommendSecondName}}</p>
+												</div>
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</section>					
 					<section id="NewProject">
 						<div class="weui-cells">
 							<a class="weui-cell weui-cell_access" href="house-list.html">
@@ -146,34 +174,7 @@
 							</div>
 						</div>
 					</section>					
-					<section id="HotProject">
-						<div class="weui-cells">
-							<a class="weui-cell weui-cell_access" href="house-list.html">
-								<div class="weui-cell__bd">
-									<p class="i-title">热销好盘</p>
-								</div>
-								<div class="weui-cell__ft">
-									更多
-								</div>
-							</a>
-						</div>
-						<div class="index-activity">
-							<div class="swiper-container2">
-								<div class="swiper-wrapper">
-									<div class="swiper-slide" v-for="item in house_hot">
-										<div class="title">
-											<a :href="'house_info.html?id='+item.ProjectId+'&SourceUserId='+SourceUserId"><img :src="item.MainImg" /><span class="bj"></span><span class="ihot-score">{{item.ProjectScore}}分</span>
-												<div class="ihot-msg">
-													<p>{{item.RecommendName}}</p>
-													<p>{{item.RecommendSecondName}}</p>
-												</div>
-											</a>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</section>
+
 					<!--<section>
 				<div class="weui-cells">
 				  <a class="weui-cell weui-cell_access" href="house_all.html">
