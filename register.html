@@ -29,7 +29,9 @@
 				<div class="register-username"><span><input type="number" placeholder="请输入您的手机号" id="phone-num" v-model="userInfo.username"/><button id="r-code" @click="sendCode" onclick="getCode();">获取验证码</button></span></div>
 				<div class="login-username"><span><input type="number" placeholder="请输入验证码" id="username" v-model="userInfo.uCode"/></span></div>
 				<div class="login-pwd"><span><input type="password" placeholder="请输入您的密码（6-18位，数字、字母均可）" id="password" v-model="userInfo.password"/><i class="fa fa-eye-slash" id="eyes"></i></span></div>
-				<div class="register-yqm"><span><input type="number" placeholder="推荐人手机号（选填）" v-model="userInfo.fNum"/></span></div>
+				<div class="register-yqm" v-if="isNeed"><span><input type="number" placeholder="推荐人手机号（必填）" v-model="userInfo.fNum"/></span></div>
+				<div class="register-yqm" v-if="isNeed==false"><span><input type="number" placeholder="推荐人手机号（选填）" v-model="userInfo.fNum"/></span></div>
+				<div class="register-yqm" v-if="isNeed"><span><input type="number" placeholder="推荐企业名称（必填）" v-model="userInfo.gsName"/></span></div>
 				<div class="l-tip">注册/登录即代表同意<a href="rule.html">《好房U购用户协议》</a></div>
 				<div class="login-sub"><a><button @click="goReg">立即注册</button></a></div>
 				<div class="login-find">

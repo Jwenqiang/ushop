@@ -3,12 +3,14 @@ document.write("<script language=javascript src='./js/main.js'></script>");
 var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 	el: '.whole', // el属性：把当前Vue对象挂载到 div标签上，#app是id选择器
 	data: { // data: 是Vue对象中绑定的数据
+		isNeed:false,
 		userInfo:{
 			username:"",
 			uCode:"",
 			password:"",
 			fNum:"",
-			gnum:""
+			gnum:"",
+			gsName:""
 		}
 	},
 	beforeCreate: function() { //创建实例el前
@@ -21,7 +23,10 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 
 	},
 	mounted: function() { //下面表示已执行方法  编译好html后在这操作
-
+	var _this=this;
+		if(_this.getUrlParam("membertype")==2){
+			_this.isNeed=true;
+		}
 	},
 	updated:function(){
 		// wxShared();	
@@ -47,7 +52,13 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 						}
 					})
 						.then(function(r){
-							window.location.href=r.data;
+							console.log(r);
+							if(_this.getUrlParam("membertype")==2){
+								window.location.href=r.data+'&membertype=2';
+							}else{
+								window.location.href=r.data;
+							}
+							
 						})
 						.catch(function(e){
 							//console.log('授权失败');
@@ -63,11 +74,19 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 				$.toast("手机号不能为空", "text");
 			}else if(!(/^1[345678]\d{9}$/.test(_this.userInfo.username))) {
 				$.toast("号码输入有误", "cancel");
+			}else if(_this.userInfo.uCode=="") {
+				$.toast("请填写验证码", "cancel");
 			}else if(_this.userInfo.password==""){
 				$.toast("密码不能为空", "text");
+			}else if(_this.isNeed==true){
+				if(!(/^1[345678]\d{9}$/.test(_this.userInfo.fNum))){
+					$.toast("请填写推荐人手机号", "text");
+				}else if(_this.userInfo.gsName==""){
+					$.toast("请填写推荐企业名称", "text");
+				}
 			}
 			else if(_this.userInfo.password.length>18||_this.userInfo.password.length<6){
-				$.toast("密码输入有误", "cancel");
+				$.toast("密码建议6-18位", "cancel");
 			}
 			else{
 			var storage=window.localStorage;		
@@ -82,7 +101,8 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 					  Password: _this.userInfo.password,
 					  // Guid: _this.gnum,
 					  WeiXinCode: _this.getUrlParam("code"),
-					  WeiXinState: _this.getUrlParam("state")
+					  WeiXinState: _this.getUrlParam("state"),
+					  RecommendCompany:_this.userInfo.gsName
 					};					
 				}else{
 					var useDada={
@@ -93,6 +113,7 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 					InvitationChannelId:_this.getUrlParam("InvitationChannelId"),
 					  VerificationCode: _this.userInfo.uCode,
 					  Password: _this.userInfo.password,
+					  RecommendCompany:_this.userInfo.gsName
 					// Guid: _this.gnum,			  
 					};
 				}
