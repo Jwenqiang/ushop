@@ -21,7 +21,7 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 	},
 	mounted: function() { //下面表示已执行方法  编译好html后在这操作
 		var _this=this;
-		if(_this.getUrlParam("membertype")){
+		if(_this.getUrlParam("MemberType")){
 			_this.isNeed=true
 		}
 	},

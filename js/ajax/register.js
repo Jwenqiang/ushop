@@ -18,9 +18,9 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 	},
 	created: function(e) { //创建实例el后
 		this.getData();
-		if(this.getUrlParam("membertype")){
+		if(this.getUrlParam("MemberType")){
 			this.isNeed=true
-		}			
+		}
 	},
 	beforeMount: function() { //下面表示已执行方法  虚拟dom还没有内容
 
@@ -49,18 +49,12 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 							InvitationUserId:_this.getUrlParam("InvitationUserId"),
 							InvitationCompanyId:_this.getUrlParam("InvitationCompanyId"),
 							InvitationChannelId:_this.getUrlParam("InvitationChannelId"),
+							MemberType:_this.getUrlParam("MemberType")
 						}
 					})
 						.then(function(r){
 							console.log(r);
-							if(_this.getUrlParam("membertype")==2){
-								window.location.href=r.data+'&membertype=2';
-								_this.isNeed=true
-							}else{
-								window.location.href=r.data;
-								_this.isNeed=false
-							}
-							
+							window.location.href=r.data;
 						})
 						.catch(function(e){
 							//console.log('授权失败');
