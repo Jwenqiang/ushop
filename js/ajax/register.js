@@ -18,9 +18,9 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 	},
 	created: function(e) { //创建实例el后
 		this.getData();
-		if(this.getUrlParam("MemberType")){
-			this.isNeed=true
-		}
+		if(this.getUrlParam("MemberType")==2){
+			this.isNeed=true;
+		}		
 	},
 	beforeMount: function() { //下面表示已执行方法  虚拟dom还没有内容
 
@@ -34,14 +34,18 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 	methods:{
 		getData:function(a){
 			var _this=this;
-			_this.gnum=_this.guid();
+			// _this.gnum=_this.guid();
 			var ua = navigator.userAgent.toLowerCase();
 			var isWeixin = ua.indexOf('micromessenger') != -1;
 			if(_this.getUrlParam("code")!=null&&_this.getUrlParam("state")!=null){
-				return false;
+				console.log(_this.getUrlParam("MemberType"));
+				if(_this.getUrlParam("MemberType")==2){
+					_this.isNeed=true;
+				}
             }
             else {
 				if (isWeixin) {
+					console.log(_this.getUrlParam("MemberType"));
 					axios.get("/Wx/OAuth",{
 						params:{
 							JumpHtml:"register.html",
@@ -53,8 +57,7 @@ var app = new Vue({ // 创建Vue对象。Vue的核心对象。
 						}
 					})
 						.then(function(r){
-							console.log(r);
-							window.location.href=r.data;
+							window.location.href=r.data;						
 						})
 						.catch(function(e){
 							//console.log('授权失败');
