@@ -6,7 +6,11 @@ axios.defaults.baseURL = 'https://hfugapi.centaline.com.cn';
 var phoneNum="4000-666-030";
 
 //1. 用户  2.合作公司  3 资源运营 4销售人员  角色roletype
-
+// 上划隐藏微信浏览器底部白条
+document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+	WeixinJSBridge.call('hideToolbar');
+	// WeixinJSBridge.call('hideOptionMenu');
+})
 //所有页面公共JS
 $(window).load(function() {
 //     var wechatis = window.navigator.userAgent.toLowerCase();
